@@ -1,21 +1,45 @@
 from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
-
-from .models import (
-    DBSession,
-    Base,
-    )
+from pyramid.authorization import ACLAuthorizationPolicy
+from pyramid.authentication import AuthTktAuthenticationPolicy
+from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
+from .models import DBSession
+from .models import Base
+from .resources import get_root
 
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
+    # Cache
+    set_cache_regions_from_settings(settings)
+
+    # Security & Authentication
+    session_factory = session_factory_from_settings(settings)
+
+    authn_policy = AuthTktAuthenticationPolicy('auth_tkt')
+    authz_policy = ACLAuthorizationPolicy()
+
+    # Database
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
     Base.metadata.bind = engine
-    config = Configurator(settings=settings)
+
+    # App initializaton
+    config = Configurator(
+        settings=settings,
+        root_factory=get_root,
+        session_factory=session_factory,
+        authentication_policy=authn_policy,
+        authorization_policy=authz_policy)
+
     config.include('pyramid_chameleon')
+
+    # View routes configuration
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_route('home', '/')
+
+    config.add_route('domain_info', '/domains/{domain}/info', traverse='/{domain}')
     config.scan()
+
     return config.make_wsgi_app()

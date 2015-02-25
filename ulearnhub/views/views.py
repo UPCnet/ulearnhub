@@ -3,8 +3,8 @@ from pyramid.view import view_config
 
 from sqlalchemy.exc import DBAPIError
 
-from .models import DBSession
-from .models import Domain
+from ulearnhub.models import DBSession
+from ulearnhub.models import Domain
 
 
 @view_config(route_name='home', renderer='templates/mytemplate.pt')
