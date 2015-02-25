@@ -1,0 +1,20 @@
+{
+  "name": "ulearnhub",
+  "version": "0.1",
+  "homepage": "https://github.com/UPCnet/ulearnhub",
+  "authors": [
+    "Carles Bruguera <carlesba@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.2"
+  }
+}
