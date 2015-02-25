@@ -9,8 +9,9 @@ from sqlalchemy.exc import DBAPIError
 
 class Domains(dict):
     __acl__ = [
-        (Allow, Authenticated, 'username')
+        (Allow, Authenticated, 'homepage')
     ]
+    __name__ = 'DOMAINS'
 
     def __getitem__(self, key):
         try:

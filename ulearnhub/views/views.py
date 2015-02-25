@@ -7,7 +7,7 @@ from ulearnhub.models import DBSession
 from ulearnhub.models import Domain
 
 
-@view_config(route_name='home', renderer='templates/mytemplate.pt')
+@view_config(route_name='home', renderer='ulearnhub:templates/mytemplate.pt', permission='homepage')
 def my_view(request):
     try:
         one = DBSession.query(Domain).filter(Domain.name == 'one').first()

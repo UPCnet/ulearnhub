@@ -13,22 +13,26 @@ requires = [
     'pyramid_chameleon',
     'pyramid_debugtoolbar',
     'pyramid_tm',
+    'pyramid_beaker',
+    'pyramid_osiris',
     'SQLAlchemy',
     'transaction',
     'zope.sqlalchemy',
     'waitress',
-    ]
+    'maxclient',
+    'maxcarrot'
+]
 
 setup(name='ulearnhub',
       version='0.0',
       description='ulearnhub',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
-        "Programming Language :: Python",
-        "Framework :: Pyramid",
-        "Topic :: Internet :: WWW/HTTP",
-        "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
-        ],
+          "Programming Language :: Python",
+          "Framework :: Pyramid",
+          "Topic :: Internet :: WWW/HTTP",
+          "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+      ],
       author='',
       author_email='',
       url='',
