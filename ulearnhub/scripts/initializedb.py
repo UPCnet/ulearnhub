@@ -36,5 +36,5 @@ def main(argv=sys.argv):
     DBSession.configure(bind=engine)
     Base.metadata.create_all(engine)
     with transaction.manager:
-        model = Domain(name='demo', server='https://max.upcnet.es/demo')
+        model = Domain(name='test', server='http://localhost:8081')
         DBSession.add(model)

@@ -1,0 +1,86 @@
+body {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-image: url("../../static/gplaypattern.png");
+}
+h1 {
+  font-family: 'Bitter', serif;
+  font-weight: 700;
+  line-height: 40px;
+  font-size: 40px;
+  margin: 0 0 43px 0;
+}
+h2 {
+  font-family: 'PT Sans', sans-serif;
+  font-weight: normal;
+  font-size: 21px;
+  line-height: 23px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 0 0 23px 0;
+}
+p {
+  font-family: 'PT Sans', sans-serif;
+  font-size: 15px;
+  line-height: 23px;
+  margin: 0 0 23px 0;
+}
+.login-form {
+  margin-top: 100px;
+}
+.login-form .logo {
+  text-align: center;
+}
+.login-form .logo img {
+  height: 236px;
+}
+.form-signin {
+  padding-left: 15px;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 10px;
+}
+.form-signin .checkbox {
+  font-weight: normal;
+}
+.form-signin .form-control {
+  position: relative;
+  height: auto;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input#inputUsername {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input#inputDomain {
+  margin-bottom: -1px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input#inputPassword {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.login-error {
+  margin-top: 20px;
+  padding-right: 50px;
+  padding-left: 27px;
+}
+.login-error .alert {
+  padding: 8px;
+}
+.login-error .alert .close {
+  right: 0;
+}
