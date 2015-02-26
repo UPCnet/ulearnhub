@@ -78,6 +78,7 @@ def login(request):
             client.setActor(auth_user)
             client.setToken(oauth_token)
             client.admin.security.roles['HubManager'].users[auth_user].get()
+            user_data = client.people[auth_user].get()
             user_allowed = client.last_response_code == 200
 
             if user_allowed:
@@ -93,6 +94,8 @@ def login(request):
 
         # Store the user's oauth token in the current session
         request.session['oauth_token'] = oauth_token
+        request.session['display_name'] = user_data.get('displayName', auth_user)
+        request.session['avatar'] = '{}/people/{}/avatar'.format(domain.server, auth_user)
 
         # Finally, if all went OK
         # return the authenticated view
@@ -105,4 +108,6 @@ def login(request):
 def logout(request):
     headers = forget(request)
     request.session.pop('oauth_token')
+    request.session.pop('display_name')
+    request.session.pop('avatar')
     return HTTPFound(location='/', headers=headers)

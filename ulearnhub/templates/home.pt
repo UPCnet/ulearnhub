@@ -1,0 +1,21 @@
+<!doctype html>
+<html metal:use-macro="api.masterTemplate.macros['master']">
+<head></head>
+<body>
+
+  <metal:main fill-slot="main">
+
+    <h1 class="page-header">Registered Domains</h1>
+    <div ng-app="uLearnHUB" ng-controller="DomainsController as ctrl">
+
+       <input ng-model="ctrl.hola" type="text">
+       <label style="color:{{ctrl.hola}}"> I'm a text</label>
+       <button class="button" ng-click="ctrl.process()"></button>
+    </div>
+
+
+  </metal:main>
+
+</body>
+</html>
+

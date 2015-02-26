@@ -1,6 +1,18 @@
 from pyramid.security import authenticated_userid
 from pyramid.renderers import get_renderer
-from bigmax.utils import normalize_userdn
+
+import re
+
+
+def normalize_userdn(dn):
+    """ Extract user id (e.g. cn=victor.fernandez,ou=Users,dc=upc,dc=edu to
+        victor.fernandez, or leave username intact
+    """
+    if dn:
+        regex = r'(cn=)?([^,=]*),?'
+        return re.search(regex, dn).groups()[1]
+    else:
+        return None
 
 
 class TemplateAPI(object):
@@ -10,40 +22,24 @@ class TemplateAPI(object):
 
     @property
     def masterTemplate(self):
-        master = get_renderer('bigmax:templates/master.pt').implementation()
+        master = get_renderer('ulearnhub:templates/master.pt').implementation()
         return master
 
     @property
-    def authenticatedUser(self):
+    def authenticated_user(self):
         return normalize_userdn(authenticated_userid(self.request))
 
     @property
-    def authenticatedUserToken(self):
+    def authenticated_user_token(self):
         return self.request.session['oauth_token']
 
-    _status_message = None
+    @property
+    def authenticated_user_displayname(self):
+        return self.request.session['display_name']
 
-    def getStatusMessage(self):
-        if self._status_message:
-            return self._status_message
-        return self.request.session.pop_flash('info')
-
-    def setStatusMessage(self, value):
-        self._status_message = value
-
-    statusMessage = property(getStatusMessage, setStatusMessage)
-
-    _error_message = None
-
-    def getErrorMessage(self):
-        if self._error_message:
-            return self._error_message
-        return self.request.params.get("errorMessage", None)
-
-    def setErrorMessage(self, value):
-        self._error_message = value
-
-    errorMessage = property(getErrorMessage, setErrorMessage)
+    @property
+    def authenticated_user_avatar(self):
+        return self.request.session['avatar']
 
     @property
     def application_url(self):
