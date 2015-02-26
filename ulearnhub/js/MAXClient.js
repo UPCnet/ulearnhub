@@ -16,6 +16,12 @@ MAXClient.factory('Contexts', ['$resource', 'MAXInfo', function($resource, MAXIn
     });
 }]);
 
+MAXClient.factory('Users', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
+    return $resource(MAXInfo.max_server+'/people', null, {
+        query: {method:'GET', isArray: true}
+    });
+}]);
+
 MAXClient.factory('ApiInfo', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
     return $resource(MAXInfo.max_server+'/info/api', null, {
         query: {method:'GET'},
