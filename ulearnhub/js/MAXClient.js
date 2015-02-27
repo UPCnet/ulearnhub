@@ -2,34 +2,34 @@
 
 /**
  * @ngdoc function
- * @name MAXClient
+ * @name maxClient
  * @description
  * # Factories for accessing to a MAXServer.
  */
 
 
-var MAXClient = angular.module('MAXClient', []);
+var maxClient = angular.module('maxClient', []);
 
-MAXClient.factory('Contexts', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
+maxClient.factory('Contexts', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
     return $resource(MAXInfo.max_server+'/contexts', null, {
         search: {method:'GET', params: {tags:'@tags', hash:'@hash'}, headers:MAXInfo.headers, isArray: true}
     });
 }]);
 
-MAXClient.factory('Users', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
+maxClient.factory('Users', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
     return $resource(MAXInfo.max_server+'/people', null, {
-        query: {method:'GET', isArray: true}
+        query: {method:'GET', isArray: true, headers:MAXInfo.headers}
     });
 }]);
 
-MAXClient.factory('ApiInfo', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
+maxClient.factory('ApiInfo', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
     return $resource(MAXInfo.max_server+'/info/api', null, {
         query: {method:'GET'},
         by_category: {method:'GET', params: {by_category:'1'}, isArray: true}
     });
 }]);
 
-MAXClient.factory('MAXInfo', ['MAXSession', '_MAXUI', function(MAXSession, _MAXUI) {
+maxClient.factory('MAXInfo', ['MAXSession', '_MAXUI', function(MAXSession, _MAXUI) {
     var maxinfo = {};
     if (_MAXUI) {
         maxinfo.headers = {'X-Oauth-Username': _MAXUI.username,
@@ -45,13 +45,13 @@ MAXClient.factory('MAXInfo', ['MAXSession', '_MAXUI', function(MAXSession, _MAXU
     return maxinfo;
 }]);
 
-MAXClient.value('MAXSession', {
+maxClient.value('MAXSession', {
     username: '',
     oauth_token: '',
     max_server: ''
 });
 
-MAXClient.factory('_MAXUI', [function() {
+maxClient.factory('_MAXUI', [function() {
     if (window._MAXUI !== undefined) {
         return window._MAXUI;
     } else {
@@ -59,13 +59,13 @@ MAXClient.factory('_MAXUI', [function() {
     }
 }]);
 
-MAXClient.directive('oauthinfo', [function() {
+maxClient.directive('oauthinfo', [function() {
     return {
         restrict: 'E',
         controller: function($scope, $element, $attrs, MAXSession) {
             MAXSession.username = $attrs.username;
-            MAXSession.oauth_token = $attrs.oauthToken;
-            MAXSession.max_server = $attrs.maxServer;
+            MAXSession.oauth_token = $attrs.oauthtoken;
+            MAXSession.max_server = $attrs.maxserver;
         }
     };
 }]);

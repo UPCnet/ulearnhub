@@ -1,11 +1,31 @@
 'use strict';
 
-var ulearnhub = angular.module('uLearnHUB', ['MAXClient']);
+var ulearnhub = angular.module('uLearnHUB', [
+    'hubClient',
+    'datatables',
+    'datatables.bootstrap'
+]);
 
-ulearnhub.controller('DomainsController', ['MAXClient', function (MAXClient) {
+/*ulearnhub.factory('Test', ['Contexts'function() {
+    return 'Hello world';
+});
+*/
+ulearnhub.controller('DomainsController', ['Domains', 'DTOptionsBuilder', 'DTColumnDefBuilder', function(Domains, DTOptionsBuilder, DTColumnDefBuilder) {
     var self = this;
-    self.hola = 'que tal';
-    self.data = MAXClient.Users;
+
+// Default datatable options
+    self.dtOptions = DTOptionsBuilder
+        .newOptions().withPaginationType('full_numbers')
+        .withBootstrap();
+
+    self.dtColumnDefs = [
+        DTColumnDefBuilder.newColumnDef(0),
+        DTColumnDefBuilder.newColumnDef(1),
+        DTColumnDefBuilder.newColumnDef(2),
+    ];
+
+
+    self.data = Domains.query()
     self.process = function () {
         console.log("click");
     };

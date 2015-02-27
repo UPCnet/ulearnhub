@@ -4,9 +4,31 @@
 <body>
 
   <metal:main fill-slot="main">
+<div ng-app="uLearnHUB">
+  <ng-hub-info username="${api.authenticated_user}" hubserver="${api.application_url}" oauthtoken="${api.authenticated_user_token}"></ng-hub-info>
 
     <h1 class="page-header">Registered Domains</h1>
-    <div ng-app="uLearnHUB" ng-controller="DomainsController as ctrl">
+    <div   ng-controller="DomainsController as ctrl">
+
+    <table datatable="ng" dt-options="ctrl.dtOptions" dt-column-defs="ctrl.dtColumnDefs" class="table table-striped table-bordered">
+            <thead>
+              <tr>
+                <th>domain</th>
+                <th>server</th>
+                <th>oauth</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="user in ctrl.acl">
+                <td>{{ domain.name }}</td>
+                <td>{{ domain.server }}</td>
+                <td>{{ domain.oauth_server }}</td>
+
+              </tr>
+              <tt>{{ctrl.acl | json}}</tt><br/>
+            </tbody>
+          </table>
+
 
        <div>{{ctrl.data}}</div>
        <input ng-model="ctrl.hola" type="text">
@@ -14,7 +36,7 @@
        <button class="button" ng-click="ctrl.process()"></button>
     </div>
 
-
+</div>
   </metal:main>
 
 </body>
