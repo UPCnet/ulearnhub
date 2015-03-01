@@ -36,7 +36,6 @@ hubClient.directive('ngHubInfo', [function() {
     return {
         restrict: 'E',
         controller: function($scope, $element, $attrs, hubSession) {
-            debugger;
             hubSession.username = $attrs.username;
             hubSession.oauth_token = $attrs.oauthtoken;
             hubSession.hub_server = $attrs.hubserver;

@@ -61,13 +61,18 @@
 
     </div>
 
+    <!-- jQuery and non-angular plugins -->
     <script src="${api.application_url}/jquery/jquery.min.js"></script>
     <script src="${api.application_url}/bootstrap/js/bootstrap.min.js"></script>
     <script src="${api.application_url}/datatables/js/jquery.dataTables.min.js"></script>
-    <script src="${api.application_url}/angular-datatables/plugins/bootstrap/angular-datatables.bootstrap.min.js"></script>
+
+    <!-- Angular and extension modules -->
     <script src="${api.application_url}/angular/angular.min.js"></script>
+    <script src="${api.application_url}/angular-datatables/plugins/bootstrap/angular-datatables.bootstrap.min.js"></script>
     <script src="${api.application_url}/angular-resource/angular-resource.min.js"></script>
     <script src="${api.application_url}/angular-datatables/angular-datatables.min.js"></script>
+
+    <!-- Custom JS -->
     <script src="${api.application_url}/js/app.js"></script>
     <script src="${api.application_url}/js/MAXClient.js"></script>
     <script src="${api.application_url}/js/hubClient.js"></script>

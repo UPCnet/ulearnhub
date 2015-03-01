@@ -6,10 +6,7 @@ var ulearnhub = angular.module('uLearnHUB', [
     'datatables.bootstrap'
 ]);
 
-/*ulearnhub.factory('Test', ['Contexts'function() {
-    return 'Hello world';
-});
-*/
+
 ulearnhub.controller('DomainsController', ['Domains', 'DTOptionsBuilder', 'DTColumnDefBuilder', function(Domains, DTOptionsBuilder, DTColumnDefBuilder) {
     var self = this;
 
@@ -21,12 +18,12 @@ ulearnhub.controller('DomainsController', ['Domains', 'DTOptionsBuilder', 'DTCol
     self.dtColumnDefs = [
         DTColumnDefBuilder.newColumnDef(0),
         DTColumnDefBuilder.newColumnDef(1),
-        DTColumnDefBuilder.newColumnDef(2),
+        DTColumnDefBuilder.newColumnDef(2)
     ];
 
+    Domains.query().$promise.then(function(response) {
+        self.domains = response;
+    });
 
-    self.data = Domains.query()
-    self.process = function () {
-        console.log("click");
-    };
+
 }]);
