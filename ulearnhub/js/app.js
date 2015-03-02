@@ -42,6 +42,7 @@ ulearnhub.controller('DomainsController', ['$scope', '$modal', '$log', 'Domains'
 
     modalInstance.result.then(function (newdomain) {
         $scope.domains.push(newdomain);
+        debugger
         Domains.save($scope.newdomain);
     }, function () {
       $log.info('Modal dismissed at: ' + new Date());

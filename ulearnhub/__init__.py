@@ -3,8 +3,9 @@ from sqlalchemy import engine_from_config
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
-from .models import DBSession
-from .models import Base
+from ulearnhub.models import DBSession
+from ulearnhub.models.base import Base
+
 from .resources import get_root
 
 
@@ -52,7 +53,8 @@ def main(global_config, **settings):
     config.add_route('domains', '/domains')
     config.add_route('users', '/users')
 
-    config.add_route('domain_info', '/domains/{domain}/info', traverse='/{domain}')
+    config.add_route('api_domain_info', '/api/domains/{domain}/info', traverse='{domain}')
+    config.add_route('api_domains', '/api/domains')
     config.scan()
 
     return config.make_wsgi_app()

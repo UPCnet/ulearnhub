@@ -11,7 +11,7 @@
 var hubClient = angular.module('hubClient', ['ngResource']);
 
 hubClient.factory('Domains', ['$resource', 'hubInfo', function($resource, hubInfo) {
-    return $resource(hubInfo.max_server+'/domains', null, {
+    return $resource(hubInfo.max_server+'/api/domains', null, {
         query: {method:'GET', isArray: true, headers:hubInfo.headers}
     });
 }]);
