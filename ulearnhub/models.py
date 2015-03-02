@@ -20,6 +20,8 @@ class Domain(Base):
     id = Column(Integer, primary_key=True)
     name = Column(Text)
     server = Column(Text)
+    user = Column(Text)
+    token = Column(Text)
 
     @property
     def maxclient(self):
