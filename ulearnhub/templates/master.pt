@@ -68,6 +68,7 @@
 
     <!-- Angular and extension modules -->
     <script src="${api.application_url}/angular/angular.min.js"></script>
+    <script src="${api.application_url}/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
     <script src="${api.application_url}/angular-datatables/plugins/bootstrap/angular-datatables.bootstrap.min.js"></script>
     <script src="${api.application_url}/angular-resource/angular-resource.min.js"></script>
     <script src="${api.application_url}/angular-datatables/angular-datatables.min.js"></script>
