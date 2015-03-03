@@ -23,6 +23,12 @@ maxClient.factory('User', ['$resource', 'MAXInfo', function($resource, MAXInfo) 
     });
 }]);
 
+maxClient.factory('UserRoles', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
+    return $resource('http://localhost:8081/admin/security/users', null, {
+        query: {method:'GET', isArray: true, headers:MAXInfo.headers},
+    });
+}]);
+
 maxClient.factory('ApiInfo', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
     return $resource(MAXInfo.max_server+'/info/api', null, {
         query: {method:'GET'},

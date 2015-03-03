@@ -7,7 +7,7 @@ var ulearn_users = angular.module('uLearnUsers', [
     'ui.bootstrap'
 ]);
 
-/*ulearn_users.controller('UsersRolesController', ['$modal', '$log', 'User','DTOptionsBuilder', 'DTColumnDefBuilder', function($modal, $log, User, DTOptionsBuilder, DTColumnDefBuilder) {
+ulearn_users.controller('UsersRolesController', ['$modal', '$log', 'UserRoles','DTOptionsBuilder', 'DTColumnDefBuilder', function($modal, $log, UserRoles, DTOptionsBuilder, DTColumnDefBuilder) {
     var self = this;
 
 // Default datatable options
@@ -20,11 +20,13 @@ var ulearn_users = angular.module('uLearnUsers', [
         DTColumnDefBuilder.newColumnDef(1),
         DTColumnDefBuilder.newColumnDef(2)
     ];
+      var usersFinal = [];
+     self.users = UserRoles.query()
 
-     self.users = User.query()
 
 
-}]);*/
+
+}]);
 
 
 ulearn_users.controller('UsersManageController', ['$modal', '$log', 'User','DTOptionsBuilder', 'DTColumnDefBuilder', function($modal, $log, User, DTOptionsBuilder, DTColumnDefBuilder) {
@@ -61,7 +63,6 @@ ulearn_users.controller('UsersManageController', ['$modal', '$log', 'User','DTOp
 
     modalInstance.result.then(function (newuser) {
       self.users.push(newuser);
-      User.save(newuser);
 
     }, function () {
       $log.info('Modal dismissed at: ' + new Date());
@@ -71,14 +72,26 @@ ulearn_users.controller('UsersManageController', ['$modal', '$log', 'User','DTOp
 }]);
 
 
-ulearn_users.controller('ModalInstanceCtrl', function ($scope, User, $modalInstance, items) {
+ulearn_users.controller('ModalInstanceCtrl' ,['$scope', '$modalInstance', 'User' ,function ($scope, $modalInstance, User) {
+  $scope.alerts = [];
 
   $scope.ok = function () {
-    $modalInstance.close($scope.newuser);
-
+    User.save($scope.newuser)
+   .$promise.then(function(data) {
+        $modalInstance.close(data);
+    }, function(error) {
+          $scope.alerts.push({
+            type: 'danger',
+            msg: error.data.error + ': ' + error.data.error_description});
+    });
   };
 
   $scope.cancel = function () {
     $modalInstance.dismiss('cancel');
   };
-});
+
+  $scope.closeAlert = function(index) {
+    $scope.alerts.splice(index, 1);
+  };
+
+}]);

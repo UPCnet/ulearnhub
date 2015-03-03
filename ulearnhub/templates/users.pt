@@ -34,7 +34,10 @@
                 <tr ng-repeat="user in userMan.users">
                   <td>{{user.username}}</td>
                   <td>{{user.displayName}}</td>
-                  <td>Accions</td>
+                  <td> 
+                    <img src="editar.jpg" alt="Editar usuario" height="42" width="42"><img src="borrar.jpg" alt="Eliminar usuario" height="42" width="42">
+
+                  </td>
 
                 </tr>
               </tbody>
@@ -65,6 +68,8 @@
 
               </form>
 
+              <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+
               </div>
               <div class="modal-footer">
                   <button class="btn btn-primary" ng-click="ok()">OK</button>
@@ -82,22 +87,22 @@
               <thead>
                 <tr>
                   <th>UserName</th>
-                  <th>Read</th>
-                  <th>Write</th>
-                  <th>Subscribe</th>
-                  <th>Unsubscribe</th>
-                  <th>Delete</th>
+                  <th>Manager</th>
+                  <th>NonVisible</th>
+                  <th>HubManager</th>
+
                 </tr>
               </thead>
               <tbody>
                 <tr ng-repeat="user in userRol.users">
                   <td>{{user.username}}</td>
-                  <td>{{user.read}}</td>
-                  <td>{{user.write}}</td>
-                  <td>{{user.subscribe}}</td>
-                  <td>{{user.unsubscribe}}</td>
-                  <td>{{user.delete}}</td>
 
+                  <td ng-repeat="role in user.roles"><input type="checkbox" ng-change="" ng-model="role.active"></td>
+
+<!--                   <td><input type="checkbox" ng-change="" ng-model="">{{user.roles[0].active}}</td>
+                  <td><input type="checkbox" name="nonVisible" ng-change="">{{user.roles[1].active}}</td>
+                  <td><input type="checkbox" name="hubManager" ng-change="">{{user.roles[2].active}}</td>
+ -->
                 </tr>
               </tbody>
          </table>
