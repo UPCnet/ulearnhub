@@ -47,16 +47,22 @@ def main(global_config, **settings):
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_static_view('css', 'css', cache_max_age=3600)
     config.add_static_view('js', 'js', cache_max_age=3600)
+
     config.add_route('home', '/')
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
 
-    config.add_route('domains', '/domains')
     config.add_route('users', '/users')
     config.add_route('contexts', '/contexts')
 
+    config.add_route('domains', '/domains')
+    config.add_route('domain', '/domains/{domain}', traverse='{domain}')
+    config.add_route('domain_users', '/domains/{domain}/users', traverse='{domain}')
+    config.add_route('domain_contexts', '/domains/{domain}/contexts', traverse='{domain}')
+
     config.add_route('api_domain_info', '/api/domains/{domain}/info', traverse='{domain}')
     config.add_route('api_domains', '/api/domains')
+    config.add_route('api_domain', '/api/domains/{domain}', traverse='{domain}')
     config.scan()
 
     return config.make_wsgi_app()

@@ -25,6 +25,10 @@ class Domain(Base):
         self.token = self.maxclient.getToken(self.user, password)
 
     @property
+    def __acl__(self):
+        import ipdb;ipdb.set_trace()
+
+    @property
     def maxclient(self):
         client = MaxClient(self.server, self.oauth_server)
         return client

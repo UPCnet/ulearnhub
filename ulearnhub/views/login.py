@@ -29,11 +29,10 @@ def real_request_url(request):
 
 @view_config(route_name='login', renderer='ulearnhub:templates/login.pt')
 @forbidden_view_config(renderer='ulearnhub:templates/login.pt')
-def login(request):
+def login(context, request):
     """ The login view - pyramid_ldap enabled with the forbidden view logic.
     """
-    page_title = "uLearn HUB Login"
-    api = TemplateAPI(request, page_title)
+    api = TemplateAPI(context, request, "uLearn HUB Login")
     login_url = request.resource_url(request.context, 'login')
     referrer = real_request_url(request)
     if referrer.endswith('login'):

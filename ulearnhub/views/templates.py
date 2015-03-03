@@ -17,8 +17,13 @@ def normalize_userdn(dn):
 
 class TemplateAPI(object):
 
-    def __init__(self, request, page_title=None):
+    def __init__(self, context, request, page_title=None):
+        self.context = context
         self.request = request
+
+    @property
+    def domain(self):
+        return self.context
 
     @property
     def masterTemplate(self):

@@ -20,3 +20,10 @@ def domain_add(context, request):
     new_domain.save()
     response = JSONResourceEntity(new_domain.as_dict())
     return response()
+
+
+@view_config(route_name='api_domain', request_method='GET')
+@endpoint()
+def domain(domain, request):
+    response = JSONResourceEntity(domain.as_dict())
+    return response

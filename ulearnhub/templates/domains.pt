@@ -49,22 +49,22 @@
                   <form>
                     <div class="form-group">
                       <label for="domainName">Domain name</label>
-                      <input ng-model="newdomain.name" type="text" class="form-control" id="domainName" placeholder="Enter name for domain">
+                      <input ng-model="newdomain.name" type="text" class="form-control" id="domainName" placeholder="Name used in utalk app authentication">
                     </div>
 
                     <div class="form-group">
                       <label for="maxServerUrl">Max server</label>
-                      <input ng-model="newdomain.server" type="text" class="form-control" id="maxServerUrl" placeholder="Enter url for max server">
+                      <input ng-model="newdomain.server" type="text" class="form-control" id="maxServerUrl" placeholder="Full url of the max server used by this domain">
                     </div>
 
                     <div class="form-group">
-                      <label for="domainName">Domain name</label>
-                      <input ng-model="newdomain.user" type="text" class="form-control" id="user" placeholder="Enter username for restricted operations">
+                      <label for="domainName">Username</label>
+                      <input ng-model="newdomain.user" type="text" class="form-control" id="user" placeholder="Manager user to be used in background operations">
                     </div>
 
                     <div class="form-group">
-                      <label for="maxServerUrl">Max server</label>
-                      <input ng-model="newdomain.password" type="password" class="form-control" id="password" placeholder="Enter password for restrcted username">
+                      <label for="maxServerUrl">Password</label>
+                      <input ng-model="newdomain.password" type="password" class="form-control" id="password" placeholder="Password of the Manager user">
                     </div>
 
                   </form>
