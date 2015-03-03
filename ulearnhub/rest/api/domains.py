@@ -16,6 +16,7 @@ def domains_list(context, request):
 @view_config(route_name='api_domains', request_method='POST')
 @endpoint()
 def domain_add(context, request):
-    new_domain_data = request.json
-    response = JSONResourceEntity(new_domain_data)
+    new_domain = Domain(**request.json)
+    new_domain.save()
+    response = JSONResourceEntity(new_domain.as_dict())
     return response()
