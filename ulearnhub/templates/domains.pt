@@ -25,7 +25,7 @@
                   </thead>
                   <tbody>
                     <tr ng-repeat="domain in ctrl.domains">
-                      <td><a href="${api.application_url}/{{domain.name}}">{{ domain.name }}</a></td>
+                      <td><a href="${api.application_url}/domains/{{domain.name}}">{{ domain.name }}</a></td>
                       <td>{{ domain.server }}</td>
                       <td>{{ domain.oauth_server }}</td>
 
