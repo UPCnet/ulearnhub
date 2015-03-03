@@ -13,8 +13,8 @@
 
           <h1 class="page-header">Registered Domains</h1>
           <div ng-controller="DomainsController as ctrl">
-              <table datatable="ng" dt-options="dtOptions"
-                     dt-column-defs="dtColumnDefs"
+              <table datatable="ng" dt-options="ctrl.dtOptions"
+                     dt-column-defs="ctrl.dtColumnDefs"
                      class="compact table table-striped">
                   <thead>
                     <tr>
