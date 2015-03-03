@@ -136,3 +136,10 @@ h1.page-header {
 .view-actions {
   border-top: 1px #dfdfdf solid;
 }
+#sections.btn-group {
+  margin-bottom: 20px;
+}
+#sections.btn-group .btn a {
+  color: #fff;
+  text-decoration: none;
+}

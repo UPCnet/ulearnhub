@@ -3,6 +3,21 @@ from pyramid.view import view_config
 from ulearnhub.views.templates import TemplateAPI
 
 
+def get_domain_sections(api):
+    sections = [
+        dict(url='', title='Information'),
+        dict(url='users', title='Users'),
+        dict(url='contexts', title='Contexts'),
+        dict(url='components', title='Components')
+    ]
+    for section in sections:
+        section['url'] = '{}/domains/{}/{}'.format(api.application_url, api.domain.name, section['url'])
+        section['url'] = section['url'].rstrip('/')
+        section['active'] = 'active' if api.request.url == section['url'] else ''
+
+    return sections
+
+
 @view_config(route_name='home', renderer='ulearnhub:templates/domains.pt', permission='homepage')
 @view_config(route_name='domains', renderer='ulearnhub:templates/domains.pt', permission='homepage')
 def domains_view(context, request):
@@ -13,6 +28,26 @@ def domains_view(context, request):
 
 @view_config(route_name='domain', renderer='ulearnhub:templates/domain.pt', permission='homepage')
 def domain_view(context, request):
+    api = TemplateAPI(context, request, 'Domain configuration')
     return {
-        "api": TemplateAPI(context, request, 'Domain configuration'),
+        "api": api,
+        "sections": get_domain_sections(api)
+    }
+
+
+@view_config(route_name='domain_users', renderer='ulearnhub:templates/users.pt', permission='homepage')
+def domain_users_view(context, request):
+    api = TemplateAPI(context, request, 'Domain users management')
+    return {
+        "api": api,
+        "sections": get_domain_sections(api)
+    }
+
+
+@view_config(route_name='domain_contexts', renderer='ulearnhub:templates/contexts.pt', permission='homepage')
+def domain_contexts_view(context, request):
+    api = TemplateAPI(context, request, 'Domain contexts management')
+    return {
+        "api": api,
+        "sections": get_domain_sections(api)
     }

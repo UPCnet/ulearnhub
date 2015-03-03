@@ -44,8 +44,6 @@
                 <li class="active">
                   <i class="fa fa-edit fw"></i>
                   <a href="/domains">Domains <span class="sr-only">(Domains management)</span></a>
-                  <a href="/users">Users <span class="sr-only">(Users manage)</span></a>
-                  <a href="/contexts">Contexts <span class="sr-only">(Contexts manage)</span></a>
                 </li>
               </ul>
 
@@ -144,3 +142,10 @@
       </div><!-- /.container-fluid -->
     </nav>
 </metal:navbar>
+
+
+<metal:sections define-macro="sections">
+      <div id="sections" class="btn-group">
+          <label tal:repeat="section sections" class="btn btn-primary ${section.active}"><a href="${section.url}">${section.title}</a></label>
+      </div>
+</metal:sections>

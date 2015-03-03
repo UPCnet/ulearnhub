@@ -4,7 +4,7 @@
 <body>
 
   <metal:main fill-slot="main">
-      <div ng-app="uLearnHUB" ng-cloak>
+      <div>
 
           <ng-hub-info username="${api.authenticated_user}"
                        server="${api.application_url}"
@@ -12,13 +12,12 @@
           </ng-hub-info>
 
           <h1 class="page-header">${api.domain.name}</h1>
+          <div metal:use-macro="api.masterTemplate.macros['sections']"></div>
 
       </div>
   </metal:main>
 
 <metal:main fill-slot="view_scripts">
-    <script src="${api.application_url}/js/domains.js"></script>
-    <script src="${api.application_url}/js/hubClient.js"></script>
 </metal:main>
 
 
