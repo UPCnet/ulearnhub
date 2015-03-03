@@ -4,8 +4,12 @@ from sqlalchemy import Column
 
 from maxclient.rest import MaxClient
 
+from pyramid.security import Allow
+from pyramid.security import Authenticated
+
 
 class Domain(Base):
+    __name__ = 'Domain'
     __tablename__ = 'models'
     id = Column(Integer, primary_key=True)
     name = Column(Text)
@@ -26,7 +30,9 @@ class Domain(Base):
 
     @property
     def __acl__(self):
-        import ipdb;ipdb.set_trace()
+        return [
+            (Allow, Authenticated, 'homepage')
+        ]
 
     @property
     def maxclient(self):

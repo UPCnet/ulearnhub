@@ -11,7 +11,7 @@ def domains_view(context, request):
     }
 
 
-@view_config(route_name='domain', renderer='ulearnhub:templates/domain.pt')
+@view_config(route_name='domain', renderer='ulearnhub:templates/domain.pt', permission='homepage')
 def domain_view(context, request):
     return {
         "api": TemplateAPI(context, request, 'Domain configuration'),
