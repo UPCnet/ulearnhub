@@ -75,11 +75,7 @@
     <script src="${api.application_url}/angular-resource/angular-resource.min.js"></script>
     <script src="${api.application_url}/angular-datatables/angular-datatables.min.js"></script>
 
-    <!-- Custom JS -->
-    <script src="${api.application_url}/js/app.js"></script>
-    <script src="${api.application_url}/js/MAXClient.js"></script>
-    <script src="${api.application_url}/js/hubClient.js"></script>
-
+    <div metal:define-slot="view_scripts"></div>
 
   </body>
 </html>
