@@ -43,7 +43,7 @@
               <ul class="nav nav-sidebar">
                 <li class="active">
                   <i class="fa fa-edit fw"></i>
-                  <a href="/">HomePage <span class="sr-only">(home page)</span></a>
+                  <a href="/domains">Domains <span class="sr-only">(Domains management)</span></a>
                   <a href="/users">Users <span class="sr-only">(Users manage)</span></a>
                   <a href="/contexts">Contexts <span class="sr-only">(Contexts manage)</span></a>
                 </li>
@@ -93,7 +93,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">
+          <a class="navbar-brand" href="${api.application_url}">
           <h1 class="form-signin-heading">uLearn <strong>HUB</strong></h1>
           </a>
         </div>
