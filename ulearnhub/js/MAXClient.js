@@ -19,7 +19,7 @@ maxClient.factory('Context', ['$resource', 'MAXInfo', function($resource, MAXInf
 maxClient.factory('User', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
     return $resource('http://localhost:8081/people/:id', null, {
         query: {method:'GET', isArray: true, headers:MAXInfo.headers},
-        save: {method:'POST', headers:MAXInfo.headers}
+        save:  {method:'POST', headers:MAXInfo.headers}
     });
 }]);
 

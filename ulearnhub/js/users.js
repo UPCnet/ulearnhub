@@ -7,31 +7,46 @@ var ulearn_users = angular.module('uLearnUsers', [
     'ui.bootstrap'
 ]);
 
-
-ulearn_users.controller('UsersManageController', ['$scope', '$modal', '$log', 'User','DTOptionsBuilder', 'DTColumnDefBuilder', function($scope, $modal, $log, User, DTOptionsBuilder, DTColumnDefBuilder) {
+/*ulearn_users.controller('UsersRolesController', ['$modal', '$log', 'User','DTOptionsBuilder', 'DTColumnDefBuilder', function($modal, $log, User, DTOptionsBuilder, DTColumnDefBuilder) {
     var self = this;
 
 // Default datatable options
-    $scope.dtOptions = DTOptionsBuilder
+    self.dtOptions = DTOptionsBuilder
         .newOptions().withPaginationType('full_numbers')
         .withBootstrap();
 
-    $scope.dtColumnDefs = [
+    self.dtColumnDefs = [
         DTColumnDefBuilder.newColumnDef(0),
         DTColumnDefBuilder.newColumnDef(1),
         DTColumnDefBuilder.newColumnDef(2)
     ];
 
-     $scope.users = User.query()
+     self.users = User.query()
 
-}]);
 
+}]);*/
+
+
+ulearn_users.controller('UsersManageController', ['$modal', '$log', 'User','DTOptionsBuilder', 'DTColumnDefBuilder', function($modal, $log, User, DTOptionsBuilder, DTColumnDefBuilder) {
+    var self = this;
+
+// Default datatable options
+    self.dtOptions = DTOptionsBuilder
+        .newOptions().withPaginationType('full_numbers')
+        .withBootstrap();
+
+    self.dtColumnDefs = [
+        DTColumnDefBuilder.newColumnDef(0),
+        DTColumnDefBuilder.newColumnDef(1),
+        DTColumnDefBuilder.newColumnDef(2)
+    ];
+
+     self.users = User.query()
 
 
 // =============== ADD USER MODAL ================ // 
 
-ulearn_users.controller('ModalAddUser',['$scope','$modal','$log', 'User',function ($scope,$modal,$log, User) {
-  $scope.open = function (size) {
+  self.open = function (size) {
 
     var modalInstance = $modal.open({
       templateUrl: 'new-user.html',
@@ -45,9 +60,9 @@ ulearn_users.controller('ModalAddUser',['$scope','$modal','$log', 'User',functio
     });
 
     modalInstance.result.then(function (newuser) {
-      $scope.user.push(newuser);
-      debugger
-      /*Domains.save($scope.newuser);*/
+      self.users.push(newuser);
+      User.save(newuser);
+
     }, function () {
       $log.info('Modal dismissed at: ' + new Date());
     });
