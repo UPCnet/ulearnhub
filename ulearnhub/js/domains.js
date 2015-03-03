@@ -44,7 +44,7 @@ ulearnhub.controller('DomainsController', ['$modal', '$log', 'Domain', 'DTOption
 
 }]);
 
-ulearnhub.controller('ModalInstanceCtrl', function($modalInstance, items) {
+ulearnhub.controller('ModalInstanceCtrl', function($modalInstance) {
   var self = this;
 
   self.ok = function () {

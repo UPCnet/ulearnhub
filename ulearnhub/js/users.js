@@ -22,9 +22,7 @@ ulearn_users.controller('UsersManageController', ['$scope', '$modal', '$log', 'U
         DTColumnDefBuilder.newColumnDef(2)
     ];
 
-/*     var users = User.query(function() {
-        console.log(users);
-      }); //query() returns all the entries*/
+     $scope.users = User.query()
 
 }]);
 

@@ -29,8 +29,8 @@
               </thead>
               <tbody>
                 <tr ng-repeat="user in users">
-                  <td>{{user.id}}</td>
-                  <td>{{user.content}}</td>
+                  <td>{{user.username}}</td>
+                  <td>{{user.displayName}}</td>
                   <td>Accions</td>
 
                 </tr>
@@ -103,6 +103,12 @@
     </div>
 
   </metal:main>
+
+<metal:main fill-slot="view_scripts">
+    <script src="${api.application_url}/js/MAXClient.js"></script>
+    <script src="${api.application_url}/js/users.js"></script>
+</metal:main>
+
 
 </body>
 </html>
