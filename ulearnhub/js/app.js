@@ -8,58 +8,50 @@ var ulearnhub = angular.module('uLearnHUB', [
 ]);
 
 
-ulearnhub.controller('DomainsController', ['$scope', '$modal', '$log', 'Domains', 'DTOptionsBuilder', 'DTColumnDefBuilder', function($scope, $modal, $log, Domains, DTOptionsBuilder, DTColumnDefBuilder) {
+ulearnhub.controller('DomainsController', ['$modal', '$log', 'Domain', 'DTOptionsBuilder', 'DTColumnDefBuilder', function($modal, $log, Domain, DTOptionsBuilder, DTColumnDefBuilder) {
     var self = this;
 
 // Default datatable options
-    $scope.dtOptions = DTOptionsBuilder
+    self.dtOptions = DTOptionsBuilder
         .newOptions().withPaginationType('full_numbers')
         .withBootstrap();
 
-    $scope.dtColumnDefs = [
+    self.dtColumnDefs = [
         DTColumnDefBuilder.newColumnDef(0),
         DTColumnDefBuilder.newColumnDef(1),
         DTColumnDefBuilder.newColumnDef(2)
     ];
 
-    Domains.query().$promise.then(function(response) {
-        $scope.domains = response;
-    });
+    self.domains = Domain.query();
 
 
-  $scope.open = function (size) {
+  self.open = function (size) {
 
     var modalInstance = $modal.open({
       templateUrl: 'new-domain.html',
       controller: 'ModalInstanceCtrl',
-      size: size,
-      resolve: {
-        items: function () {
-          return [];
-        }
-      }
+      size: size
     });
 
-    modalInstance.result.then(function (newdomain) {
-        $scope.domains.push(newdomain);
-        debugger
-        Domains.save($scope.newdomain);
-    }, function () {
-      $log.info('Modal dismissed at: ' + new Date());
+    modalInstance.result
+
+    .then(function (newdomain) {
+        self.domains.push(newdomain);
+        Domain.save(newdomain);
     });
   };
 
 
 }]);
 
-ulearnhub.controller('ModalInstanceCtrl', function ($scope, Domains, $modalInstance, items) {
+ulearnhub.controller('ModalInstanceCtrl', function($modalInstance, items) {
+  var self = this;
 
-  $scope.ok = function () {
-    $modalInstance.close($scope.newdomain);
-
+  self.ok = function () {
+    $modalInstance.close(self.newdomain);
   };
 
-  $scope.cancel = function () {
+  self.cancel = function () {
     $modalInstance.dismiss('cancel');
   };
 });

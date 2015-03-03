@@ -10,25 +10,28 @@
 
 var hubClient = angular.module('hubClient', ['ngResource']);
 
-hubClient.factory('Domains', ['$resource', 'hubInfo', function($resource, hubInfo) {
-    return $resource(hubInfo.max_server+'/api/domains', null, {
+
+hubClient.factory('Domain', ['$resource', 'hubInfo', function($resource, hubInfo) {
+    return $resource(hubInfo.server + '/api/domains/:id', null, {
         query: {method:'GET', isArray: true, headers:hubInfo.headers}
     });
 }]);
 
+
 hubClient.factory('hubInfo', ['hubSession', function(hubSession) {
-    var maxinfo = {};
-    maxinfo.headers = {'X-Oauth-Username': hubSession.username,
-                       'X-Oauth-Token': hubSession.oauth_token,
+    var hubinfo = {};
+    hubinfo.headers = {'X-Oauth-Username': hubSession.username,
+                       'X-Oauth-Token': hubSession.token,
                        'X-Oauth-Scope': 'widgetcli'};
-    maxinfo.max_server = hubSession.max_server;
-    return maxinfo;
+    hubinfo.server = hubSession.server;
+    return hubinfo;
 }]);
+
 
 hubClient.value('hubSession', {
     username: '',
-    oauth_token: '',
-    max_server: ''
+    token: '',
+    server: ''
 });
 
 
@@ -37,8 +40,8 @@ hubClient.directive('ngHubInfo', [function() {
         restrict: 'E',
         controller: function($scope, $element, $attrs, hubSession) {
             hubSession.username = $attrs.username;
-            hubSession.oauth_token = $attrs.oauthtoken;
-            hubSession.hub_server = $attrs.hubserver;
+            hubSession.token = $attrs.token;
+            hubSession.server = $attrs.server;
         }
     };
 }]);

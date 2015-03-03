@@ -6,11 +6,16 @@
   <metal:main fill-slot="main">
 <div ng-app="uLearnHUB" ng-cloak>
 
+    <ng-hub-info username="${api.authenticated_user}"
+                 server="${api.application_url}"
+                 token="${api.authenticated_user_token}">
+    </ng-hub-info>
 
     <h1 class="page-header">Registered Domains</h1>
-    <div   ng-controller="DomainsController">
-<ng-hub-info username="${api.authenticated_user}" hubserver="${api.application_url}" oauthtoken="${api.authenticated_user_token}"></ng-hub-info>
-    <table datatable="ng" dt-options="dtOptions" dt-column-defs="dtColumnDefs" class="compact table table-striped">
+    <div ng-controller="DomainsController as ctrl">
+        <table datatable="ng" dt-options="dtOptions"
+               dt-column-defs="dtColumnDefs"
+               class="compact table table-striped">
             <thead>
               <tr>
                 <th>domain</th>
@@ -19,56 +24,56 @@
               </tr>
             </thead<name />
             <tbody>
-              <tr ng-repeat="domain in domains">
+              <tr ng-repeat="domain in ctrl.domains">
                 <td>{{ domain.name }}</td>
                 <td>{{ domain.server }}</td>
                 <td>{{ domain.oauth_server }}</td>
 
               </tr>
             </tbody>
-          </table>
+        </table>
 
-    <hr>
-    <div class="view-actions pull-right">
-      <button class="btn btn-primary" ng-click="open()">New domain</button>
-    </div>
-
-
-    <script type="text/ng-template" id="new-domain.html">
-        <div class="modal-header">
-            <h3 class="modal-title">Add new domain</h3>
+        <hr>
+        <div class="view-actions pull-right">
+          <button class="btn btn-primary" ng-click="ctrl.open()">New domain</button>
         </div>
-        <div class="modal-body">
 
-        <form>
-          <div class="form-group">
-            <label for="domainName">Domain name</label>
-            <input ng-model="newdomain.name" type="text" class="form-control" id="domainName" placeholder="Enter name for domain">
-          </div>
 
-          <div class="form-group">
-            <label for="maxServerUrl">Max server</label>
-            <input ng-model="newdomain.server" type="text" class="form-control" id="maxServerUrl" placeholder="Enter url for max server">
-          </div>
+        <script type="text/ng-template" id="new-domain.html">
+            <div class="modal-header">
+                <h3 class="modal-title">Add new domain</h3>
+            </div>
+            <div class="modal-body">
 
-          <div class="form-group">
-            <label for="domainName">Domain name</label>
-            <input ng-model="newdomain.user" type="text" class="form-control" id="user" placeholder="Enter username for restricted operations">
-          </div>
+            <form>
+              <div class="form-group">
+                <label for="domainName">Domain name</label>
+                <input ng-model="newdomain.name" type="text" class="form-control" id="domainName" placeholder="Enter name for domain">
+              </div>
 
-          <div class="form-group">
-            <label for="maxServerUrl">Max server</label>
-            <input ng-model="newdomain.password" type="password" class="form-control" id="password" placeholder="Enter password for restrcted username">
-          </div>
+              <div class="form-group">
+                <label for="maxServerUrl">Max server</label>
+                <input ng-model="newdomain.server" type="text" class="form-control" id="maxServerUrl" placeholder="Enter url for max server">
+              </div>
 
-        </form>
+              <div class="form-group">
+                <label for="domainName">Domain name</label>
+                <input ng-model="newdomain.user" type="text" class="form-control" id="user" placeholder="Enter username for restricted operations">
+              </div>
 
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="ok()">OK</button>
-            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-        </div>
-    </script>
+              <div class="form-group">
+                <label for="maxServerUrl">Max server</label>
+                <input ng-model="newdomain.password" type="password" class="form-control" id="password" placeholder="Enter password for restrcted username">
+              </div>
+
+            </form>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" ng-click="ok()">OK</button>
+                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            </div>
+        </script>
 
     </div>
 
