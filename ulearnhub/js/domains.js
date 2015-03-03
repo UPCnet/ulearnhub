@@ -34,24 +34,34 @@ ulearnhub.controller('DomainsController', ['$modal', '$log', 'Domain', 'DTOption
     });
 
     modalInstance.result
-
     .then(function (newdomain) {
         self.domains.push(newdomain);
-        Domain.save(newdomain);
     });
   };
 
 
 }]);
 
-ulearnhub.controller('ModalInstanceCtrl', function($modalInstance) {
-  var self = this;
+ulearnhub.controller('ModalInstanceCtrl', ['$scope', '$modalInstance', 'Domain', function($scope, $modalInstance ,Domain) {
+  $scope.alerts = [];
 
-  self.ok = function () {
-    $modalInstance.close(self.newdomain);
+  $scope.ok = function () {
+    Domain.save($scope.newdomain)
+    .$promise.then(function(data) {
+        $modalInstance.close(data);
+    }, function(error) {
+          $scope.alerts.push({
+            type: 'danger',
+            msg: error.data.error + ': ' + error.data.error_description});
+    });
   };
 
-  self.cancel = function () {
+  $scope.cancel = function () {
     $modalInstance.dismiss('cancel');
   };
-});
+
+  $scope.closeAlert = function(index) {
+    $scope.alerts.splice(index, 1);
+  };
+
+}]);

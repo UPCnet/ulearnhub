@@ -13,6 +13,17 @@ class Domain(Base):
     user = Column(Text)
     token = Column(Text)
 
+    def __init__(self, *args, **kwargs):
+        """
+            Create a rallie with a predefined average speed group.
+        """
+        password = kwargs.pop('password', None)
+        super(Domain, self).__init__(*args, **kwargs)
+        self.set_token(password)
+
+    def set_token(self, password):
+        self.token = self.maxclient.getToken(self.user, password)
+
     @property
     def maxclient(self):
         client = MaxClient(self.server, self.oauth_server)

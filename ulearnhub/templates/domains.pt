@@ -40,6 +40,7 @@
 
 
               <script type="text/ng-template" id="new-domain.html">
+
                   <div class="modal-header">
                       <h3 class="modal-title">Add new domain</h3>
                   </div>
@@ -68,6 +69,7 @@
 
                   </form>
 
+                      <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
                   </div>
                   <div class="modal-footer">
                       <button class="btn btn-primary" ng-click="ok()">OK</button>

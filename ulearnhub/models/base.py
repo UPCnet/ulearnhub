@@ -10,6 +10,9 @@ class Base(object):
     def get_session(cls):
         return DBSession
 
+    def _save_consistency_check(self):
+        pass
+
     @property
     def session(self):
         session = None
