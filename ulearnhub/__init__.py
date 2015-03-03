@@ -53,6 +53,7 @@ def main(global_config, **settings):
 
     config.add_route('domains', '/domains')
     config.add_route('users', '/users')
+    config.add_route('contexts', '/contexts')
 
     config.add_route('api_domain_info', '/api/domains/{domain}/info', traverse='{domain}')
     config.add_route('api_domains', '/api/domains')

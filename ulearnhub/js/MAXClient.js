@@ -8,16 +8,16 @@
  */
 
 
-var maxClient = angular.module('maxClient', []);
+var maxClient = angular.module('maxClient', ['ngResource']);
 
-maxClient.factory('Contexts', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
-    return $resource(MAXInfo.max_server+'/contexts', null, {
+maxClient.factory('Context', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
+    return $resource(MAXInfo.max_server+'/contexts:id', null, {
         search: {method:'GET', params: {tags:'@tags', hash:'@hash'}, headers:MAXInfo.headers, isArray: true}
     });
 }]);
 
-maxClient.factory('Users', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
-    return $resource(MAXInfo.max_server+'/people', null, {
+maxClient.factory('User', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
+    return $resource('http://localhost:8081/api/people/:id', null, {
         query: {method:'GET', isArray: true, headers:MAXInfo.headers}
     });
 }]);
