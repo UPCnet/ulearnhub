@@ -1,15 +1,14 @@
 from pyramid.config import Configurator
-from sqlalchemy import engine_from_config
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
-# from ulearnhub.models import DBSession
-# from ulearnhub.models.base import Base
+
 from pyramid_zodbconn import get_connection
 
-#from .resources import get_root
 import transaction
 from persistent.mapping import PersistentMapping
+import os
+import re
 
 
 class Root(PersistentMapping):
@@ -50,12 +49,10 @@ def main(global_config, **settings):
     authn_policy = AuthTktAuthenticationPolicy('auth_tkt')
     authz_policy = ACLAuthorizationPolicy()
 
-    # Database
-    # engine = engine_from_config(settings, 'sqlalchemy.')
-    # DBSession.configure(bind=engine)
-    # Base.metadata.bind = engine
-
-    settings["zodbconn.uri"] = "file://Data.fs"
+    # Create data folder
+    storage_folder = re.search(r'file://(.*)/.*$', settings['zodbconn.uri']).groups()[0]
+    if not os.path.exists(storage_folder):
+        os.makedirs(storage_folder)
 
     # App initializaton
     config = Configurator(
