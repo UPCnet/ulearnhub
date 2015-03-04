@@ -10,9 +10,9 @@
     <h1 class="page-header">Registered Users</h1>
     <div metal:use-macro="api.masterTemplate.macros['sections']"></div>
 
-  		<oauthinfo username="${api.authenticated_user}"
-                 maxserver="${api.application_url}"
-                 oauthtoken="${api.authenticated_user_token}">
+
+  		<oauthinfo username="${api.authenticated_user}" 
+                 maxserver="${api.domain.server}" 
       </oauthinfo>
 
   		<ul class="nav nav-tabs">

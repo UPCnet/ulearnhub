@@ -17,14 +17,14 @@ maxClient.factory('Context', ['$resource', 'MAXInfo', function($resource, MAXInf
 }]);
 
 maxClient.factory('User', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
-    return $resource('http://localhost:8081/people/:id', null, {
+    return $resource(MAXInfo.max_server+'/people/:id', null, {
         query: {method:'GET', isArray: true, headers:MAXInfo.headers},
         save:  {method:'POST', headers:MAXInfo.headers}
     });
 }]);
 
 maxClient.factory('UserRoles', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
-    return $resource('http://localhost:8081/admin/security/users', null, {
+    return $resource(MAXInfo.max_server+'/admin/security/users', null, {
         query: {method:'GET', isArray: true, headers:MAXInfo.headers},
     });
 }]);
