@@ -12,7 +12,8 @@
 
 
   		<oauthinfo username="${api.authenticated_user}" 
-                 maxserver="${api.domain.server}" 
+                 maxserver="${api.domain.server}"
+                 oauthtoken="${api.authenticated_user_token}"> >
       </oauthinfo>
 
   		<ul class="nav nav-tabs">
@@ -33,10 +34,11 @@
               </thead>
               <tbody>
                 <tr ng-repeat="user in userMan.users">
-                  <td>{{user.username}}</td>
+                  <td><a href="${api.application_url}/domains/test/{{user.username}}">{{user.username}}</a></td>
                   <td>{{user.displayName}}</td>
                   <td> 
-                    <img src="editar.jpg" alt="Editar usuario" height="42" width="42"><img src="borrar.jpg" alt="Eliminar usuario" height="42" width="42">
+                    <a href=""><img src="${api.application_url}/static/editar.jpg" alt="Editar usuario" height="21" width="21"></a> &nbsp;&nbsp;
+                    <a href=""><img src="${api.application_url}/static/borrar.jpg" alt="Eliminar usuario" height="21" width="21"></a>
 
                   </td>
 
@@ -98,12 +100,7 @@
                 <tr ng-repeat="user in userRol.users">
                   <td>{{user.username}}</td>
 
-                  <td ng-repeat="role in user.roles"><input type="checkbox" ng-change="" ng-model="role.active"></td>
-
-<!--                   <td><input type="checkbox" ng-change="" ng-model="">{{user.roles[0].active}}</td>
-                  <td><input type="checkbox" name="nonVisible" ng-change="">{{user.roles[1].active}}</td>
-                  <td><input type="checkbox" name="hubManager" ng-change="">{{user.roles[2].active}}</td>
- -->
+                  <td ng-repeat="role in user.roles"><input type="checkbox" ng-change="userRol.changeRole(role.active, role.name,user.username)" ng-model="role.active"></td>
                 </tr>
               </tbody>
          </table>

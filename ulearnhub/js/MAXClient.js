@@ -23,9 +23,17 @@ maxClient.factory('User', ['$resource', 'MAXInfo', function($resource, MAXInfo) 
     });
 }]);
 
-maxClient.factory('UserRoles', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
+maxClient.factory('UsersRoles', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
     return $resource(MAXInfo.max_server+'/admin/security/users', null, {
         query: {method:'GET', isArray: true, headers:MAXInfo.headers},
+    });
+}]);
+
+maxClient.factory('UserRoleManage', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
+    return $resource(MAXInfo.max_server+'/admin/security/roles/:idrol/users/:iduser', 
+        {idrol:'@idrol', idusu:'@iduser'},{
+        save:  {method:'POST', isArray: true, headers:MAXInfo.headers},
+        remove: {method:'DELETE',headers:MAXInfo.headers}
     });
 }]);
 

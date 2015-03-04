@@ -7,7 +7,7 @@ var ulearn_users = angular.module('uLearnUsers', [
     'ui.bootstrap'
 ]);
 
-ulearn_users.controller('UsersRolesController', ['$modal', '$log', 'UserRoles','DTOptionsBuilder', 'DTColumnDefBuilder', function($modal, $log, UserRoles, DTOptionsBuilder, DTColumnDefBuilder) {
+ulearn_users.controller('UsersRolesController', ['$modal', '$log','$scope', 'UsersRoles','UserRoleManage','DTOptionsBuilder', 'DTColumnDefBuilder', function($modal, $log, $scope, UsersRoles, UserRoleManage, DTOptionsBuilder, DTColumnDefBuilder) {
     var self = this;
 
 // Default datatable options
@@ -21,8 +21,20 @@ ulearn_users.controller('UsersRolesController', ['$modal', '$log', 'UserRoles','
         DTColumnDefBuilder.newColumnDef(2)
     ];
       var usersFinal = [];
-     self.users = UserRoles.query()
+     self.users = UsersRoles.query()
 
+
+    // Update roles user.
+    self.changeRole = function(state, rolename, username) {
+        if (state == true) {
+          UserRoleManage.save({idrol:rolename,iduser:username})
+        };
+
+        if (state == false){
+         UserRoleManage.remove({idrol:rolename,iduser:username})
+       };
+
+     }
 
 
 
