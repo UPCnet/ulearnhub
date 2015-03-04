@@ -52,8 +52,11 @@ def domain_contexts_view(context, request):
         "sections": get_domain_sections(api)
     }
 
-# @view_config(route_name='domain_users', renderer='ulearnhub:templates/users.pt', permission='homepage')
-# def users_view(context, request):
-#     return {
-#         "api": TemplateAPI(context, request, 'Domain users configuration'),
-#     }
+
+@view_config(route_name='domain_components', renderer='ulearnhub:templates/components.pt', permission='homepage')
+def domain_components_view(context, request):
+    api = TemplateAPI(context, request, 'Domain contexts management')
+    return {
+        "api": api,
+        "sections": get_domain_sections(api)
+    }

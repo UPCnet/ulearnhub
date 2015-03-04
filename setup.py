@@ -20,7 +20,9 @@ requires = [
     'zope.sqlalchemy',
     'waitress',
     'maxclient',
-    'maxcarrot'
+    'maxcarrot',
+    'pyramid_zodbconn',
+    'souper'
 ]
 
 setup(name='ulearnhub',
@@ -40,6 +42,10 @@ setup(name='ulearnhub',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
+      tests_require=requires,
+      extras_require={
+          'test': []
+      },
       test_suite='ulearnhub',
       install_requires=requires,
       entry_points="""\

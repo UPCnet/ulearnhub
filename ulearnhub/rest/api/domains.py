@@ -1,5 +1,4 @@
 from pyramid.view import view_config
-from ulearnhub.models import Domain
 from ulearnhub.rest import endpoint
 from ulearnhub.rest import JSONResourceEntity
 from ulearnhub.rest import JSONResourceRoot
@@ -7,8 +6,8 @@ from ulearnhub.rest import JSONResourceRoot
 
 @view_config(route_name='api_domains', request_method='GET')
 @endpoint()
-def domains_list(context, request):
-    domains = Domain.get_all(as_dict=True)
+def domains_list(domain_root, request):
+    domains = domain_root.get_all(as_dict=True)
     response = JSONResourceRoot(domains)
     return response()
 

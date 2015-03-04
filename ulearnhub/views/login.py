@@ -11,10 +11,6 @@ from ulearnhub.views.templates import TemplateAPI
 import logging
 import re
 
-from ulearnhub.models import DBSession
-from ulearnhub.models import Domain
-from sqlalchemy.exc import DBAPIError
-
 logger = logging.getLogger('ulearnhub')
 
 
@@ -59,7 +55,8 @@ def login(context, request):
             return login_response
 
         # Try to authenticate with Osiris, using oauth server from the context
-        domain = DBSession.query(Domain).filter(Domain.name == domain_name).first()
+        domain = context['domains'][domain_name]
+        import ipdb;ipdb.set_trace()
         if domain is None:
             login_response['error'] = "Domain {} is not registered or doesn't exist".format(domain_name)
             return login_response
