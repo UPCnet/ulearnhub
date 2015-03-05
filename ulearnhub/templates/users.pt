@@ -13,7 +13,7 @@
 
   		<oauthinfo username="${api.authenticated_user}" 
                  maxserver="${api.domain.server}"
-                 oauthtoken="${api.authenticated_user_token}"> >
+                 oauthtoken="${api.authenticated_user_token}">
       </oauthinfo>
 
   		<ul class="nav nav-tabs">

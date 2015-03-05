@@ -29,14 +29,11 @@ ulearn_users.controller('UsersRolesController', ['$modal', '$log','$scope', 'Use
         if (state == true) {
           UserRoleManage.save({idrol:rolename,iduser:username})
         };
-
         if (state == false){
          UserRoleManage.remove({idrol:rolename,iduser:username})
        };
 
      }
-
-
 
 }]);
 

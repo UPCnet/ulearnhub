@@ -11,8 +11,10 @@
 var maxClient = angular.module('maxClient', ['ngResource']);
 
 maxClient.factory('Context', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
-    return $resource(MAXInfo.max_server+'/contexts:id', null, {
-        search: {method:'GET', params: {tags:'@tags', hash:'@hash'}, headers:MAXInfo.headers, isArray: true}
+    return $resource(MAXInfo.max_server+'/contexts/:id', null, {
+        search: {method:'GET', params: {tags:'@tags', hash:'@hash'}, headers:MAXInfo.headers, isArray: true},
+        save:  {method:'POST', headers:MAXInfo.headers},
+        remove: {method:'DELETE',headers:MAXInfo.headers}
     });
 }]);
 
@@ -31,7 +33,7 @@ maxClient.factory('UsersRoles', ['$resource', 'MAXInfo', function($resource, MAX
 
 maxClient.factory('UserRoleManage', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
     return $resource(MAXInfo.max_server+'/admin/security/roles/:idrol/users/:iduser', 
-        {idrol:'@idrol', idusu:'@iduser'},{
+        {idrol:'@idrol', iduser:'@iduser'},{
         save:  {method:'POST', isArray: true, headers:MAXInfo.headers},
         remove: {method:'DELETE',headers:MAXInfo.headers}
     });
