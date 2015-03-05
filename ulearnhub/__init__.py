@@ -50,9 +50,10 @@ def main(global_config, **settings):
     authz_policy = ACLAuthorizationPolicy()
 
     # Create data folder
-    storage_folder = re.search(r'file://(.*)/.*$', settings['zodbconn.uri']).groups()[0]
-    if not os.path.exists(storage_folder):
-        os.makedirs(storage_folder)
+    storage_folder = re.search(r'file://(.*)/.*$', settings['zodbconn.uri'])
+    if storage_folder:
+        if not os.path.exists(storage_folder.groups()[0]):
+            os.makedirs(storage_folder)
 
     # App initializaton
     config = Configurator(

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from max.MADMax import MADMaxDB
 from ulearnhub.rest.exceptions import ConnectionError
 from ulearnhub.rest.exceptions import DuplicatedItemError
 from ulearnhub.rest.exceptions import Forbidden
@@ -17,17 +16,12 @@ from ulearnhub.rest.exceptions import ObjectNotSupported
 from ulearnhub.rest.exceptions import Unauthorized
 from ulearnhub.rest.exceptions import UnknownUserError
 from ulearnhub.rest.exceptions import ValidationError
-from max.resources import Root
-from max.rest.resources import RESOURCES
 
 
 from pyramid.settings import asbool
 
-from bson.errors import InvalidId
 from datetime import datetime
 from hashlib import sha1
-from pymongo.errors import AutoReconnect
-from pymongo.errors import ConnectionFailure
 
 import json
 import logging
@@ -123,11 +117,7 @@ def saveException(request, error):  # pragma: no cover
 
 
 def catch_exception(request, e):
-    if isinstance(e, ConnectionFailure):
-        return JSONHTTPInternalServerError(error=dict(objectType='error', error='DatabaseConnectionError', error_description='Please try again later.'))
-    elif isinstance(e, InvalidId):
-        return JSONHTTPBadRequest(error=dict(objectType='error', error=InvalidId.__name__, error_description=e.message))
-    elif isinstance(e, ObjectNotSupported):
+    if isinstance(e, ObjectNotSupported):
         return JSONHTTPBadRequest(error=dict(objectType='error', error=ObjectNotSupported.__name__, error_description=e.message))
     elif isinstance(e, ObjectNotFound):
         return JSONHTTPNotFound(error=dict(objectType='error', error=ObjectNotFound.__name__, error_description=e.message))
@@ -189,44 +179,3 @@ def dump_request(request, response):
             format_raw_request(request),
             format_raw_response(response)
         ))
-
-
-def MaxResponse(fun):
-    def replacement(*args, **kwargs):
-        """
-            Handle exceptions throwed in the process of executing the REST method and
-            issue proper status code with message
-        """
-        nkargs = [a for a in args]
-        context, request = isinstance(nkargs[0], Root) and tuple(nkargs) or tuple(nkargs[::-1])
-        # response = fun(*args, **kwargs)
-        # return response
-        try:
-            response = fun(*args, **kwargs)
-        except AutoReconnect:
-            tryin_to_reconnect = True
-            while tryin_to_reconnect:
-                try:
-                    response = fun(*args, **kwargs)
-                except AutoReconnect:
-                    pass
-                except Exception, e:
-                    response = catch_exception(request, e)
-                    dump_request(request, response)
-                    return response
-                else:
-                    tryin_to_reconnect = False
-        except Exception, e:
-            response = catch_exception(request, e)
-            dump_request(request, response)
-            return response
-        else:
-            # Don't cache by default, get configuration from resource if any
-            route_cache_settings = RESOURCES.get(request.matched_route.name, {}).get('cache', 'must-revalidate, max-age=0, no-cache, no-store')
-            response.headers.update({'Cache-Control': route_cache_settings})
-            dump_request(request, response)
-            return response
-    replacement.__name__ = fun.__name__
-    replacement.__doc__ = fun.__doc__
-
-    return replacement

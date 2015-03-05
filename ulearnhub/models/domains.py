@@ -1,6 +1,3 @@
-# from ulearnhub.models.base import Base
-# from sqlalchemy import Integer, Text
-# from sqlalchemy import Column
 from maxclient.rest import MaxClient
 
 from pyramid.security import Allow
@@ -25,6 +22,10 @@ class Domains(PersistentMapping):
             else:
                 rows.append(row)
         return rows
+
+    def add_domain(self, **kwargs):
+        domain = Domain(**kwargs)
+        return domain
 
 
 class Domain(PersistentMapping):

@@ -9,20 +9,17 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
     CHANGES = f.read()
 
 requires = [
-    'pyramid',
-    'pyramid_chameleon',
-    'pyramid_debugtoolbar',
-    'pyramid_tm',
-    'pyramid_beaker',
-    'pyramid_osiris',
-    'SQLAlchemy',
-    'transaction',
-    'zope.sqlalchemy',
-    'waitress',
     'maxclient',
     'maxcarrot',
+    'pyramid',
+    'pyramid_beaker',
+    'pyramid_chameleon',
+    'pyramid_debugtoolbar',
+    'pyramid_osiris',
+    'pyramid_tm',
     'pyramid_zodbconn',
-    'souper'
+    'transaction',
+    'waitress',
 ]
 
 setup(name='ulearnhub',
@@ -44,7 +41,7 @@ setup(name='ulearnhub',
       zip_safe=False,
       tests_require=requires,
       extras_require={
-          'test': []
+          'test': ['webtest', 'mock']
       },
       test_suite='ulearnhub',
       install_requires=requires,
