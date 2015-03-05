@@ -18,7 +18,6 @@ def get_domain_sections(api):
     return sections
 
 
-@view_config(route_name='home', renderer='ulearnhub:templates/domains.pt', permission='homepage')
 @view_config(route_name='domains', renderer='ulearnhub:templates/domains.pt', permission='homepage')
 def domains_view(context, request):
     return {
@@ -41,6 +40,15 @@ def domain_users_view(context, request):
     return {
         "api": api,
         "sections": get_domain_sections(api)
+    }
+
+@view_config(route_name='domain_user', renderer='ulearnhub:templates/user.pt', permission='homepage')
+def domain_user_view(context, request):
+    api = TemplateAPI(context, request, 'Domain user profile')
+    return {
+        "api": api,
+        "sections": get_domain_sections(api),
+        "username": request.matchdict['username']
     }
 
 

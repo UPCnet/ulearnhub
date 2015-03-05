@@ -34,7 +34,7 @@
               </thead>
               <tbody>
                 <tr ng-repeat="user in userMan.users">
-                  <td><a href="${api.application_url}/domains/test/{{user.username}}">{{user.username}}</a></td>
+                  <td><a href="${api.application_url}/domains/${api.domain.name}/users/{{user.username}}">{{user.username}}</a></td>
                   <td>{{user.displayName}}</td>
                   <td> 
                     <a href=""><img src="${api.application_url}/static/editar.jpg" alt="Editar usuario" height="21" width="21"></a> &nbsp;&nbsp;
