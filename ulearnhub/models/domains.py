@@ -14,6 +14,13 @@ class Domains(PersistentMapping):
     ]
     __name__ = 'DOMAINS'
 
+    def __init__(self):
+        """
+            Create a domain
+        """
+        super(Domains, self).__init__()
+        self.default_maxserver_url = ''
+
     def get_all(self, as_dict=False):
         rows = []
         for row in self.values():

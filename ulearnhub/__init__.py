@@ -50,9 +50,10 @@ def main(global_config, **settings):
     authz_policy = ACLAuthorizationPolicy()
 
     # Create data folder
-    storage_folder = re.search(r'file://(.*)/.*$', settings['zodbconn.uri'])
-    if storage_folder:
-        if not os.path.exists(storage_folder.groups()[0]):
+    match = re.search(r'file://(.*)/.*$', settings['zodbconn.uri'])
+    if match:
+        storage_folder = match.groups()[0]
+        if not os.path.exists(storage_folder):
             os.makedirs(storage_folder)
 
     # App initializaton
@@ -81,17 +82,18 @@ def main(global_config, **settings):
     config.add_route('home', '/')
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
-
-    config.add_route('domains', '/domains', factory=domains_factory)
-    config.add_route('domain', '/domains/{domain}', traverse='/domains/{domain}')
-    config.add_route('domain_users', '/domains/{domain}/users', traverse='/domains/{domain}')
-    config.add_route('domain_contexts', '/domains/{domain}/contexts', traverse='/domains/{domain}')
-    config.add_route('domain_components', '/domains/{domain}/components', traverse='/domains/{domain}')
-
     config.add_route('initialize', '/initialize')
-    config.add_route('api_domain_info', '/api/domains/{domain}/info', traverse='/domains/{domain}')
+
+    # config.add_route('domains', '/domains', factory=domains_factory)
+    # config.add_route('domain', '/domains/{domain}', traverse='/domains/{domain}')
+    # config.add_route('domain_users', '/domains/{domain}/users', traverse='/domains/{domain}')
+    # config.add_route('domain_contexts', '/domains/{domain}/contexts', traverse='/domains/{domain}')
+    # config.add_route('domain_components', '/domains/{domain}/components', traverse='/domains/{domain}')
+
+    config.add_route('info', 'info', factory=domains_factory)
     config.add_route('api_domains', '/api/domains', factory=domains_factory)
     config.add_route('api_domain', '/api/domains/{domain}', traverse='/domains/{domain}')
+
     config.scan()
 
     return config.make_wsgi_app()
