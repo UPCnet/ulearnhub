@@ -23,3 +23,32 @@ batch_subscribe_request = {
         ]
     }
 }
+
+
+context = {
+    "displayName": "Test",
+    "url": "http://localhost/communities/testcommunity",
+    "permissions": {
+        "write": "restricted",
+        "subscribe": "restricted",
+        "unsubscribe": "public",
+        "read": "subscribed"
+    },
+    "objectType": "context"
+}
+
+initial_subscriptions = [
+    {
+        "id": "545cebb1dd0d938859359e38",
+        "username": "carles.bruguera",
+        "permissions": [
+            "read",
+            "unsubscribe"
+        ],
+        "vetos": [
+            "write"
+        ],
+        "grants": [],
+    }
+]
+

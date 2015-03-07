@@ -73,7 +73,7 @@ def mock_get(self, url, *args, **kwargs):  # pragma: no cover
         context = {
             "displayName": "Test",
             "url": "http://localhost/communities/testcommunity",
-            -"permissions": {
+            "permissions": {
                 "write": "restricted",
                 "subscribe": "restricted",
                 "unsubscribe": "public",

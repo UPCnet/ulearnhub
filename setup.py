@@ -41,7 +41,7 @@ setup(name='ulearnhub',
       zip_safe=False,
       tests_require=requires,
       extras_require={
-          'test': ['webtest', 'mock']
+          'test': ['webtest', 'mock', 'httpretty']
       },
       test_suite='ulearnhub',
       install_requires=requires,

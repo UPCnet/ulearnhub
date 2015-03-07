@@ -3,14 +3,17 @@ from paste.deploy import loadapp
 from ulearnhub.tests import test_user
 from ulearnhub.tests.utils import oauth2Header
 from ulearnhub.tests.utils import UlearnhubTestApp
-from ulearnhub.tests.utils import mock_get, mock_post
 
+from ulearnhub.tests.mock_http import http_mock_checktoken
+from ulearnhub.tests.mock_http import http_mock_info
+from ulearnhub.tests.mock_http import http_mock_get_context
+from ulearnhub.tests.mock_http import http_mock_get_context_subscriptions
+
+
+import httpretty
 import json
 import os
 import unittest
-from mock import patch
-from functools import partial
-
 from pyramid.request import Request
 
 
@@ -24,11 +27,7 @@ class UlearnhubTests(unittest.TestCase):
     def setUp(self):
         conf_dir = os.path.dirname(__file__)
         self.app = loadapp('config:tests.ini', relative_to=conf_dir)
-        self.patched_post = patch('requests.post', new=partial(mock_post, self))
-        self.patched_post.start()
 
-        self.patched_get = patch('requests.get', new=partial(mock_get, self))
-        self.patched_get.start()
 
         self.testapp = UlearnhubTestApp(self)
         self.initialize_zodb()
@@ -37,8 +36,9 @@ class UlearnhubTests(unittest.TestCase):
         self.testapp.get('/initialize')
 
     def tearDown(self):
-        self.patched_post.stop()
-        self.patched_get.stop()
+        # Make sure httpretty is disabled
+        httpretty.disable()
+        httpretty.reset()
 
     def create_domain(self, **kwargs):
         result = self.testapp.post('/api/domains', json.dumps(kwargs), oauth2Header(test_user), status=201)
@@ -69,6 +69,15 @@ class UlearnhubTests(unittest.TestCase):
 
     def test_domain_batchsubscriber(self):
         from .mockers import batch_subscribe_request
+        from .mockers import context as context
+        from .mockers import initial_subscriptions as subscriptions
+
+        httpretty.enable()
+        http_mock_info()
+        http_mock_checktoken()
+        http_mock_get_context(context)
+        http_mock_get_context_subscriptions(subscriptions)
+
         result = self.testapp.post('/api/domains/test/services/batchsubscriber'.format(), json.dumps(batch_subscribe_request), oauth2Header(test_user), status=200)
 
     def test_register_domain(self):
