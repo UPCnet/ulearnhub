@@ -8,7 +8,7 @@ import json
 DEFAULT_ALLOWED_SCOPES = ['widgetcli']
 
 
-def endpoint(allowed_scopes=DEFAULT_ALLOWED_SCOPES, authentication=False):
+def endpoint(allowed_scopes=DEFAULT_ALLOWED_SCOPES, authentication=True):
     def wrap(view_function):
         def replacement(context, request, *args, **kwargs):
             try:

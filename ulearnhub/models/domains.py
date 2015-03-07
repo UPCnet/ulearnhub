@@ -6,6 +6,7 @@ from ulearnhub.models.components import COMPONENTS
 
 
 from persistent.mapping import PersistentMapping
+from persistent.list import PersistentList
 
 
 class Domains(PersistentMapping):
@@ -37,18 +38,25 @@ class Domains(PersistentMapping):
 
 class Domain(PersistentMapping):
 
-    def __init__(self, name, server):
+    def __init__(self, name, title):
         """
             Create a domain
         """
         super(Domain, self).__init__()
         self.name = name
-        self.server = server
+        self.title = title
+        self.components = PersistentList()
 
     def as_dict(self):
         di = self.__dict__
         di.pop('data', None)
         return di
+
+    def get_component(self, klass):
+        for component in self.components:
+            if component.__class__ == klass:
+                return component
+        return None
 
     @property
     def __acl__(self):

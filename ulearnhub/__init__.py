@@ -94,6 +94,9 @@ def main(global_config, **settings):
     config.add_route('api_domains', '/api/domains', factory=domains_factory)
     config.add_route('api_domain', '/api/domains/{domain}', traverse='/domains/{domain}')
 
+    config.add_route('api_domain_services', '/api/domains/{domain}/services', traverse='/domains/{domain}')
+    config.add_route('api_domain_service', '/api/domains/{domain}/services/{service}', traverse='/domains/{domain}')
+
     config.scan()
 
     return config.make_wsgi_app()

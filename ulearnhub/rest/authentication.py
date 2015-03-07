@@ -18,7 +18,6 @@ def authenticate(request, allowed_scopes, server='https://oauth.upcnet.es'):
         validation is not successful or there's missing data in the request, an exception
         will be raised. On successful validation, will silently end.
     """
-
     token = request.headers.get('X-Oauth-Token', '')
     username = request.headers.get('X-Oauth-Username', '')
     scope = request.headers.get('X-Oauth-Scope', '')
@@ -45,7 +44,13 @@ def authenticate(request, allowed_scopes, server='https://oauth.upcnet.es'):
             user_roles = [role for role, users in security.get("roles", {}).items() if username in users]
             return user_roles + ['Authenticated']
 
+        def getAuth(request):
+            token = request.headers.get('X-Oauth-Token', '')
+            username = request.headers.get('X-Oauth-Username', '')
+            return username, token
+
         request.set_property(getCreator, name='creator', reify=True)
         request.set_property(getRoles, name='roles', reify=True)
+        request.set_property(getAuth, name='auth', reify=True)
     else:
         raise Unauthorized('Invalid token.')

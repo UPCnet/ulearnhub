@@ -1,6 +1,7 @@
 from ulearnhub.tests import MOCK_TOKEN
 from ulearnhub.tests import test_user
 
+import json
 
 def oauth2Header(username, token=MOCK_TOKEN, scope="widgetcli"):
     return {
@@ -50,10 +51,40 @@ class mock_requests_obj(object):
 
     def __init__(self, *args, **kwargs):
         if kwargs.get('text', None) is not None:
-            self.text = kwargs['text']
-        if kwargs.get('content', None) is not None:
-            self.content = kwargs['content']
+            self.content = self.text = kwargs['text']
+        elif kwargs.get('content', None) is not None:
+            self.content = self.text = kwargs['content']
         self.status_code = kwargs['status_code']
+
+    def json(self):
+        return json.loads(self.text)
+
+
+def mock_get(self, url, *args, **kwargs):  # pragma: no cover
+    #Return OK to any post request targeted to 'checktoken', with the mock token
+    if url.endswith('/info'):
+        info = {
+            "max.oauth_server": "https://oauth.upcnet.es",
+            "version": "4.0.26.dev0",
+            "max.server_id": "test"
+        }
+        return mock_requests_obj(text=json.dumps(info), status_code=200)
+    elif url.endswith('/contexts/ae74c10247cc37aed30b52391bb8d32d90c011d1'):
+        context = {
+            "displayName": "Test",
+            "url": "http://localhost/communities/testcommunity",
+            -"permissions": {
+                "write": "restricted",
+                "subscribe": "restricted",
+                "unsubscribe": "public",
+                "read": "subscribed"
+            },
+            "objectType": "context"
+        }
+        return mock_requests_obj(text=json.dumps(context), status_code=200)
+    else:
+        import ipdb;ipdb.set_trace()
+        return mock_requests_obj(text='', status_code=200)
 
 
 def mock_post(self, *args, **kwargs):  # pragma: no cover
