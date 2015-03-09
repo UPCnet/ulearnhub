@@ -25,7 +25,22 @@ def initialize(root, request):
     deployments['test'] = deployment
 
     ldap_config = {
-
+        "server": "ldap-pre.upc.edu",
+        "name": "ldapUPC",
+        "port": 636,
+        "base_dn": "dc=upc,dc=edu",
+        "admin_cn": "ulearn.consulta",
+        "admin_password": "",
+        "branch_admin_cn": "ulearn.consulta",
+        "branch_admin_password": "",
+        "branch_users_dn": "ou=Users",
+        "branch_groups_dn": "ou=Groups",
+        "base_users": [
+            {"username": "upcnet.manteniment", "password": ""},
+            {"username": "ulearn.user1", "password": ""},
+            {"username": "ulearn.user2", "password": ""},
+            {"username": "ulearn.user3", "password": ""}
+        ]
     }
 
     maxcluster = MaxCluster('Test Max Cluster')

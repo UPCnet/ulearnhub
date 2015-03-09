@@ -6,6 +6,39 @@ from pyramid.security import Authenticated
 from persistent.mapping import PersistentMapping
 from persistent.list import PersistentList
 
+from gummanager.libs import LdapServer as GumLdapServer
+
+
+class ConfigWrapper(PersistentMapping):
+
+    @classmethod
+    def from_dict(cls, config):
+        wrapper = cls()
+
+        def wrap(wvalue):
+            if isinstance(wvalue, dict):
+                return ConfigWrapper.from_dict(wvalue)
+            elif isinstance(wvalue, list):
+                wrapped_list = []
+                for item in wvalue:
+                    wrapped_list.append(wrap(item))
+                return wrapped_list
+            else:
+                return wvalue
+
+        for key, value in config.items():
+            wrapped = wrap(value)
+            wrapper[key] = wrapped
+
+        return wrapper
+
+    def __getattr__(self, key):
+        if self.get(key):
+            return self[key]
+
+        else:
+            raise AttributeError(key)
+
 
 class Component(PersistentMapping):
     name = 'component'
@@ -16,6 +49,9 @@ class Component(PersistentMapping):
     @property
     def __component_identifier__(self):
         return id(self)
+
+    def set_config(self, config):
+        self.config = ConfigWrapper.from_dict(config)
 
 
 class MaxCluster(Component):
@@ -102,7 +138,9 @@ class LdapServer(Component):
         """
         self.readonly = readonly
         self.title = title
-        self.config = config
+        self.set_config(config)
+
+        self.server = GumLdapServer(self.config)
 
         super(LdapServer, self).__init__()
 

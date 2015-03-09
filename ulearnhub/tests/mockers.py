@@ -16,10 +16,10 @@ batch_subscribe_request = {
     "context": "http://localhost/communities/testcommunity",
     "acl": {
         "groups": [
-            {"id": "UPCnet.Plone.Admins", "role": "reader"},
+            {"id": "TestGroup", "role": "reader"},
         ],
         "users": [
-            {"id": "carles.bruguera", "role": "writer"},
+            {"id": "testuser1", "role": "writer"},
         ]
     }
 }
@@ -29,9 +29,9 @@ context = {
     "displayName": "Test",
     "url": "http://localhost/communities/testcommunity",
     "permissions": {
-        "write": "restricted",
+        "write": "subscribed",
         "subscribe": "restricted",
-        "unsubscribe": "public",
+        "unsubscribe": "subscribed",
         "read": "subscribed"
     },
     "objectType": "context"
@@ -40,15 +40,18 @@ context = {
 initial_subscriptions = [
     {
         "id": "545cebb1dd0d938859359e38",
-        "username": "carles.bruguera",
+        "username": "testuser.creator",
         "permissions": [
+            "write",
             "read",
             "unsubscribe"
         ],
-        "vetos": [
-            "write"
-        ],
+        "vetos": [],
         "grants": [],
     }
 ]
 
+ldap_test_group = [
+    'testuser2',
+    'testuser3',
+]

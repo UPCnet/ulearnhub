@@ -15,6 +15,13 @@ import json
 import os
 import unittest
 from pyramid.request import Request
+from mock import patch
+
+
+def ldap_patch_group_search(response):
+    def patched(*args, **kwargs):
+        return response
+    return patch('gummanager.libs._ldap.LdapServer.get_branch_group_users', new=patched)
 
 
 class FakeRequest(Request):
@@ -28,19 +35,31 @@ class UlearnhubTests(unittest.TestCase):
         conf_dir = os.path.dirname(__file__)
         self.app = loadapp('config:tests.ini', relative_to=conf_dir)
 
-
         self.testapp = UlearnhubTestApp(self)
         self.initialize_zodb()
+        self.patches = []
 
-    def initialize_zodb(self):
-        self.testapp.get('/initialize')
+        httpretty.enable()
+        http_mock_checktoken()
 
     def tearDown(self):
         # Make sure httpretty is disabled
         httpretty.disable()
         httpretty.reset()
+        for testpatch in self.patches:
+            testpatch.stop()
+
+    def add_patch(self, testpatch):
+        self.patches.append(testpatch)
+        testpatch.start()
+
+    def initialize_zodb(self):
+        self.testapp.get('/initialize')
 
     def create_domain(self, **kwargs):
+        """
+            Create a domain
+        """
         result = self.testapp.post('/api/domains', json.dumps(kwargs), oauth2Header(test_user), status=201)
         return result.json
 
@@ -71,13 +90,13 @@ class UlearnhubTests(unittest.TestCase):
         from .mockers import batch_subscribe_request
         from .mockers import context as context
         from .mockers import initial_subscriptions as subscriptions
+        from .mockers import ldap_test_group
 
-        httpretty.enable()
         http_mock_info()
-        http_mock_checktoken()
         http_mock_get_context(context)
         http_mock_get_context_subscriptions(subscriptions)
 
+        self.add_patch(ldap_patch_group_search(ldap_test_group))
         result = self.testapp.post('/api/domains/test/services/batchsubscriber'.format(), json.dumps(batch_subscribe_request), oauth2Header(test_user), status=200)
 
     def test_register_domain(self):
