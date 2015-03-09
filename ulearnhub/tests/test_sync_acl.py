@@ -48,7 +48,7 @@ class FakeRequest(Request):
         self.registry = registry
 
 
-class UlearnhubTests(unittest.TestCase):
+class UlearnhubSyncaclFunctionalTests(unittest.TestCase):
 
     def setUp(self):
         conf_dir = os.path.dirname(__file__)
@@ -149,3 +149,98 @@ class UlearnhubTests(unittest.TestCase):
         messages = self.rabbit.get_all('syncacl')
         import ipdb;ipdb.set_trace()
 
+
+class UlearnhubSyncaclActionGenerationUnitTests(unittest.TestCase):
+
+    def test_action_generation_new_subscription(self):
+        """
+            Given a set of wanted permissions
+            And an inexistent subcription
+            If all permissions are in policy
+            Then a subscription action is generated
+        """
+        from ulearnhub.models.utils import generate_actions
+
+        subscription = {}
+        policy_granted_permissions = set(['write', 'read'])
+        wanted_permissions = set(['write', 'read'])
+
+        actions = generate_actions(
+            subscription,
+            policy_granted_permissions,
+            wanted_permissions)
+
+        self.assertItemsEqual(actions.keys(), ['subscribe'])
+        self.assertTrue(actions['subscribe'])
+
+    def test_action_generation_new_subscription_with_grant(self):
+        """
+            Given a set of wanted permissions
+            And an inexistent subcription
+            If there are some permissions not in policy
+            Then a subscription action is generated
+            And a grant action is generated
+        """
+        from ulearnhub.models.utils import generate_actions
+
+        subscription = {}
+        policy_granted_permissions = set(['read'])
+        wanted_permissions = set(['write', 'read'])
+
+        actions = generate_actions(
+            subscription,
+            policy_granted_permissions,
+            wanted_permissions)
+
+        self.assertItemsEqual(actions.keys(), ['subscribe', 'grant'])
+        self.assertTrue(actions['subscribe'])
+        self.assertItemsEqual(actions['grant'], ['write'])
+
+    def test_action_generation_new_subscription_with_revoke(self):
+        """
+            Given a set of wanted permissions
+            And an inexistent subcription
+            If there are some not wanted permissions in policy
+            Then a subscription action is generated
+            And a revoke action is generated
+        """
+        from ulearnhub.models.utils import generate_actions
+
+        subscription = {}
+        policy_granted_permissions = set(['read', 'write'])
+        wanted_permissions = set(['read'])
+
+        actions = generate_actions(
+            subscription,
+            policy_granted_permissions,
+            wanted_permissions)
+
+        self.assertItemsEqual(actions.keys(), ['subscribe', 'revoke'])
+        self.assertTrue(actions['subscribe'])
+        self.assertItemsEqual(actions['revoke'], ['write'])
+
+    def test_action_generation_new_subscription_with_grant_and_revoke(self):
+        """
+            Given a set of wanted permissions
+            And an inexistent subcription
+            If there are some wanted permissions not in policy
+            If there are some not wanted permissions in policy
+            Then a subscription action is generated
+            And a revoke action is generated
+            And a grant action is generated
+        """
+        from ulearnhub.models.utils import generate_actions
+
+        subscription = {}
+        policy_granted_permissions = set(['write'])
+        wanted_permissions = set(['read'])
+
+        actions = generate_actions(
+            subscription,
+            policy_granted_permissions,
+            wanted_permissions)
+
+        self.assertItemsEqual(actions.keys(), ['subscribe', 'revoke', 'grant'])
+        self.assertTrue(actions['subscribe'])
+        self.assertItemsEqual(actions['revoke'], ['write'])
+        self.assertItemsEqual(actions['grant'], ['read'])
