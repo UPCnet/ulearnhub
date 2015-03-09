@@ -8,6 +8,17 @@ from persistent.list import PersistentList
 
 from gummanager.libs import LdapServer as GumLdapServer
 
+import pkg_resources
+
+from maxcarrot import RabbitClient
+from maxcarrot import RabbitMessage
+from socket import error as socket_error
+
+import sys
+import json
+
+from ulearnhub.rest.exceptions import ConnectionError
+
 
 class ConfigWrapper(PersistentMapping):
 
@@ -116,17 +127,78 @@ class OauthServer(Component):
 class RabbitServer(Component):
     name = 'rabbitserver'
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, name, url):
         """
             Create a domain
         """
-        super(OauthServer, self).__init__(*args, **kwargs)
+        self.name = name
+        self.url = url
+        super(RabbitServer, self).__init__()
+
+    @property
+    def notifications(self):
+        return RabbitNotifications(self.url)
 
     def as_dict(self):
         return dict(
             active=self.active,
             url=self.url,
         )
+
+
+def noop(*args, **kwargs):
+    """
+        Dummy method executed in replacement of the requested method
+        when rabbitmq is not defined (i.e. in tests)
+    """
+    pass
+
+
+class RabbitNotifications(object):
+    """
+        Wrapper to access notification methods, and catch possible exceptions
+    """
+
+    def __init__(self, url):
+        self.url = url
+        self.message_defaults = {
+            "source": "hub",
+            "version": pkg_resources.require("ulearnhub")[0].version,
+        }
+
+        client_properties = {
+            "product": "hub",
+            "version": pkg_resources.require("ulearnhub")[0].version,
+            "platform": 'Python {0.major}.{0.minor}.{0.micro}'.format(sys.version_info),
+        }
+        self.enabled = True
+
+        try:
+            self.client = RabbitClient(self.url, client_properties=client_properties)
+        except AttributeError:
+            self.enabled = False
+        except socket_error:
+            raise ConnectionError("Could not connect to rabbitmq broker")
+
+    def sync_acl(self, username, tasks):
+        """
+            Sends a Carrot (TM) notification of a new sync acl task
+        """
+        # Send a conversation creation notification to rabbit
+        message = RabbitMessage()
+        message.prepare(self.message_defaults)
+        message.update({
+            "user": {
+                'username': username,
+            },
+            "action": "syncacl",
+            "object": "context",
+            "data": tasks
+        })
+        self.client.send(
+            'syncacl',
+            json.dumps(message.packed),
+            routing_key='')
 
 
 class LdapServer(Component):
@@ -163,11 +235,4 @@ class UlearnSite(Component):
         super(UlearnSite, self).__init__(*args, **kwargs)
 
 
-COMPONENTS = {
-    'max': MaxServer,
-    'oauth': OauthServer,
-    'rabbit': RabbitServer,
-    'ldap': LdapServer,
-    # 'communities': CommunitiesSite,
-    # 'campus': CampusSite,
-}
+COMPONENTS = {klass.name: klass for klass in locals().values() if Component in getattr(klass, '__bases__', [])}
