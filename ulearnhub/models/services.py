@@ -2,7 +2,8 @@ from ulearnhub.models.components import MaxServer
 from ulearnhub.models.components import LdapServer
 from ulearnhub.models.components import RabbitServer
 
-from ulearnhub.models.utils import generate_actions, set_action
+from ulearnhub.models.utils import generate_actions
+from ulearnhub.models.utils import merge_actions
 
 from itertools import chain
 
@@ -109,28 +110,6 @@ class SyncACL(Service):
 
             # Disconnect ldap server, we won't need it outside here
             ldapserver.server.disconnect()
-
-        def merge_actions(old_actions, new_actions):
-            actions = {}
-            if old_actions is None:
-                return new_actions
-
-            if old_actions or new_actions:
-                if 'subscribe' in old_actions or 'subscribe' in new_actions:
-                    actions['subscribe'] = True
-
-                if 'reset' in old_actions or 'reset' in new_actions:
-                    actions['reset'] = True
-
-                if 'grant' in old_actions or 'grant' in new_actions:
-                    grants = set(old_actions.get('grant', [])).union(set(new_actions.get('grant', [])))
-                    set_action(actions, 'grant', grants)
-
-                if 'revoke' in old_actions or 'revoke' in new_actions:
-                    revokes = set(old_actions.get('revoke', [])).intersection(set(new_actions.get('revoke', [])))
-                    set_action(actions, 'revoke', revokes)
-
-            return actions
 
         # Iterate over group users and single users acl's at once
         for user in chain(expanded_users(), acl_users):
