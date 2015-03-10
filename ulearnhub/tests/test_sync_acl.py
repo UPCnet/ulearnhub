@@ -249,6 +249,8 @@ class UlearnhubSyncaclActionGenerationUnitTests(unittest.TestCase):
         self.assertItemsEqual(actions['revoke'], ['write'])
         self.assertItemsEqual(actions['grant'], ['read'])
 
+# ACTIONS OVER EXISTING SUBSCRIPTIONS WITHOUT VETOS OR GRANTS
+
     def test_action_generation_subscribed(self):
         """
             Given a set of wanted permissions
@@ -292,52 +294,6 @@ class UlearnhubSyncaclActionGenerationUnitTests(unittest.TestCase):
         self.assertItemsEqual(actions.keys(), ['grant'])
         self.assertItemsEqual(actions['grant'], ['write'])
 
-    def test_action_generation_subscribed_triggers_grant_overrides_revoke(self):
-        """
-            Given a set of wanted permissions
-            And an existent subcription
-            If there are some wanted permissions not in policy
-            And that permission is formerly revoked
-            Then a grant action is generated
-        """
-        from ulearnhub.models.utils import generate_actions
-
-        subscription = {'permissions': ['read'], 'vetos': ['write']}
-        policy_granted_permissions = set(['read', 'write'])
-        wanted_permissions = set(['read', 'write'])
-
-        actions = generate_actions(
-            subscription,
-            policy_granted_permissions,
-            wanted_permissions,
-            ignore_grants_and_vetos=True)
-
-        self.assertItemsEqual(actions.keys(), ['grant'])
-        self.assertItemsEqual(actions['grant'], ['write'])
-
-    def test_action_generation_subscribed_triggers_grant_overrides_revoke_policy_wins(self):
-        """
-            Given a set of wanted permissions
-            And an existent subcription
-            If there are some wanted permissions not in policy
-            And that permission is formerly revoked
-            Then a grant action is generated
-        """
-        from ulearnhub.models.utils import generate_actions
-
-        subscription = {'permissions': ['read'], 'vetos': ['write']}
-        policy_granted_permissions = set(['read', 'write'])
-        wanted_permissions = set(['read', 'write'])
-
-        actions = generate_actions(
-            subscription,
-            policy_granted_permissions,
-            wanted_permissions,
-            ignore_grants_and_vetos=True)
-
-        self.assertItemsEqual(actions.keys(), ['grant'])
-        self.assertItemsEqual(actions['grant'], ['write'])
-
     def test_action_generation_subscribed_triggers_revoke(self):
         """
             Given a set of wanted permissions
@@ -361,6 +317,55 @@ class UlearnhubSyncaclActionGenerationUnitTests(unittest.TestCase):
         self.assertItemsEqual(actions.keys(), ['revoke'])
         self.assertItemsEqual(actions['revoke'], ['write'])
 
+# ACTIONS OVER EXISTING SUBSCRIPTIONS WITH VETOS OR GRANTS
+
+    def test_action_generation_subscribed_triggers_grant_overrides_revoke(self):
+        """
+            Given a set of wanted permissions
+            And an existent subcription
+            If there are some wanted permissions not in policy
+            And that permission is formerly revoked
+            Then a grant action is generated
+        """
+        from ulearnhub.models.utils import generate_actions
+
+        subscription = {'permissions': ['read'], 'vetos': ['write']}
+        policy_granted_permissions = set(['read', 'write'])
+        wanted_permissions = set(['read', 'write'])
+
+        actions = generate_actions(
+            subscription,
+            policy_granted_permissions,
+            wanted_permissions,
+            ignore_grants_and_vetos=True)
+
+        self.assertItemsEqual(actions.keys(), ['grant'])
+        self.assertItemsEqual(actions['grant'], ['write'])
+
+    def test_action_generation_subscribed_triggers_grant_overrides_revoke_and_policy(self):
+        """
+            Given a set of wanted permissions
+            And an existent subcription
+            If there are some wanted permissions not in policy
+            And that permission is formerly revoked
+            And the permission is wanted
+            Then a grant action is generated
+        """
+        from ulearnhub.models.utils import generate_actions
+
+        subscription = {'permissions': ['read'], 'vetos': ['write']}
+        policy_granted_permissions = set(['read'])
+        wanted_permissions = set(['read', 'write'])
+
+        actions = generate_actions(
+            subscription,
+            policy_granted_permissions,
+            wanted_permissions,
+            ignore_grants_and_vetos=True)
+
+        self.assertItemsEqual(actions.keys(), ['grant'])
+        self.assertItemsEqual(actions['grant'], ['write'])
+
     def test_action_generation_subscribed_triggers_revoke_overwrites_grant(self):
         """
             Given a set of wanted permissions
@@ -373,6 +378,30 @@ class UlearnhubSyncaclActionGenerationUnitTests(unittest.TestCase):
 
         subscription = {'permissions': ['read', 'write'], 'grants': ['write']}
         policy_granted_permissions = set(['read'])
+        wanted_permissions = set(['read'])
+
+        actions = generate_actions(
+            subscription,
+            policy_granted_permissions,
+            wanted_permissions,
+            ignore_grants_and_vetos=True)
+
+        self.assertItemsEqual(actions.keys(), ['revoke'])
+        self.assertItemsEqual(actions['revoke'], ['write'])
+
+    def test_action_generation_subscribed_triggers_revoke_overwrites_grant_and_policy(self):
+        """
+            Given a set of wanted permissions
+            And an existent subcription
+            If there are wanted permissions in policy
+            And that permissions has been granted
+            And the permission is not wanted
+            Then a revoke action is generated
+        """
+        from ulearnhub.models.utils import generate_actions
+
+        subscription = {'permissions': ['read', 'write'], 'grants': ['write']}
+        policy_granted_permissions = set(['read', 'write'])
         wanted_permissions = set(['read'])
 
         actions = generate_actions(
@@ -485,17 +514,19 @@ class UlearnhubSyncaclActionGenerationUnitTests(unittest.TestCase):
         self.assertItemsEqual(actions.keys(), ['reset'])
         self.assertTrue(actions['reset'], True)
 
-    def test_action_generation_subscribed_inconsistent_missing_permission_triggers_reset_(self):
+# TESTS FOR NOT IGNORE GRANTS AND VETOS  (Those affect only actions over existing subscriptions)
+
+    def test_action_generation_subscribed_noignore_preserves_veto_ignores_policy(self):
         """
             Given a set of wanted permissions
             And an existent subcription
-            If there are permissions not in subscription that are policy permissions
-            And no revokes justify them
-            Then a reset action is generated
+            If there are some wanted permissions not in policy
+            And that permission is formerly revoked
+            Then no action is generated
         """
         from ulearnhub.models.utils import generate_actions
 
-        subscription = {'permissions': ['read']}
+        subscription = {'permissions': ['read'], 'vetos': ['write']}
         policy_granted_permissions = set(['read', 'write'])
         wanted_permissions = set(['read', 'write'])
 
@@ -503,7 +534,74 @@ class UlearnhubSyncaclActionGenerationUnitTests(unittest.TestCase):
             subscription,
             policy_granted_permissions,
             wanted_permissions,
-            ignore_grants_and_vetos=True)
+            ignore_grants_and_vetos=False)
 
-        self.assertItemsEqual(actions.keys(), ['reset'])
-        self.assertTrue(actions['reset'], True)
+        self.assertItemsEqual(actions.keys(), [])
+
+    def test_action_generation_subscribed_noignore_preserves_veto(self):
+        """
+            Given a set of wanted permissions
+            And an existent subcription
+            If there are some wanted permissions not in policy
+            And that permission is formerly revoked
+            Then no action is generated
+        """
+        from ulearnhub.models.utils import generate_actions
+
+        subscription = {'permissions': ['read'], 'vetos': ['write']}
+        policy_granted_permissions = set(['read'])
+        wanted_permissions = set(['read', 'write'])
+
+        actions = generate_actions(
+            subscription,
+            policy_granted_permissions,
+            wanted_permissions,
+            ignore_grants_and_vetos=False)
+
+        self.assertItemsEqual(actions.keys(), [])
+
+    def test_action_generation_subscribed_noignore_preserves_grant_overwrites_policy(self):
+        """
+            Given a set of wanted permissions
+            And an existent subcription
+            If there are some non wanted permissions in policy
+            And that permissions has been granted
+            Then a revoke action is generated
+        """
+        from ulearnhub.models.utils import generate_actions
+
+        subscription = {'permissions': ['read', 'write'], 'grants': ['write']}
+        policy_granted_permissions = set(['read'])
+        wanted_permissions = set(['read'])
+
+        actions = generate_actions(
+            subscription,
+            policy_granted_permissions,
+            wanted_permissions,
+            ignore_grants_and_vetos=False)
+
+        self.assertItemsEqual(actions.keys(), [])
+
+    def test_action_generation_subscribed_noignore_preserves_grant(self):
+        """
+            Given a set of wanted permissions
+            And an existent subcription
+            If there are wanted permissions in policy
+            And that permissions has been granted
+            And the permission is not wanted
+            Then a revoke action is generated
+        """
+        from ulearnhub.models.utils import generate_actions
+
+        subscription = {'permissions': ['read', 'write'], 'grants': ['write']}
+        policy_granted_permissions = set(['read', 'write'])
+        wanted_permissions = set(['read'])
+
+        actions = generate_actions(
+            subscription,
+            policy_granted_permissions,
+            wanted_permissions,
+            ignore_grants_and_vetos=False)
+
+        self.assertItemsEqual(actions.keys(), [])
+

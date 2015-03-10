@@ -47,6 +47,7 @@ class SyncACL(Service):
                     "writer": ['read', 'write'],
                     "owner": ['read', 'write']
                 },
+                "ignore_grants_and_vetos": true,
                 "context": "http://(...)",
                 "acl": {
                     "groups": [
@@ -70,8 +71,13 @@ class SyncACL(Service):
         maxclient.setActor(username)
         maxclient.setToken(token)
 
+        # Collect data and variables needed
         context = maxclient.contexts[self.data['context']].get()
         subscriptions = maxclient.contexts[self.data['context']].subscriptions.get()
+        acl_groups = self.data['acl']['groups']
+        acl_users = self.data['acl']['users']
+        permission_mapping = set(self.data['permission_mapping'])
+        ignore_grants_and_vetos = self.data.get("ignore_grants_and_vetos", True)
 
         permissions = set(['write', 'read', 'subscribe', 'unsubscribe', 'invite', 'delete', 'flag'])
         policy_granted_permissions = set([permission for permission in permissions if context.get('permissions', {}).get(permission, 'restricted') in ['subscribed', 'public']])
@@ -96,7 +102,7 @@ class SyncACL(Service):
 
             """
             ldapserver.server.connect(userdn=True)
-            for group in self.data['acl']['groups']:
+            for group in acl_groups:
                 users = ldapserver.server.get_branch_group_users(None, group['id'])
                 for username in users:
                     yield {'id': username, 'role': group['role'], 'group': group['id']}
@@ -105,11 +111,11 @@ class SyncACL(Service):
         # to ensuer leaving each user with the required permission set. Users defined twice
         # will be overwritten by the last occurrence. Individual users preceed group users.
 
-        for user in chain(expanded_users(), self.data['acl']['users']):
+        for user in chain(expanded_users(), acl_users):
             username = user['id']
             role = user['role']
             source = user.get('group', 'users')
-            wanted_permissions = set(self.data['permission_mapping'].get(role))
+            wanted_permissions = permission_mapping.get(role)
 
             # Log permission overwrites that may happen during assignment
             if username in target_users:
@@ -121,7 +127,9 @@ class SyncACL(Service):
             actions = generate_actions(
                 subscriptions_by_user.get(username, {}),
                 policy_granted_permissions,
-                wanted_permissions)
+                wanted_permissions,
+                ignore_grants_and_vetos
+            )
 
             # Only send actions if there's something to do...
             if actions:

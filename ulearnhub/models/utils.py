@@ -41,12 +41,16 @@ def generate_actions(subscription, policy_granted_permissions, wanted_permission
         # and that are not already granted
         # Permissions that has been explicitly revoked become granted again here
         permissions_that_need_grant = (wanted_permissions_that_need_grant - current_grants).union(missing_permissions)
+        if not ignore_grants_and_vetos:
+            permissions_that_need_grant = permissions_that_need_grant - current_vetos
         set_action(actions, 'grant', permissions_that_need_grant)
 
         # We need to revoke all non-wanted permissions that
         # are granted by the default context policy
         # And are not already revoked
         permissions_that_need_revoke = non_wanted_permissions_that_need_veto - current_vetos
+        if not ignore_grants_and_vetos:
+            permissions_that_need_revoke = permissions_that_need_revoke - current_grants
         set_action(actions, 'revoke', permissions_that_need_revoke)
     else:
         actions["subscribe"] = True

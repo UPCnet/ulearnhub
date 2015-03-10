@@ -13,6 +13,7 @@ batch_subscribe_request = {
         "writer": ['read', 'write', 'unsubscribe'],
         "owner": ['read', 'write', 'unsubscribe']
     },
+    "ignore_grants_and_vetos": True,
     "context": "http://localhost/communities/testcommunity",
     "acl": {
         "groups": [
