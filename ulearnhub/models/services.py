@@ -2,7 +2,7 @@ from ulearnhub.models.components import MaxServer
 from ulearnhub.models.components import LdapServer
 from ulearnhub.models.components import RabbitServer
 
-from ulearnhub.models.utils import generate_actions
+from ulearnhub.models.utils import generate_actions, set_action
 
 from itertools import chain
 
@@ -68,19 +68,17 @@ class SyncACL(Service):
         # Get target context and all of its subscriptions
         maxclient = maxserver.maxclient
         username, token = self.request.auth
-        maxclient.setActor(username)
-        maxclient.setToken(token)
+        maxclient.setActor(maxserver.user)
+        maxclient.setToken(maxserver.token)
 
         # Collect data and variables needed
         context = maxclient.contexts[self.data['context']].get()
         subscriptions = maxclient.contexts[self.data['context']].subscriptions.get()
-        acl_groups = self.data['acl']['groups']
-        acl_users = self.data['acl']['users']
-        permission_mapping = set(self.data['permission_mapping'])
-        ignore_grants_and_vetos = self.data.get("ignore_grants_and_vetos", True)
+        acl_groups = self.data['acl'].get('groups', [])
+        acl_users = self.data['acl'].get('users', [])
+        permission_mapping = self.data['permission_mapping']
 
-        permissions = set(['write', 'read', 'subscribe', 'unsubscribe', 'invite', 'delete', 'flag'])
-        policy_granted_permissions = set([permission for permission in permissions if context.get('permissions', {}).get(permission, 'restricted') in ['subscribed', 'public']])
+        policy_granted_permissions = set([permission for permission, value in context.get('permissions', {}).items() if value in ['subscribed', 'public']])
 
         # Prepare a user mapped copy of context subscriptions
         subscriptions_by_user = {}
@@ -90,8 +88,7 @@ class SyncACL(Service):
         # To keep track of overwrites caused by user duplication
         # At the end of the process, subscribed user NOT IN target users
         # will be unsubscribed
-        target_users = {}
-        overwrites = {}
+        actions_by_user = {}
 
         def expanded_users():
             """
@@ -101,50 +98,71 @@ class SyncACL(Service):
                 picking the role specified in the group. Preserve group for further checks.
 
             """
+            if not acl_groups:
+                raise StopIteration()
+
             ldapserver.server.connect(userdn=True)
             for group in acl_groups:
                 users = ldapserver.server.get_branch_group_users(None, group['id'])
                 for username in users:
                     yield {'id': username, 'role': group['role'], 'group': group['id']}
 
-        # Generate an action list per-user that must be performed in the right order (groups, users)
-        # to ensuer leaving each user with the required permission set. Users defined twice
-        # will be overwritten by the last occurrence. Individual users preceed group users.
+            # Disconnect ldap server, we won't need it outside here
+            ldapserver.server.disconnect()
 
+        def merge_actions(old_actions, new_actions):
+            actions = {}
+            if old_actions is None:
+                return new_actions
+
+            if old_actions or new_actions:
+                if 'subscribe' in old_actions or 'subscribe' in new_actions:
+                    actions['subscribe'] = True
+
+                if 'reset' in old_actions or 'reset' in new_actions:
+                    actions['reset'] = True
+
+                if 'grant' in old_actions or 'grant' in new_actions:
+                    grants = set(old_actions.get('grant', [])).union(set(new_actions.get('grant', [])))
+                    set_action(actions, 'grant', grants)
+
+                if 'revoke' in old_actions or 'revoke' in new_actions:
+                    revokes = set(old_actions.get('revoke', [])).intersection(set(new_actions.get('revoke', [])))
+                    set_action(actions, 'revoke', revokes)
+
+            return actions
+
+        # Iterate over group users and single users acl's at once
         for user in chain(expanded_users(), acl_users):
             username = user['id']
             role = user['role']
-            source = user.get('group', 'users')
-            wanted_permissions = permission_mapping.get(role)
 
-            # Log permission overwrites that may happen during assignment
-            if username in target_users:
-                overwrites['username'] = {
-                    'old': target_users[username]['source'],
-                    'new': source}
+            wanted_permissions = set(permission_mapping.get(role, []))
+
+            # Get the previous defined actions on this user, if any
+            actions = actions_by_user.get(username, None)
 
             # Generate actions based on current permissions, policy, and wanted permissions
-            actions = generate_actions(
+            new_actions = generate_actions(
                 subscriptions_by_user.get(username, {}),
                 policy_granted_permissions,
-                wanted_permissions,
-                ignore_grants_and_vetos
+                wanted_permissions
             )
 
-            # Only send actions if there's something to do...
-            if actions:
-                rabbitserver.notifications.sync_acl(username, actions)
+            # Merge new actions into previous actions, preserving the most beneficient
+            actions = merge_actions(actions, new_actions)
 
             # Store user to track overwrites
-            target_users[username] = {"source": source}
-
-        # Disconnect ldap server, we won't need it again
-        ldapserver.server.disconnect()
+            actions_by_user[username] = actions
 
         # All the users present in subscription and not in the ACL's will be unsubscribed
-        missing_users = set(subscriptions_by_user.keys()) - set(target_users.keys())
+        missing_users = set(subscriptions_by_user.keys()) - set(actions_by_user.keys())
         for username in missing_users:
-            rabbitserver.notifications.sync_acl(username, {"unsubscribe": True})
+            rabbitserver.notifications.sync_acl(context['hash'], username, {"unsubscribe": True})
+
+        for username, actions in actions_by_user.items():
+            if actions:
+                rabbitserver.notifications.sync_acl(context['hash'], username, actions)
 
         return {}
 

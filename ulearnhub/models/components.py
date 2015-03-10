@@ -78,12 +78,14 @@ class MaxServer(Component):
 
     name = 'maxserver'
 
-    def __init__(self, title, url):
+    def __init__(self, title, url, user, token):
         """
             Create a maxserver
         """
         self.title = title
         self.url = url
+        self.user = user
+        self.token = token
         super(MaxServer, self).__init__()
 
     @property
@@ -180,7 +182,7 @@ class RabbitNotifications(object):
         except socket_error:
             raise ConnectionError("Could not connect to rabbitmq broker")
 
-    def sync_acl(self, username, tasks):
+    def sync_acl(self, context, username, tasks):
         """
             Sends a Carrot (TM) notification of a new sync acl task
         """
@@ -193,7 +195,8 @@ class RabbitNotifications(object):
             },
             "action": "syncacl",
             "object": "context",
-            "data": tasks
+            "data": {'context': context,
+                     'tasks': tasks}
         })
         self.client.send(
             'syncacl',

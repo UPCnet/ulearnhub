@@ -7,60 +7,31 @@ def set_action(actions, name, value):
         actions[name] = val
 
 
-def generate_actions(subscription, policy_granted_permissions, wanted_permissions, ignore_grants_and_vetos):
+def generate_actions(subscription, policy_granted_permissions, requested_permissions):
+    """
+        Generates needed actions to achieve wanted_permissions, ensuring the minimum set of
+        actions is performed. Actions here defined will be executed in a non-permanent way, ignoring
+        vetos and grants.
+
+    """
     actions = {}
 
-    current_permissions = set(subscription.get('permissions', []))
-    current_grants = set(subscription.get('grants', []))
-    current_vetos = set(subscription.get('vetos', []))
-
-    # Wanted permissions non granted by policy
-    wanted_permissions_that_need_grant = wanted_permissions - policy_granted_permissions
-
-    # Non wanted permissions granted by policy
-    non_wanted_permissions_that_need_veto = (policy_granted_permissions.union(current_grants)) - wanted_permissions
-
+    # If the user is subscribed, the permission set to calculate
+    # revokes and grants is the current permission set
     if subscription:
-        # Current existing permissions not provided neither from policy or grant
-        invalid_existing_permissions = current_permissions - policy_granted_permissions - current_grants
-
-        # Current missing permissions provided by policy that are not vetoed
-        missing_permissions = policy_granted_permissions - current_permissions
-        invalid_missing_permissions = missing_permissions - current_vetos
-
-        # On invalid permissions, trigger a reset. The need of grants and revokes
-        # Will be calculated from here assuming a reset status with no vetos neither grants
-        if invalid_missing_permissions or invalid_existing_permissions:
-            actions['reset'] = True
-            current_grants = set([])
-            current_vetos = set([])
-            missing_permissions = set([])  # a reset will grant all policy permissions that are missing
-
-        # We need to grant all wanted permissions that
-        # are not granted by the default context policy
-        # and that are not already granted
-        # Permissions that has been explicitly revoked become granted again here
-        permissions_that_need_grant = (wanted_permissions_that_need_grant - current_grants).union(missing_permissions)
-        if not ignore_grants_and_vetos:
-            permissions_that_need_grant = permissions_that_need_grant - current_vetos
-        set_action(actions, 'grant', permissions_that_need_grant)
-
-        # We need to revoke all non-wanted permissions that
-        # are granted by the default context policy
-        # And are not already revoked
-        permissions_that_need_revoke = non_wanted_permissions_that_need_veto - current_vetos
-        if not ignore_grants_and_vetos:
-            permissions_that_need_revoke = permissions_that_need_revoke - current_grants
-        set_action(actions, 'revoke', permissions_that_need_revoke)
+        current_permissions = set(subscription.get('permissions', []))
+    # ohterwise, assume the permissions that the user will have
+    # oonce subscribed are the ones in the context's policy
     else:
         actions["subscribe"] = True
+        current_permissions = policy_granted_permissions
 
-        # We need to grant all wanted permissions that
-        # are not granted by the default context policy
-        set_action(actions, 'grant', wanted_permissions_that_need_grant)
+    # Permissions that the user don't have and needs
+    missing_permissions = requested_permissions - current_permissions
+    set_action(actions, 'grant', missing_permissions)
 
-        # We need to revoke all non-wanted permissions that
-        # are granted by the default context policy
-        set_action(actions, 'revoke', non_wanted_permissions_that_need_veto)
+    # Permissions that the user has and don't needs
+    exceeded_permissions = current_permissions - requested_permissions
+    set_action(actions, 'revoke', exceeded_permissions)
 
     return actions
