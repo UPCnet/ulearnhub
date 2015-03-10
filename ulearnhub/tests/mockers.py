@@ -47,7 +47,8 @@ initial_subscriptions = [
             "read",
             "unsubscribe"
         ],
-        "vetos": [],
+        "vetos": [
+        ],
         "grants": ['write'],
     }
 ]

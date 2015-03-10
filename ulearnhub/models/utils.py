@@ -7,20 +7,20 @@ def set_action(actions, name, value):
         actions[name] = val
 
 
-def generate_actions(subscription, policy_granted_permissions, wanted_permissions):
+def generate_actions(subscription, policy_granted_permissions, wanted_permissions, ignore_grants_and_vetos):
     actions = {}
+
+    current_permissions = set(subscription.get('permissions', []))
+    current_grants = set(subscription.get('grants', []))
+    current_vetos = set(subscription.get('vetos', []))
 
     # Wanted permissions non granted by policy
     wanted_permissions_that_need_grant = wanted_permissions - policy_granted_permissions
 
     # Non wanted permissions granted by policy
-    non_wanted_permissions_that_need_veto = policy_granted_permissions - wanted_permissions
+    non_wanted_permissions_that_need_veto = (policy_granted_permissions.union(current_grants)) - wanted_permissions
 
     if subscription:
-        current_permissions = set(subscription.get('permissions', []))
-        current_grants = set(subscription.get('grants', []))
-        current_vetos = set(subscription.get('vetos', []))
-
         # Current existing permissions not provided neither from policy or grant
         invalid_existing_permissions = current_permissions - policy_granted_permissions - current_grants
 
@@ -34,6 +34,7 @@ def generate_actions(subscription, policy_granted_permissions, wanted_permission
             actions['reset'] = True
             current_grants = set([])
             current_vetos = set([])
+            missing_permissions = set([])  # a reset will grant all policy permissions that are missing
 
         # We need to grant all wanted permissions that
         # are not granted by the default context policy
