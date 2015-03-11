@@ -1,28 +1,23 @@
 # -*- coding: utf-8 -*-
-from paste.deploy import loadapp
-from ulearnhub.tests import test_user
-from ulearnhub.tests.utils import oauth2Header
-from ulearnhub.tests.utils import UlearnhubTestApp
-
-from ulearnhub.tests.mock_http import http_mock_checktoken
-from ulearnhub.tests.mock_http import http_mock_info
-from ulearnhub.tests.mock_http import http_mock_get_context
-from ulearnhub.tests.mock_http import http_mock_get_context_subscriptions
-
 from maxcarrot import RabbitClient
 
+from ulearnhub.tests import TEST_VHOST_URL
+from ulearnhub.tests import UlearnHUBBaseTestCase
+from ulearnhub.tests import test_user
+from ulearnhub.tests.mockers.http import http_mock_checktoken
+from ulearnhub.tests.mockers.http import http_mock_get_context
+from ulearnhub.tests.mockers.http import http_mock_get_context_subscriptions
+from ulearnhub.tests.mockers.http import http_mock_info
+from ulearnhub.tests.utils import UlearnhubTestApp
+from ulearnhub.tests.utils import oauth2Header
+
+from mock import patch
+from paste.deploy import loadapp
 
 import httpretty
 import json
 import os
 import unittest
-from pyramid.request import Request
-from mock import patch
-import transaction
-
-RABBIT_URL = "amqp://guest:guest@localhost:5672"
-TEST_VHOST_URL = '{}/tests'.format(RABBIT_URL)
-RABBIT_MANAGEMENT_URL = "http://localhost:15672/api".format(RABBIT_URL)
 
 
 def ldap_patch_group_search(response):
@@ -43,12 +38,7 @@ def ldap_patch_disconnect():
     return patch('gummanager.libs._ldap.LdapServer.disconnect', new=patched)
 
 
-class FakeRequest(Request):
-    def __init__(self, registry):
-        self.registry = registry
-
-
-class UlearnhubSyncaclFunctionalTests(unittest.TestCase):
+class UlearnhubSyncaclFunctionalTests(UlearnHUBBaseTestCase):
 
     def setUp(self):
         conf_dir = os.path.dirname(__file__)
@@ -74,43 +64,12 @@ class UlearnhubSyncaclFunctionalTests(unittest.TestCase):
         for testpatch in self.patches:
             testpatch.stop()
 
+        self.rabbit.get_all('syncacl')
+
         self.rabbit.disconnect()
         for user_clients in self.clients.values():
             for client in user_clients:
                 client.disconnect()
-
-    def add_patch(self, testpatch):
-        self.patches.append(testpatch)
-        testpatch.start()
-
-    def initialize_zodb(self):
-        from ulearnhub import root_factory
-        from ulearnhub.models.deployments import Deployments, Deployment
-        from ulearnhub.models.domains import Domains, Domain
-        from ulearnhub.models.components import MaxCluster, MaxServer, LdapServer, RabbitServer
-        request = FakeRequest(self.testapp.testapp.app.registry)
-        root = root_factory(request)
-
-        deployments = root['deployments'] = Deployments()
-        deployment = deployments['test'] = Deployment(name='test', title='Test Deployment')
-
-        maxcluster = MaxCluster('Test Max Cluster')
-        maxserver = MaxServer('Test Max Server', url='http://localhost:8081', user='restricted', token='fw98nyf294')
-        ldapserver = LdapServer('LDAP UPC', readonly=True, config={"server": "testldap", "port": 636})
-        rabbitserver = RabbitServer('Rabbit UPC', url=TEST_VHOST_URL)
-
-        maxcluster.components.append(maxserver)
-        deployment.components.append(maxcluster)
-        deployment.components.append(ldapserver)
-        deployment.components.append(rabbitserver)
-
-        domains = root['domains'] = Domains()
-
-        test_domain = domains['test'] = Domain(name='test', title='Test Domain')
-        test_domain.components.append(ldapserver)
-        test_domain.components.append(maxserver)
-        test_domain.components.append(rabbitserver)
-        transaction.commit()
 
     def test_domain_syncacl_initial_subscriptions(self):
         """
@@ -118,10 +77,10 @@ class UlearnhubSyncaclFunctionalTests(unittest.TestCase):
             When a bunch of users and groups acls are synced
             Then a set of actions is generated to generate needed subscriptions grants and revokes for new subscriptors
         """
-        from .mockers import batch_subscribe_request
-        from .mockers import context as context
-        from .mockers import initial_subscriptions as subscriptions
-        from .mockers import ldap_test_group, ldap_test_group2, ldap_test_group3
+        from .mockers.syncacl import batch_subscribe_request
+        from .mockers.syncacl import context as context
+        from .mockers.syncacl import initial_subscriptions as subscriptions
+        from .mockers.syncacl import ldap_test_group, ldap_test_group2, ldap_test_group3
 
         http_mock_info()
         http_mock_get_context(context)
@@ -191,10 +150,10 @@ class UlearnhubSyncaclFunctionalTests(unittest.TestCase):
             Then a set of actions is generated to update thouse users subscriptions
             And the users that have been removed from acl are unsubscribed
         """
-        from .mockers import batch_subscribe_request2
-        from .mockers import context as context
-        from .mockers import existing_subscriptions as subscriptions
-        from .mockers import ldap_test_group, ldap_test_group2, ldap_test_group3
+        from .mockers.syncacl import batch_subscribe_request2
+        from .mockers.syncacl import context as context
+        from .mockers.syncacl import existing_subscriptions as subscriptions
+        from .mockers.syncacl import ldap_test_group, ldap_test_group2, ldap_test_group3
 
         http_mock_info()
         http_mock_get_context(context)
@@ -258,10 +217,10 @@ class UlearnhubSyncaclFunctionalTests(unittest.TestCase):
             Then the same and only action is generated
 
         """
-        from .mockers import batch_subscribe_request3
-        from .mockers import context as context
-        from .mockers import initial_subscriptions as subscriptions
-        from .mockers import ldap_test_group4
+        from .mockers.syncacl import batch_subscribe_request3
+        from .mockers.syncacl import context as context
+        from .mockers.syncacl import initial_subscriptions as subscriptions
+        from .mockers.syncacl import ldap_test_group4
 
         http_mock_info()
         http_mock_get_context(context)
@@ -300,9 +259,9 @@ class UlearnhubSyncaclFunctionalTests(unittest.TestCase):
             Then the action with more permissions is preserved
 
         """
-        from .mockers import batch_subscribe_request4
-        from .mockers import context as context
-        from .mockers import initial_subscriptions as subscriptions
+        from .mockers.syncacl import batch_subscribe_request4
+        from .mockers.syncacl import context as context
+        from .mockers.syncacl import initial_subscriptions as subscriptions
 
         http_mock_info()
         http_mock_get_context(context)

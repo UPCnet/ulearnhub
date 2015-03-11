@@ -182,7 +182,7 @@ class RabbitNotifications(object):
         except socket_error:
             raise ConnectionError("Could not connect to rabbitmq broker")
 
-    def sync_acl(self, context, username, tasks):
+    def sync_acl(self, domain, context, username, tasks):
         """
             Sends a Carrot (TM) notification of a new sync acl task
         """
@@ -193,7 +193,8 @@ class RabbitNotifications(object):
             "user": {
                 'username': username,
             },
-            "action": "syncacl",
+            "domain": domain,
+            "action": "modify",
             "object": "context",
             "data": {'context': context,
                      'tasks': tasks}

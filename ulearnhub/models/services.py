@@ -74,7 +74,7 @@ class SyncACL(Service):
 
         # Collect data and variables needed
         context = maxclient.contexts[self.data['context']].get()
-        subscriptions = maxclient.contexts[self.data['context']].subscriptions.get()
+        subscriptions = maxclient.contexts[self.data['context']].subscriptions.get(qs={'limit': 0})
         acl_groups = self.data['acl'].get('groups', [])
         acl_users = self.data['acl'].get('users', [])
         permission_mapping = self.data['permission_mapping']
@@ -137,11 +137,11 @@ class SyncACL(Service):
         # All the users present in subscription and not in the ACL's will be unsubscribed
         missing_users = set(subscriptions_by_user.keys()) - set(actions_by_user.keys())
         for username in missing_users:
-            rabbitserver.notifications.sync_acl(context['hash'], username, {"unsubscribe": True})
+            rabbitserver.notifications.sync_acl(self.domain.name, context['url'], username, {"unsubscribe": True})
 
         for username, actions in actions_by_user.items():
             if actions:
-                rabbitserver.notifications.sync_acl(context['hash'], username, actions)
+                rabbitserver.notifications.sync_acl(self.domain.name, context['url'], username, actions)
 
         return {}
 
