@@ -323,6 +323,226 @@ class UlearnhubSyncaclFunctionalTests(unittest.TestCase):
         self.assertIn('context', messages['testuser.creator']['d'])
 
 
+class UlearnhubSyncaclActionMergingUnitTests(unittest.TestCase):
+
+    def test_merge_empty_with_empty(self):
+        """
+            Given an empty initial actions set
+            And an empty new action set
+            When i merge the two sets
+            I get an empty action set
+        """
+        from ulearnhub.models.utils import merge_actions
+
+        actions = merge_actions(None, {})
+
+        self.assertFalse(actions)
+
+    def test_merge_empty_with_subscribe(self):
+        """
+            Given an empty initial actions set
+            And an subscribe new action set
+            When i merge the two sets
+            I get a copy of the latter
+        """
+        from ulearnhub.models.utils import merge_actions
+
+        actions = merge_actions(None, {'subscribe': True})
+
+        self.assertItemsEqual(actions, ['subscribe'])
+
+    def test_merge_empty_with_grants(self):
+        """
+            Given an empty initial actions set
+            And a grant new action set
+            When i merge the two sets
+            I get a copy of the latter
+        """
+        from ulearnhub.models.utils import merge_actions
+
+        actions = merge_actions(None, {'grant': ['write']})
+
+        self.assertItemsEqual(actions, ['grant'])
+        self.assertItemsEqual(actions['grant'], ['write'])
+
+    def test_merge_empty_with_revokes(self):
+        """
+            Given an empty initial actions set
+            And a revoke new action set
+            When i merge the two sets
+            I get a copy of the latter
+        """
+        from ulearnhub.models.utils import merge_actions
+
+        actions = merge_actions(None, {'revoke': ['write']})
+
+        self.assertItemsEqual(actions, ['revoke'])
+        self.assertItemsEqual(actions['revoke'], ['write'])
+
+    def test_merge_empty_with_all(self):
+        """
+            Given an empty initial actions set
+            And a subscribe + grant + revoke new action set
+            When i merge the two sets
+            I get a copy of the latter
+        """
+        from ulearnhub.models.utils import merge_actions
+
+        actions = merge_actions(None, {'revoke': ['write'], 'grant': ['read'], 'subscribe': True})
+
+        self.assertItemsEqual(actions, ['revoke', 'grant', 'subscribe'])
+        self.assertItemsEqual(actions['revoke'], ['write'])
+        self.assertItemsEqual(actions['grant'], ['read'])
+
+    def test_merge_subscribe_with_empty(self):
+        """
+            Given an subscribe previous action set
+            And an empty new action set
+            When i merge the two sets
+            I get a copy of the former
+        """
+        from ulearnhub.models.utils import merge_actions
+
+        actions = merge_actions({'subscribe': True}, {})
+
+        self.assertItemsEqual(actions, ['subscribe'])
+
+    def test_merge_grants_with_empty(self):
+        """
+            Given a grant previous action set
+            And an empty new action set
+            When i merge the two sets
+            I get a copy of the former
+        """
+        from ulearnhub.models.utils import merge_actions
+
+        actions = merge_actions({'grant': ['write']}, {})
+
+        self.assertItemsEqual(actions, ['grant'])
+        self.assertItemsEqual(actions['grant'], ['write'])
+
+    def test_merge_revokes_with_empty(self):
+        """
+            Given a revoke previous action set
+            And an empty new action set
+            When i merge the two sets
+            The revokes go away
+        """
+        from ulearnhub.models.utils import merge_actions
+
+        actions = merge_actions({'revoke': ['write']}, {})
+
+        self.assertItemsEqual(actions, [])
+
+    def test_merge_all_with_empty(self):
+        """
+            Given a subscribe + grant + revoke previous action set
+            And an empty new action set
+            When i merge the two sets
+            I get a copy of the latter
+            And the revokes are gone
+        """
+        from ulearnhub.models.utils import merge_actions
+
+        actions = merge_actions({'revoke': ['write'], 'grant': ['read'], 'subscribe': True}, {})
+
+        self.assertItemsEqual(actions, ['grant', 'subscribe'])
+        self.assertItemsEqual(actions['grant'], ['read'])
+
+    def test_merge_subscribe_multiple_times(self):
+        """
+            Given a subscribe previous action set
+            And an subscribe new action set
+            And a third subscribe action set
+            When i merge the three sets
+            I get a copy also with subscribe set
+        """
+
+        from ulearnhub.models.utils import merge_actions
+
+        actions = merge_actions({'subscribe': True}, {'subscribe': True})
+        actions = merge_actions(actions, {'subscribe': True})
+
+        self.assertItemsEqual(actions, ['subscribe'])
+
+    def test_merge_grants_multiple_times(self):
+        """
+            Given a grants previous action set
+            And an grant new action set
+            And a third grant action set
+            When i merge the three sets
+            I get a copy with grants union of all sets
+            And without duplicated grants
+        """
+
+        from ulearnhub.models.utils import merge_actions
+
+        actions = merge_actions({'grant': ['write', 'read']}, {'grant': ['read']})
+        actions = merge_actions(actions, {'grant': ['flag']})
+
+        self.assertItemsEqual(actions, ['grant'])
+        self.assertItemsEqual(actions['grant'], ['read', 'write', 'flag'])
+
+    def test_merge_revokes_multiple_times(self):
+        """
+            Given a revoke previous action set
+            And an revoke new action set
+            And a third revoke action set
+            When i merge the three sets
+            Then I get a copy with revokes intersection of all sets
+            And only revokes present in all sets will remain
+        """
+
+        from ulearnhub.models.utils import merge_actions
+
+        actions = merge_actions({'revoke': ['write', 'read']}, {'revoke': ['read']})
+
+        self.assertItemsEqual(actions, ['revoke'])
+        self.assertItemsEqual(actions['revoke'], ['read'])
+
+        actions = merge_actions(actions, {'revoke': ['flag']})
+
+        self.assertItemsEqual(actions, [])
+
+    def test_merge_revokes_multiple_times_preserve_grants(self):
+        """
+            Given a revoke previous action set
+            And an revoke new action set
+            And a third grant action set
+            When I merge the three sets
+            Then I get a copy with revokes intersection of all sets
+            And I get a copy with grants unions of all sets
+            And only revokes also present in grants dissappear
+        """
+
+        from ulearnhub.models.utils import merge_actions
+
+        actions = merge_actions({'revoke': ['write', 'read']}, {'revoke': ['read']})
+        actions = merge_actions(actions, {'grant': ['read']})
+
+        self.assertItemsEqual(actions, ['grant'])
+        self.assertItemsEqual(actions['grant'], ['read'])
+
+    def test_merge_grants_multiple_times_preserve_grants(self):
+        """
+            Given a grant previous action set
+            And an grant new action set
+            And a third revoke action set
+            When I merge the three sets
+            Then I get a copy with revokes intersection of all sets
+            And I get a copy with grants unions of all sets
+            And revokes from third set won't remove grants
+        """
+
+        from ulearnhub.models.utils import merge_actions
+
+        actions = merge_actions(None, {'grant': ['write'], 'revoke': ['read']})
+        actions = merge_actions(actions, {'grant': ['read'], 'revoke': ['read']})
+
+        self.assertItemsEqual(actions, ['grant'])
+        self.assertItemsEqual(actions['grant'], ['write', 'read'])
+
+
 class UlearnhubSyncaclActionGenerationUnitTests(unittest.TestCase):
 
     def test_action_generation_new_subscription(self):

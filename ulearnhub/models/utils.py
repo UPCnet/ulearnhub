@@ -29,13 +29,15 @@ def merge_actions(old_actions, new_actions):
         if 'subscribe' in old_actions or 'subscribe' in new_actions:
             actions['subscribe'] = True
 
+        grants = set()
         if 'grant' in old_actions or 'grant' in new_actions:
             grants = set(old_actions.get('grant', [])).union(set(new_actions.get('grant', [])))
             set_action(actions, 'grant', grants)
 
         if 'revoke' in old_actions or 'revoke' in new_actions:
             revokes = set(old_actions.get('revoke', [])).intersection(set(new_actions.get('revoke', [])))
-            set_action(actions, 'revoke', revokes)
+            # If we have a grant that is also in revokes, remove it from revokes
+            set_action(actions, 'revoke', revokes - grants)
 
     return actions
 
