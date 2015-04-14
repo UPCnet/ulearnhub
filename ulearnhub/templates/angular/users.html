@@ -1,0 +1,102 @@
+
+  <div id="manage" ng-controller="UsersManageController as userMan">
+    <br/><br/><br/>
+    <h2 translate="users_table"></h2>
+   <table datatable="ng" dt-options="userMan.dtOptions" dt-column-defs="userMan.dtColumnDefs" class="compact table table-striped">
+        <thead>
+          <tr>
+            <th translate="col_username">UserName</th>
+            <th translate="col_displayname">DisplayName</th>
+            <th translate="col_actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="user in userMan.users">
+            <td><a ui-sref="domain.user({id:user.username})">{{user.username}}</a></td>
+            <td>{{user.displayName}}</td>
+            <td>
+              <a href="" ng-click="userMan.confirmModal('sm',user.username)"><img ng-src="{{userMan.application_url}}/static/borrar.jpg" alt="Eliminar usuario" height="21" width="21"></a>
+
+            </td>
+
+          </tr>
+        </tbody>
+   </table>
+
+    <hr>
+    <div class="view-actions pull-right">
+      <button class="btn btn-primary" ng-click="userMan.open()" translate="btn_newuser">New User</button>
+    </div>
+
+
+    <script type="text/ng-template" id="new-user.html">
+        <div class="modal-header">
+            <h3 class="modal-title" translate="label_add_user">Add new user</h3>
+        </div>
+        <div class="modal-body">
+
+        <form>
+          <div class="form-group">
+            <label for="userName">UserName</label>
+            <input ng-model="newuser.username" type="text" class="form-control" id="userName" placeholder="">
+          </div>
+
+          <div class="form-group">
+            <label for="displayName">DisplayName</label>
+            <input ng-model="newuser.displayName" type="text" class="form-control" id="displayName" placeholder="">
+          </div>
+
+        </form>
+
+        <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()" translate="btn_ok">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()" translate="btn_cancel">Cancel</button>
+        </div>
+    </script>
+
+  <script type="text/ng-template" id="remove-user.html">
+      <div class="modal-header">
+          <h3 class="modal-title" translate="title_remove_user">Confirm remove user</h3>
+      </div>
+      <div class="modal-body">
+
+        <div class="alert alert-warning" role="alert" translate="label_delete_user">Are you sure to delete this user?</div>
+
+      <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+
+      </div>
+      <div class="modal-footer">
+          <button class="btn btn-primary" ng-click="ok()" translate="btn_ok">OK</button>
+          <button class="btn btn-warning" ng-click="cancel()" translate="btn_cancel">Cancel</button>
+      </div>
+  </script>
+
+  </div>
+
+  <br/><br/><br/><br/>
+  <h2 translate="table_roles">Roles Table</h2>
+  <div id="roles" ng-controller="UsersRolesController as userRol">
+   <table datatable="ng" dt-options="userRol.dtOptions" dt-column-defs="userRol.dtColumnDefs" class="compact table table-striped">
+        <thead>
+          <tr>
+            <th translate="col_username">UserName</th>
+            <th>Manager</th>
+            <th>NonVisible</th>
+            <th>HubManager</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="user in userRol.users">
+            <td><a ui-sref="domain.user({id:user.username})">{{user.username}}</a></td>
+
+            <td ng-repeat="role in user.roles"><input type="checkbox" ng-change="userRol.changeRole(role.active, role.name,user.username)" ng-model="role.active"></td>
+          </tr>
+        </tbody>
+   </table>
+  </div>
+
+</div>
+

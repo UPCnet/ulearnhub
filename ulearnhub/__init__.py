@@ -20,7 +20,6 @@ class Root(PersistentMapping):
         (Allow, Authenticated, 'homepage')
     ]
 
-
 def bootstrap(zodb_root):
     if 'ulearnhub' not in zodb_root:
         root = Root()
@@ -78,10 +77,16 @@ def main(global_config, **settings):
     config.add_static_view('angular-bootstrap', 'components/angular-bootstrap', cache_max_age=3600)
     config.add_static_view('angular-resource', 'components/angular-resource', cache_max_age=3600)
     config.add_static_view('angular-datatables', 'components/angular-datatables/dist', cache_max_age=3600)
+    config.add_static_view('angular-ui-select', 'components/angular-ui-select/dist', cache_max_age=3600)
+    config.add_static_view('angular-sanitize', 'components/angular-sanitize', cache_max_age=3600)
+    config.add_static_view('angular-translate', 'components/angular-translate', cache_max_age=3600)
+    config.add_static_view('angular-cookies', 'components/angular-cookies', cache_max_age=3600)
+    config.add_static_view('angular-translate-static', 'components/angular-translate-loader-static-files', cache_max_age=3600)
     config.add_static_view('datatables', 'components/datatables/media', cache_max_age=3600)
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_static_view('css', 'css', cache_max_age=3600)
     config.add_static_view('js', 'js', cache_max_age=3600)
+    config.add_static_view('locales', 'locales', cache_max_age=3600)
 
     config.add_route('root', '/')
     config.add_route('login', '/login')

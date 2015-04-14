@@ -1,0 +1,78 @@
+
+<div id="manage"> 
+  <br/>
+ <table datatable="ng" dt-options="contMan.dtOptions" dt-column-defs="contMan.dtColumnDefs" class="compact table table-striped">
+      <thead>
+        <tr>
+          <th translate="col_context">DisplayName</th>
+          <th>Url</th>
+          <th translate="col_actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="context in contMan.contexts">
+          <td><a ui-sref="domain.context({id:context.hash})">{{context.displayName}}</a></td>
+          <td>{{context.url}}</td>
+          <td>
+            <a href="" ng-click="contMan.confirmModal('sm',context.hash)"><img ng-src="{{contMan.application_url}}/static/borrar.jpg" alt="Remove user" height="21" width="21"></a>
+          </td>
+
+        </tr>
+      </tbody>
+ </table>
+
+  <hr>
+
+  <div class="view-actions pull-right">
+    <button class="btn btn-primary" ng-click="contMan.open()" translate="btn_new_context">New Context</button>
+  </div>
+
+
+
+  <script type="text/ng-template" id="new-context.html">
+      <div class="modal-header">
+          <h3 class="modal-title" translate="title_new_context">Add new context</h3>
+      </div>
+      <div class="modal-body">
+
+      <form>
+        <div class="form-group">
+          <label for="displayName">DisplayName</label>
+          <input ng-model="newcontext.displayName" type="text" class="form-control" id="displayName" placeholder="Enter name context">
+        </div>
+
+        <div class="form-group">
+          <label for="url">Url</label>
+          <input ng-model="newcontext.url" type="text" class="form-control" id="url" placeholder="Enter url">
+        </div>
+
+      </form>
+
+      <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+
+      </div>
+      <div class="modal-footer">
+          <button class="btn btn-primary" ng-click="ok()" translate="btn_ok">OK</button>
+          <button class="btn btn-warning" ng-click="cancel()" translate="btn_cancel">Cancel</button>
+      </div>
+  </script>
+
+  <script type="text/ng-template" id="remove-context.html">
+      <div class="modal-header">
+          <h3 class="modal-title" translate="title_remove_context">Confirm remove context</h3>
+      </div>
+      <div class="modal-body">
+
+        <div class="alert alert-warning" role="alert" translate="label_delete_context">Are you sure to delete this context?</div>
+
+      <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+
+      </div>
+      <div class="modal-footer">
+          <button class="btn btn-primary" ng-click="ok()" translate="btn_ok">OK</button>
+          <button class="btn btn-warning" ng-click="cancel()" translate="btn_cancel">Cancel</button>
+      </div>
+  </script>
+
+</div>
+

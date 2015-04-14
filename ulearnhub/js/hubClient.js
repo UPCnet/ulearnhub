@@ -14,7 +14,8 @@ var hubClient = angular.module('hubClient', ['ngResource']);
 hubClient.factory('Domain', ['$resource', 'hubInfo', function($resource, hubInfo) {
     return $resource(hubInfo.server + '/api/domains/:id', null, {
         query: {method:'GET', isArray: true, headers:hubInfo.headers},
-        save: {method:'POST', headers:hubInfo.headers}
+        save: {method:'POST', headers:hubInfo.headers},
+        get: {method:'GET', headers:hubInfo.headers},
     });
 }]);
 
