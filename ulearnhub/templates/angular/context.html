@@ -1,0 +1,108 @@
+<br/><br/><br/>
+<div ng-controller="ContextManageController as contEdit">
+  <div class="panel panel-info">
+    <div class="panel-heading" translate="label_edit_context">Edit Context</div>
+    <div class="panel-body">
+      <form role="form">
+
+        <div class="form-group">
+          <label class="control-label" for="displayName" translate="label_context">displayName</label>
+          <input type="text" class="form-control" ng-model="contEdit.context.displayName">
+          <p class="help-block"></p>
+        </div>
+
+        <div class="form-group">
+          <label class="control-label" for="url">Url</label>
+          <input type="text" class="form-control" ng-model="contEdit.context.url">
+          <p class="help-block"></p>
+        </div>
+
+        <button type="submit" class="btn btn-default" ng-click="contEdit.saveContext()" translate="btn_save">Save</button>
+      </form>
+      <br/>
+      <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+    </div>
+  </div>
+
+  <br/><br/><br/>
+
+  <div id="tabla_context">
+    <table datatable="ng" dt-options="contEdit.dtOptions" dt-column-defs="contEdit.dtColumnDefs" class="compact table table-striped">
+      <thead>
+        <tr>
+          <th>UserName</th>
+          <th>Read</th>
+          <th>Write</th>
+          <th>Delete</th>
+          <th>Unsubscribe</th>
+          <th translate="col_actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="user in contEdit.usersList">
+          <td><a ui-sref="domain.user({id:user.username})">{{user.username}}</a></td>
+
+          <td><input type="checkbox" 
+            ng-change="contEdit.changePermission(user.hash,user.username,'read',user.permissionRead)" 
+            ng-model="user.permissionRead">
+          </td>
+
+          <td><input type="checkbox" 
+            ng-change="contEdit.changePermission(user.hash,user.username,'write',user.permissionWrite)" 
+            ng-model="user.permissionWrite">
+          </td>
+
+            <td><input type="checkbox" 
+            ng-change="contEdit.changePermission(user.hash,user.username,'delete',user.permissionDelete)" 
+            ng-model="user.permissionDelete">
+          </td>
+
+          <td><input type="checkbox" 
+            ng-change="contEdit.changePermission(user.hash,user.username,'unsubscribe',user.permissionUnsubscribe)" 
+            ng-model="user.permissionUnsubscribe">
+          </td>
+
+          <td> 
+            <a href="" ng-click="contEdit.unsubscribeUser('sm',user.username,contEdit.contextHash)"><img ng-src="{{contEdit.application_url}}/static/borrar.jpg" alt="Remove subscribe" height="21" width="21"></a>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+
+
+    <div id="search">
+	  <ui-select multiple ng-model="contEdit.usersSelected" theme="bootstrap" ng-disabled="disabled" on-select="contEdit.onSelect($item,$select)" style="width: 300px;">
+	    <ui-select-match placeholder="{{'placeholder_add_users' | translate }}">{{$item.username}}</ui-select-match>
+	    <ui-select-choices repeat="user in contEdit.usersAvailable"	 refresh="contEdit.refreshUsersList($select.search)" refresh-delay="0">
+	      <div ng-bind-html="user.username | highlight: $select.search"></div>
+	    </ui-select-choices>
+	  </ui-select>
+    </div>
+    <br/>
+
+    <div class="view-actions pull-left">
+		<button class="btn btn-primary" ng-click="contEdit.addUsersToContext()" translate="btn_add_users">Add users</button>
+	</div>
+
+  </div>
+
+
+  <script type="text/ng-template" id="remove-user-context.html">
+      <div class="modal-header">
+          <h3 class="modal-title" translate="title_unsubscribe_user">Confirm unsubscribe user</h3>
+      </div>
+      <div class="modal-body">
+
+        <div class="alert alert-warning" role="alert" translate="label_delete_user">Are you sure to unsubscribe this user?</div>
+
+      <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+
+      </div>
+      <div class="modal-footer">
+          <button class="btn btn-primary" ng-click="ok()" translate="btn_ok">OK</button>
+          <button class="btn btn-warning" ng-click="cancel()" translate="btn_cancel">Cancel</button>
+      </div>
+  </script>
+
+</div>

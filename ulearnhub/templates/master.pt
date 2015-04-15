@@ -16,9 +16,9 @@
     <link href="${api.application_url}/css/ulearnhub.css" rel="stylesheet">
     <link href="http://fonts.googleapis.com/css?family=Bitter" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet" type="text/css">
-
     <link href="${api.application_url}/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="${api.application_url}/angular-datatables/plugins/bootstrap/datatables.bootstrap.min.css" rel="stylesheet">
+    <link href="${api.application_url}/angular-ui-select/select.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
 
@@ -68,10 +68,16 @@
 
     <!-- Angular and extension modules -->
     <script src="${api.application_url}/angular/angular.min.js"></script>
+    <script src="${api.application_url}/angular-ui-router/angular-ui-router.min.js"></script>
     <script src="${api.application_url}/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
     <script src="${api.application_url}/angular-datatables/plugins/bootstrap/angular-datatables.bootstrap.min.js"></script>
     <script src="${api.application_url}/angular-resource/angular-resource.min.js"></script>
     <script src="${api.application_url}/angular-datatables/angular-datatables.min.js"></script>
+    <script src="${api.application_url}/angular-ui-select/select.js"></script>
+    <script src="${api.application_url}/angular-sanitize/angular-sanitize.min.js"></script>
+    <script src="${api.application_url}/angular-translate/angular-translate.min.js"></script>
+    <script src="${api.application_url}/angular-cookies/angular-cookies.min.js"></script>
+    <script src="${api.application_url}/angular-translate-static/angular-translate-loader-static-files.min.js"></script>
 
     <div metal:define-slot="view_scripts"></div>
 

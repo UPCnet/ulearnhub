@@ -1,20 +1,13 @@
-'use strict';
+var ulearnhub = angular.module('uLearnHUB');
 
-var ulearnhub = angular.module('uLearnHUB', [
-    'hubClient',
-    'datatables',
-    'datatables.bootstrap',
-    'ui.bootstrap'
-]);
-
-
-ulearnhub.controller('DomainsController', ['$modal', '$log', 'Domain', 'DTOptionsBuilder', 'DTColumnDefBuilder', function($modal, $log, Domain, DTOptionsBuilder, DTColumnDefBuilder) {
+ulearnhub.controller('DomainsController', ['$modal', '$log', 'Domain', 'DTOptionsBuilder', 'DTColumnDefBuilder','$cookies','DTTranslations', function($modal, $log, Domain, DTOptionsBuilder, DTColumnDefBuilder,$cookies,DTTranslations) {
     var self = this;
-
+    var lang = $cookies.currentLang;
 // Default datatable options
     self.dtOptions = DTOptionsBuilder
         .newOptions().withPaginationType('full_numbers')
-        .withBootstrap();
+        .withBootstrap()
+        .withLanguage(DTTranslations[lang]);
 
     self.dtColumnDefs = [
         DTColumnDefBuilder.newColumnDef(0),
@@ -63,5 +56,25 @@ ulearnhub.controller('ModalInstanceCtrl', ['$scope', '$modalInstance', 'Domain',
   $scope.closeAlert = function(index) {
     $scope.alerts.splice(index, 1);
   };
+
+}]);
+
+
+ulearnhub.controller('DomainController', ['$stateParams','$modal', '$log', '$translate', 'Domain','MAXSession','hubSession', 'DTOptionsBuilder', 'DTColumnDefBuilder','$cookies', function($stateParams,$modal, $log, $translate, Domain,MAXSession,hubSession, DTOptionsBuilder, DTColumnDefBuilder,$cookies) {
+    var self = this;
+    var domainName = $stateParams.domain;
+    $cookies.currentDomain = $stateParams.domain;
+    self.domainObj = Domain.get({id:domainName});
+
+	self.domainObj.$promise.then(function(data){
+		MAXSession.username = hubSession.username;
+        MAXSession.oauth_token = hubSession.token;
+        MAXSession.max_server = data.server;
+	});
+  	
+  self.changeLanguage = function (key) {
+    $translate.use(key);
+  };
+
 
 }]);

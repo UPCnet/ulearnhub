@@ -11,28 +11,82 @@
 var maxClient = angular.module('maxClient', ['ngResource']);
 
 maxClient.factory('Context', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
-    return $resource(MAXInfo.max_server+'/contexts:id', null, {
-        search: {method:'GET', params: {tags:'@tags', hash:'@hash'}, headers:MAXInfo.headers, isArray: true}
+    return $resource(MAXInfo.max_server+'/contexts/:id', null, {
+        query: {method:'GET', headers:MAXInfo.headers, isArray: true},
+        save:  {method:'POST', headers:MAXInfo.headers},
+        get:  {method:'GET', headers:MAXInfo.headers},
+        remove: {method:'DELETE',headers:MAXInfo.headers},
+        update: {method:'PUT',headers:MAXInfo.headers}
     });
 }]);
+
+maxClient.factory('ContextAll', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
+    return $resource(MAXInfo.max_server+'/contexts?limit=0', null, {
+        query: {method:'GET', isArray: true, headers:MAXInfo.headers},
+    });
+}]);
+
+maxClient.factory('ContextUsers', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
+    return $resource(MAXInfo.max_server+'/contexts/:hash/subscriptions', {hash:'@hash'}, {
+        query: {method:'GET', headers:MAXInfo.headers, isArray: true},
+    });
+}]);
+
 
 maxClient.factory('User', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
     return $resource(MAXInfo.max_server+'/people/:id', null, {
         query: {method:'GET', isArray: true, headers:MAXInfo.headers},
-        save:  {method:'POST', headers:MAXInfo.headers}
+        getUsu:{method:'GET', headers:MAXInfo.headers},
+        save:  {method:'POST', headers:MAXInfo.headers},
+        remove: {method:'DELETE',headers:MAXInfo.headers},
+        update: {method:'PUT',headers:MAXInfo.headers}
+    });
+}]);
+
+maxClient.factory('UserAll', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
+    return $resource(MAXInfo.max_server+'/people?limit=0', null, {
+        query: {method:'GET', isArray: true, headers:MAXInfo.headers},
+    });
+}]);
+
+
+maxClient.factory('UserFiltered', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
+    return $resource(MAXInfo.max_server+'/people?username=:username', {username:'username'}, {
+        query: {method:'GET', isArray: true, headers:MAXInfo.headers},
+    });
+}]);
+
+
+maxClient.factory('Subscriptions', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
+    return $resource(MAXInfo.max_server+'/people/:id/subscriptions', {id:'@id'}, {
+        save: {method:'POST', headers:MAXInfo.headers},
+    });
+}]);
+
+maxClient.factory('UserSubscribe', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
+    return $resource(MAXInfo.max_server+'/people/:id/subscriptions/:hash', {id:'@id',hash:'@hash'}, {
+        remove: {method:'DELETE', headers:MAXInfo.headers},
     });
 }]);
 
 maxClient.factory('UsersRoles', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
-    return $resource(MAXInfo.max_server+'/admin/security/users', null, {
+    return $resource(MAXInfo.max_server+'/admin/security/users?limit=0', null, {
         query: {method:'GET', isArray: true, headers:MAXInfo.headers},
     });
 }]);
 
 maxClient.factory('UserRoleManage', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
-    return $resource(MAXInfo.max_server+'/admin/security/roles/:idrol/users/:iduser', 
-        {idrol:'@idrol', idusu:'@iduser'},{
+    return $resource(MAXInfo.max_server+'/admin/security/roles/:idrol/users/:iduser',
+        {idrol:'@idrol', iduser:'@iduser'},{
         save:  {method:'POST', isArray: true, headers:MAXInfo.headers},
+        remove: {method:'DELETE',headers:MAXInfo.headers}
+    });
+}]);
+
+maxClient.factory('UserSubscribeManage', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
+    return $resource(MAXInfo.max_server+'/contexts/:hash/permissions/:iduser/:permission',
+        {hash:'@hash', iduser:'@iduser',permission:'@permission'},{
+        update: {method:'PUT' ,headers:MAXInfo.headers},
         remove: {method:'DELETE',headers:MAXInfo.headers}
     });
 }]);

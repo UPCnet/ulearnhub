@@ -9,14 +9,16 @@ import transaction
 from persistent.mapping import PersistentMapping
 import os
 import re
-
+from pyramid.security import Allow
+from pyramid.security import Authenticated
 
 class Root(PersistentMapping):
     """
     """
     __name__ = 'ROOT'
-    __acl__ = []
-
+    __acl__ = [
+        (Allow, Authenticated, 'homepage')
+    ]
 
 def bootstrap(zodb_root):
     if 'ulearnhub' not in zodb_root:
@@ -70,25 +72,35 @@ def main(global_config, **settings):
     # View routes configuration
     config.add_static_view('jquery', 'components/jquery/dist', cache_max_age=3600)
     config.add_static_view('bootstrap', 'components/bootstrap/dist', cache_max_age=3600)
+    config.add_static_view('templates', 'templates/angular', cache_max_age=3600)
     config.add_static_view('angular', 'components/angular', cache_max_age=3600)
+    config.add_static_view('angular-ui-router', 'components/angular-ui-router/release', cache_max_age=3600)
     config.add_static_view('angular-bootstrap', 'components/angular-bootstrap', cache_max_age=3600)
     config.add_static_view('angular-resource', 'components/angular-resource', cache_max_age=3600)
     config.add_static_view('angular-datatables', 'components/angular-datatables/dist', cache_max_age=3600)
+    config.add_static_view('angular-ui-select', 'components/angular-ui-select/dist', cache_max_age=3600)
+    config.add_static_view('angular-sanitize', 'components/angular-sanitize', cache_max_age=3600)
+    config.add_static_view('angular-translate', 'components/angular-translate', cache_max_age=3600)
+    config.add_static_view('angular-cookies', 'components/angular-cookies', cache_max_age=3600)
+    config.add_static_view('angular-translate-static', 'components/angular-translate-loader-static-files', cache_max_age=3600)
     config.add_static_view('datatables', 'components/datatables/media', cache_max_age=3600)
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_static_view('css', 'css', cache_max_age=3600)
     config.add_static_view('js', 'js', cache_max_age=3600)
+    config.add_static_view('locales', 'locales', cache_max_age=3600)
 
-    config.add_route('home', '/')
+    config.add_route('root', '/')
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
     config.add_route('initialize', '/initialize')
 
-    # config.add_route('domains', '/domains', factory=domains_factory)
-    # config.add_route('domain', '/domains/{domain}', traverse='/domains/{domain}')
-    # config.add_route('domain_users', '/domains/{domain}/users', traverse='/domains/{domain}')
-    # config.add_route('domain_contexts', '/domains/{domain}/contexts', traverse='/domains/{domain}')
-    # config.add_route('domain_components', '/domains/{domain}/components', traverse='/domains/{domain}')
+    config.add_route('domains', '/domains', factory=domains_factory)
+    config.add_route('domain', '/domains/{domain}', traverse='/domains/{domain}')
+
+    config.add_route('domain_users', '/domains/{domain}/users', traverse='/domains/{domain}')
+    config.add_route('domain_user', '/domains/{domain}/users/{username}', traverse='/domains/{domain}')
+    config.add_route('domain_contexts', '/domains/{domain}/contexts', traverse='/domains/{domain}')
+    config.add_route('domain_components', '/domains/{domain}/components', traverse='/domains/{domain}')
 
     config.add_route('info', 'info', factory=domains_factory)
     config.add_route('api_domains', '/api/domains', factory=domains_factory)

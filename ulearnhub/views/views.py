@@ -10,7 +10,7 @@ from ulearnhub.models.deployments import Deployment
 from ulearnhub.models.components import MaxCluster
 from ulearnhub.models.components import MaxServer
 from ulearnhub.models.components import LdapServer
-
+from ulearnhub.views.templates import TemplateAPI
 
 @view_config(route_name='initialize')
 def initialize(root, request):
@@ -53,3 +53,9 @@ def initialize(root, request):
 
     return Response('Initialized')
 
+
+@view_config(route_name='root', renderer='ulearnhub:templates/root.pt', permission="homepage")
+def root_view(context, request):
+    return {
+        "api": TemplateAPI(context, request, 'Root')
+    }

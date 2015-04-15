@@ -1,0 +1,107 @@
+<!doctype html>
+<html metal:use-macro="api.masterTemplate.macros['master']">
+<head></head>
+<body>
+
+  <metal:main fill-slot="main">
+<div ng-app="uLearnContexts">
+
+
+    <h1 class="page-header">Registered Users</h1>
+    <div metal:use-macro="api.masterTemplate.macros['sections']"></div>
+
+      <oauthinfo username="${api.authenticated_user}" 
+                 maxserver="${api.domain.server}"
+                 oauthtoken="${api.authenticated_user_token}">
+      </oauthinfo>
+
+        <div id="manage" ng-controller="ContextsManageController as contMan"> 
+          <br/>
+  	     <table datatable="ng" dt-options="contMan.dtOptions" dt-column-defs="contMan.dtColumnDefs" class="compact table table-striped">
+              <thead>
+                <tr>
+                  <th>DisplayName</th>
+                  <th>Url</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="context in contMan.contexts">
+                  <td>{{context.displayName}}</td>
+                  <td>{{context.url}}</td>
+                  <td>
+                    <a href=""><img ng-src="${api.application_url}/static/editar.jpg" alt="Editar usuario" height="21" width="21"></a> &nbsp;&nbsp;
+                    <a href="" ng-click="contMan.confirmModal('sm',context.hash)"><img ng-src="${api.application_url}/static/borrar.jpg" alt="Eliminar usuario" height="21" width="21"></a>
+                  </td>
+
+                </tr>
+              </tbody>
+  	     </table>
+
+          <hr>
+
+          <div class="view-actions pull-right">
+            <button class="btn btn-primary" ng-click="contMan.open()">New Context</button>
+          </div>
+
+
+
+          <script type="text/ng-template" id="new-context.html">
+              <div class="modal-header">
+                  <h3 class="modal-title">Add new context</h3>
+              </div>
+              <div class="modal-body">
+
+              <form>
+                <div class="form-group">
+                  <label for="displayName">DisplayName</label>
+                  <input ng-model="newcontext.displayName" type="text" class="form-control" id="displayName" placeholder="Enter name context">
+                </div>
+
+                <div class="form-group">
+                  <label for="url">Url</label>
+                  <input ng-model="newcontext.url" type="text" class="form-control" id="url" placeholder="Enter url">
+                </div>
+
+              </form>
+
+              <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+
+              </div>
+              <div class="modal-footer">
+                  <button class="btn btn-primary" ng-click="ok()">OK</button>
+                  <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+              </div>
+          </script>
+
+          <script type="text/ng-template" id="remove-context.html">
+              <div class="modal-header">
+                  <h3 class="modal-title">Confirm remove context</h3>
+              </div>
+              <div class="modal-body">
+
+                <div class="alert alert-warning" role="alert">Are you sure to delete this context?</div>
+
+              <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+
+              </div>
+              <div class="modal-footer">
+                  <button class="btn btn-primary" ng-click="ok()">OK</button>
+                  <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+              </div>
+          </script>
+
+        </div>
+    </div>
+
+  </metal:main>
+
+<metal:main fill-slot="view_scripts">
+    <script src="${api.application_url}/js/MAXClient.js"></script>
+    <script src="${api.application_url}/js/contexts.js"></script>
+</metal:main>
+
+
+</body>
+</html>
+

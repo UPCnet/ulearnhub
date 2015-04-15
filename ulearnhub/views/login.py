@@ -56,7 +56,6 @@ def login(context, request):
 
         # Try to authenticate with Osiris, using oauth server from the context
         domain = context['domains'][domain_name]
-        import ipdb;ipdb.set_trace()
         if domain is None:
             login_response['error'] = "Domain {} is not registered or doesn't exist".format(domain_name)
             return login_response
