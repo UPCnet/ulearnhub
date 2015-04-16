@@ -90,7 +90,7 @@ def login(context, request):
         # Store the user's oauth token in the current session
         request.session['oauth_token'] = oauth_token
         request.session['display_name'] = user_data.get('displayName', auth_user)
-        request.session['avatar'] = '{}/people/{}/avatar'.format(domain.server, auth_user)
+        request.session['avatar'] = '{}/people/{}/avatar'.format(domain.max_server, auth_user)
 
         # Finally, if all went OK
         # return the authenticated view

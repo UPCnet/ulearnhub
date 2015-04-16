@@ -109,6 +109,6 @@ def main(global_config, **settings):
     config.add_route('api_domain_services', '/api/domains/{domain}/services', traverse='/domains/{domain}')
     config.add_route('api_domain_service', '/api/domains/{domain}/services/{service}', traverse='/domains/{domain}')
 
-    config.scan()
+    config.scan(ignore=['ulearnhub.tests'])
 
     return config.make_wsgi_app()

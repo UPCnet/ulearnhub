@@ -12,6 +12,7 @@ from ulearnhub.models.components import MaxServer
 from ulearnhub.models.components import LdapServer
 from ulearnhub.views.templates import TemplateAPI
 
+
 @view_config(route_name='initialize')
 def initialize(root, request):
 

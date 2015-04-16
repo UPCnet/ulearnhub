@@ -50,6 +50,6 @@ setup(name='ulearnhub',
       [paste.app_factory]
       main = ulearnhub:main
       [console_scripts]
-      initialize_ulearnhub_db = ulearnhub.scripts.initializedb:main
+      initialize_ulearnhub = ulearnhub.scripts:init_devel
       """,
       )

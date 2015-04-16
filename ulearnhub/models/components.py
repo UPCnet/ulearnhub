@@ -78,14 +78,12 @@ class MaxServer(Component):
 
     name = 'maxserver'
 
-    def __init__(self, title, url, user, token):
+    def __init__(self, title, url):
         """
             Create a maxserver
         """
         self.title = title
         self.url = url
-        self.user = user
-        self.token = token
         super(MaxServer, self).__init__()
 
     @property

@@ -7,6 +7,7 @@ from ulearnhub.models.components import COMPONENTS
 
 from persistent.mapping import PersistentMapping
 from persistent.list import PersistentList
+from ulearnhub.models.components import MaxServer
 
 
 class Domains(PersistentMapping):
@@ -48,8 +49,10 @@ class Domain(PersistentMapping):
         self.components = PersistentList()
 
     def as_dict(self):
-        di = self.__dict__
-        di.pop('data', None)
+        di = self.__dict__.copy()
+        di['server'] = self.max_server
+        di['oauth_server'] = self.oauth_server
+        di.pop('components', None)
         return di
 
     def get_component(self, klass):
@@ -66,15 +69,20 @@ class Domain(PersistentMapping):
 
     @property
     def maxclient(self):
-        client = MaxClient(self.server, self.oauth_server)
+        client = MaxClient(self.max_server, self.oauth_server)
         return client
 
     def set_token(self, password):
         self.token = self.maxclient.getToken(self.user, password)
 
     @property
+    def max_server(self):
+        max_server = self.get_component(MaxServer)
+        return max_server.url
+
+    @property
     def oauth_server(self):
-        server_info = MaxClient(self.server).server_info
+        server_info = MaxClient(self.max_server).server_info
         return server_info['max.oauth_server']
 
     def add_component(self, component, *args, **kwargs):
