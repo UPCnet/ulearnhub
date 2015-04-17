@@ -1,4 +1,103 @@
 # -*- coding: utf-8 -*-
+from maxcarrot import RabbitClient
+from maxcarrot import RabbitMessage
+
+from ulearnhub.rest.exceptions import ConnectionError
+
+from persistent.mapping import PersistentMapping
+from socket import error as socket_error
+
+import json
+import pkg_resources
+import sys
+
+
+class ConfigWrapper(PersistentMapping):
+
+    @classmethod
+    def from_dict(cls, config):
+        wrapper = cls()
+
+        def wrap(wvalue):
+            if isinstance(wvalue, dict):
+                return ConfigWrapper.from_dict(wvalue)
+            elif isinstance(wvalue, list):
+                wrapped_list = []
+                for item in wvalue:
+                    wrapped_list.append(wrap(item))
+                return wrapped_list
+            else:
+                return wvalue
+
+        for key, value in config.items():
+            wrapped = wrap(value)
+            wrapper[key] = wrapped
+
+        return wrapper
+
+    def __getattr__(self, key):
+        if self.get(key):
+            return self[key]
+
+        else:
+            raise AttributeError(key)
+
+
+def noop(*args, **kwargs):
+    """
+        Dummy method executed in replacement of the requested method
+        when rabbitmq is not defined (i.e. in tests)
+    """
+    pass
+
+
+class RabbitNotifications(object):
+    """
+        Wrapper to access notification methods, and catch possible exceptions
+    """
+
+    def __init__(self, url):
+        self.url = url
+        self.message_defaults = {
+            "source": "hub",
+            "version": pkg_resources.require("ulearnhub")[0].version,
+        }
+
+        client_properties = {
+            "product": "hub",
+            "version": pkg_resources.require("ulearnhub")[0].version,
+            "platform": 'Python {0.major}.{0.minor}.{0.micro}'.format(sys.version_info),
+        }
+        self.enabled = True
+
+        try:
+            self.client = RabbitClient(self.url, client_properties=client_properties)
+        except AttributeError:
+            self.enabled = False
+        except socket_error:
+            raise ConnectionError("Could not connect to rabbitmq broker")
+
+    def sync_acl(self, domain, context, username, tasks):
+        """
+            Sends a Carrot (TM) notification of a new sync acl task
+        """
+        # Send a conversation creation notification to rabbit
+        message = RabbitMessage()
+        message.prepare(self.message_defaults)
+        message.update({
+            "user": {
+                'username': username,
+            },
+            "domain": domain,
+            "action": "modify",
+            "object": "context",
+            "data": {'context': context,
+                     'tasks': tasks}
+        })
+        self.client.send(
+            'syncacl',
+            json.dumps(message.packed),
+            routing_key='')
 
 
 def set_action(actions, name, value):

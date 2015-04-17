@@ -12,6 +12,7 @@ import re
 from pyramid.security import Allow
 from pyramid.security import Authenticated
 
+
 class Root(PersistentMapping):
     """
     """
@@ -19,6 +20,7 @@ class Root(PersistentMapping):
     __acl__ = [
         (Allow, Authenticated, 'homepage')
     ]
+
 
 def bootstrap(zodb_root):
     if 'ulearnhub' not in zodb_root:
@@ -34,9 +36,15 @@ def domains_factory(request):
     return root['domains']
 
 
+def deployments_factory(request):
+    root = root_factory(request)
+    return root['deployments']
+
+
 def root_factory(request):
     conn = get_connection(request)
-    return bootstrap(conn.root())
+    root = bootstrap(conn.root())
+    return root
 
 
 def main(global_config, **settings):
@@ -103,9 +111,19 @@ def main(global_config, **settings):
     config.add_route('domain_components', '/domains/{domain}/components', traverse='/domains/{domain}')
 
     config.add_route('info', 'info', factory=domains_factory)
+
+    # DEPLOYMENT ENDPOINTS
+    config.add_route('api_deployments', '/api/deployments', traverse='/deployments')
+    config.add_route('api_deployment', '/api/deployments/{deployment}', traverse='/deployments/{deployment}')
+    config.add_route('api_deployment_components', '/api/deployments/{deployment}/components', traverse='/deployments/{deployment}')
+    config.add_route('api_deployment_component', '/api/deployments/{deployment}/components/{component}', traverse='/deployments/{deployment}')
+
+    # DOMAIN ENDPOINTS
     config.add_route('api_domains', '/api/domains', factory=domains_factory)
     config.add_route('api_domain', '/api/domains/{domain}', traverse='/domains/{domain}')
+    config.add_route('api_domain_components', '/api/domains/{domain}/components', traverse='/domains/{domain}')
 
+    # SERVICES ENDPOINTS
     config.add_route('api_domain_services', '/api/domains/{domain}/services', traverse='/domains/{domain}')
     config.add_route('api_domain_service', '/api/domains/{domain}/services/{service}', traverse='/domains/{domain}')
 

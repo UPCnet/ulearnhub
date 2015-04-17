@@ -1,13 +1,3 @@
-from ulearnhub.tests import MOCK_TOKEN
-
-
-def oauth2Header(username, token=MOCK_TOKEN, scope="widgetcli"):
-    return {
-        "X-Oauth-Token": token,
-        "X-Oauth-Username": username,
-        "X-Oauth-Scope": scope}
-
-
 class UlearnhubTestApp(object):
 
     def __init__(self, testcase):

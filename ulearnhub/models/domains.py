@@ -32,9 +32,9 @@ class Domains(PersistentMapping):
                 rows.append(row)
         return rows
 
-    def add_domain(self, **kwargs):
-        domain = Domain(**kwargs)
-        return domain
+    def add_domain(self, name, title):
+        self[name] = Domain(name, title)
+        return self[name]
 
 
 class Domain(PersistentMapping):
@@ -46,20 +46,18 @@ class Domain(PersistentMapping):
         super(Domain, self).__init__()
         self.name = name
         self.title = title
-        self.components = PersistentList()
 
     def as_dict(self):
-        di = self.__dict__.copy()
-        di['server'] = self.max_server
-        di['oauth_server'] = self.oauth_server
-        di.pop('components', None)
+        di = {}
+        maxserver = self.get_component(MaxServer)
+        di['server'] = maxserver.as_dict() if maxserver is not None else maxserver
+        di['oauth_server'] = getattr(di['server'], 'oauth_server', None)
         return di
 
     def get_component(self, klass):
-        for component in self.components:
-            if component.__class__ == klass:
+        for component_name, component in self.items():
+            if isinstance(component, klass):
                 return component
-        return None
 
     @property
     def __acl__(self):
@@ -91,3 +89,6 @@ class Domain(PersistentMapping):
 
         self.maxserver = new_component
         return new_component
+
+    def assign(self, component):
+        self[component.id] = component

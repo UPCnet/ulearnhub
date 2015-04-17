@@ -9,7 +9,7 @@ from ulearnhub.tests.mockers.http import http_mock_get_context
 from ulearnhub.tests.mockers.http import http_mock_get_context_subscriptions
 from ulearnhub.tests.mockers.http import http_mock_info
 from ulearnhub.tests.utils import UlearnhubTestApp
-from ulearnhub.tests.utils import oauth2Header
+from ulearnhub.tests import oauth2Header
 
 from mock import patch
 from paste.deploy import loadapp
@@ -46,6 +46,8 @@ class UlearnhubSyncaclFunctionalTests(UlearnHUBBaseTestCase):
 
         self.testapp = UlearnhubTestApp(self)
         self.initialize_zodb()
+        self.initialize_test_domain()
+
         self.patches = []
 
         self.rabbit = RabbitClient(TEST_VHOST_URL)
