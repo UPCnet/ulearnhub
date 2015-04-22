@@ -1,7 +1,7 @@
 'use strict';
 
 var ulearnhub = angular.module('uLearnHUB', [
-    
+
     'hubClient',
     'maxClient',
     'datatables',
@@ -31,9 +31,9 @@ ulearnhub.config(['$stateProvider','$urlRouterProvider','$translateProvider','ui
 
     $translateProvider.preferredLanguage('ca');
 
-    
+
     $stateProvider
-        
+
         // HOME STATES AND NESTED VIEWS ========================================
         .state('root', {
             url: '/',
@@ -50,6 +50,10 @@ ulearnhub.config(['$stateProvider','$urlRouterProvider','$translateProvider','ui
             url: '/domain/:domain',
             templateUrl: 'templates/domain.html',
             controller: 'DomainController',
+            resolve: {
+               domain: function($stateParams, Domain, MAXSession, hubSession) {
+                return setMaxSession($stateParams, Domain, MAXSession, hubSession); }
+            }
         })
 
         .state('domain.users', {
@@ -93,22 +97,22 @@ ulearnhub.config(['$stateProvider','$urlRouterProvider','$translateProvider','ui
                 return setMaxSession($stateParams, Domain, MAXSession, hubSession); }
             }
         })
-        
+
         // ABOUT PAGE AND MULTIPLE NAMED VIEWS =================================
         .state('about', {
-            // we'll get to this in a bit       
+            // we'll get to this in a bit
         });
-        
+
 }]);
 
 ulearnhub.controller('languageController', ['$translate','$cookies','$state', function($translate,$cookies,$state) {
     var self = this;
-    
+
   self.changeLanguage = function (key) {
     $translate.use(key);
     $cookies.currentLang = key;
     $state.go('domain',{domain:$cookies.currentDomain});
-    
+
   };
 
 
@@ -201,7 +205,7 @@ function setMaxSession(state, Domain, MAXSession, hubSession) {
     return self.domainObj.$promise.then(function(data){
         MAXSession.username = hubSession.username;
         MAXSession.oauth_token = hubSession.token;
-        MAXSession.max_server = data.server;
+        MAXSession.max_server = data['max'];
       });
    }
 

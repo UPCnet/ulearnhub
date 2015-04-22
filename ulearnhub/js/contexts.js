@@ -72,7 +72,8 @@ ulearn_contexts.controller('ContextsManageController', ['$modal', '$log', 'Conte
 
 
 
-ulearn_contexts.controller('ContextManageController', ['$scope','$stateParams','$modal', '$log', 'Context','ContextUsers','User','ContextPermissions','DTOptionsBuilder', 'DTColumnDefBuilder','getUrl','UserSubscribeManage','Subscriptions','UserFiltered','$state','$cookies', function($scope,$stateParams,$modal, $log, Context,ContextUsers, User, ContextPermissions, DTOptionsBuilder, DTColumnDefBuilder,getUrl,UserSubscribeManage,Subscriptions,UserFiltered,$state,$cookies) {
+ulearn_contexts.controller('ContextManageController', ['$scope','$stateParams','$modal', '$log', 'DTTranslations', 'Context','ContextUsers','User','ContextPermissions','DTOptionsBuilder', 'DTColumnDefBuilder','getUrl','UserSubscribeManage','Subscriptions','UserFiltered','$state','$cookies', function($scope,$stateParams,$modal, $log, DTTranslations, Context,ContextUsers, User, ContextPermissions, DTOptionsBuilder, DTColumnDefBuilder,getUrl,UserSubscribeManage,Subscriptions,UserFiltered,$state,$cookies) {
+
     var self = this;
     $scope.alerts = [];
     self.usersList = [];
@@ -81,16 +82,20 @@ ulearn_contexts.controller('ContextManageController', ['$scope','$stateParams','
     self.usersAvailable = [];
     var lang = $cookies.currentLang;
     // Default datatable options
+
     self.dtOptions = DTOptionsBuilder
         .newOptions().withPaginationType('full_numbers')
         .withBootstrap()
         .withLanguage(DTTranslations[lang]);
+
+
 
     self.dtColumnDefs = [
         DTColumnDefBuilder.newColumnDef(0),
         DTColumnDefBuilder.newColumnDef(1),
         DTColumnDefBuilder.newColumnDef(2)
     ];
+
 
 
     self.contexts = Context.query();
@@ -132,7 +137,7 @@ ulearn_contexts.controller('ContextManageController', ['$scope','$stateParams','
        if ((self.usernameList.indexOf($select.selected[i].username)) > 0 ){
           $select.removeChoice(i);
        }
-    }    
+    }
   }
 
 

@@ -17,6 +17,7 @@ class Deployments(PersistentMapping):
         """
         if name not in self:
             self[name] = Deployment(name, title)
+            self[name].__parent__ = self
 
         return self[name]
 
@@ -38,8 +39,10 @@ class Deployment(PersistentMapping):
         if Component.constrain:
             multicomponent = self.get_component(Component.constrain.name)
             multicomponent[name] = new_component
+            multicomponent[name].__parent__ = multicomponent
         else:
             self[name] = new_component
+            self[name].__parent__ = self
         return new_component
 
     def get_component(self, component_type, name=None):
@@ -49,7 +52,9 @@ class Deployment(PersistentMapping):
             if matches_component and matches_name:
                 return component
             else:
-                return component.get_component(component_type, name=name)
+                subcomponent = component.get_component(component_type, name=name)
+                if subcomponent is not None:
+                    return subcomponent
 
     def as_dict(self):
         return {

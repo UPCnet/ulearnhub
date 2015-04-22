@@ -3,17 +3,19 @@ from maxclient.rest import MaxClient
 from pyramid.security import Allow
 from pyramid.security import Authenticated
 from ulearnhub.models.components import COMPONENTS
-
+from ulearnhub.security import permissions
+from ulearnhub.security import Manager
 
 from persistent.mapping import PersistentMapping
-from persistent.list import PersistentList
 from ulearnhub.models.components import MaxServer
 
 
 class Domains(PersistentMapping):
-    __acl__ = [
-        (Allow, Authenticated, 'homepage')
-    ]
+    def __acl__(self):
+        return [
+            (Allow, Authenticated, 'homepage'),
+            (Allow, Manager, permissions.list_domains)
+        ]
     __name__ = 'DOMAINS'
 
     def __init__(self):
@@ -32,8 +34,10 @@ class Domains(PersistentMapping):
                 rows.append(row)
         return rows
 
-    def add_domain(self, name, title):
-        self[name] = Domain(name, title)
+    def add(self, name, title):
+        if name not in self:
+            self[name] = Domain(name, title)
+            self[name].__parent__ = self
         return self[name]
 
 
@@ -48,10 +52,11 @@ class Domain(PersistentMapping):
         self.title = title
 
     def as_dict(self):
-        di = {}
-        maxserver = self.get_component(MaxServer)
-        di['server'] = maxserver.as_dict() if maxserver is not None else maxserver
-        di['oauth_server'] = getattr(di['server'], 'oauth_server', None)
+        di = self.__dict__.copy()
+        di.pop('data', None)
+        di.pop('__parent__', None)
+        di['max'] = self.max_server
+        di['oauth'] = self.oauth_server
         return di
 
     def get_component(self, klass):
@@ -75,20 +80,17 @@ class Domain(PersistentMapping):
 
     @property
     def max_server(self):
-        max_server = self.get_component(MaxServer)
-        return max_server.url
+        maxserver = self.get_component(MaxServer)
+        return maxserver.config.url if maxserver is not None else maxserver
 
     @property
     def oauth_server(self):
-        server_info = MaxClient(self.max_server).server_info
-        return server_info['max.oauth_server']
+        if self.max_server:
+            server_info = MaxClient(self.max_server).server_info
+        else:
+            return None
 
-    def add_component(self, component, *args, **kwargs):
-        Component = COMPONENTS.get(component)
-        new_component = Component(*args, **kwargs)
-
-        self.maxserver = new_component
-        return new_component
+        return server_info.get('max.oauth_server', None)
 
     def assign(self, component):
         self[component.id] = component

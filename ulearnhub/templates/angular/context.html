@@ -42,27 +42,27 @@
         <tr ng-repeat="user in contEdit.usersList">
           <td><a ui-sref="domain.user({id:user.username})">{{user.username}}</a></td>
 
-          <td><input type="checkbox" 
-            ng-change="contEdit.changePermission(user.hash,user.username,'read',user.permissionRead)" 
+          <td><input type="checkbox"
+            ng-change="contEdit.changePermission(user.hash,user.username,'read',user.permissionRead)"
             ng-model="user.permissionRead">
           </td>
 
-          <td><input type="checkbox" 
-            ng-change="contEdit.changePermission(user.hash,user.username,'write',user.permissionWrite)" 
+          <td><input type="checkbox"
+            ng-change="contEdit.changePermission(user.hash,user.username,'write',user.permissionWrite)"
             ng-model="user.permissionWrite">
           </td>
 
-            <td><input type="checkbox" 
-            ng-change="contEdit.changePermission(user.hash,user.username,'delete',user.permissionDelete)" 
+            <td><input type="checkbox"
+            ng-change="contEdit.changePermission(user.hash,user.username,'delete',user.permissionDelete)"
             ng-model="user.permissionDelete">
           </td>
 
-          <td><input type="checkbox" 
-            ng-change="contEdit.changePermission(user.hash,user.username,'unsubscribe',user.permissionUnsubscribe)" 
+          <td><input type="checkbox"
+            ng-change="contEdit.changePermission(user.hash,user.username,'unsubscribe',user.permissionUnsubscribe)"
             ng-model="user.permissionUnsubscribe">
           </td>
 
-          <td> 
+          <td>
             <a href="" ng-click="contEdit.unsubscribeUser('sm',user.username,contEdit.contextHash)"><img ng-src="{{contEdit.application_url}}/static/borrar.jpg" alt="Remove subscribe" height="21" width="21"></a>
           </td>
         </tr>

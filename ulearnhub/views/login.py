@@ -88,6 +88,7 @@ def login(context, request):
             return login_response
 
         # Store the user's oauth token in the current session
+        request.session['domain'] = domain.name
         request.session['oauth_token'] = oauth_token
         request.session['display_name'] = user_data.get('displayName', auth_user)
         request.session['avatar'] = '{}/people/{}/avatar'.format(domain.max_server, auth_user)
@@ -105,4 +106,5 @@ def logout(request):
     request.session.pop('oauth_token')
     request.session.pop('display_name')
     request.session.pop('avatar')
+    request.session.pop('domain')
     return HTTPFound(location='/', headers=headers)

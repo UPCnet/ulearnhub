@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from maxcarrot import RabbitClient
 
-from ulearnhub.tests import TEST_VHOST_URL
+from ulearnhub.tests.mockers.deployments import TEST_VHOST_URL
 from ulearnhub.tests import UlearnHUBBaseTestCase
 from ulearnhub.tests import test_user
 from ulearnhub.tests.mockers.http import http_mock_checktoken
@@ -18,6 +18,7 @@ import httpretty
 import json
 import os
 import unittest
+import time
 
 
 def ldap_patch_group_search(response):
@@ -45,18 +46,20 @@ class UlearnhubSyncaclFunctionalTests(UlearnHUBBaseTestCase):
         self.app = loadapp('config:tests.ini', relative_to=conf_dir)
 
         self.testapp = UlearnhubTestApp(self)
-        self.initialize_zodb()
-        self.initialize_test_domain()
-
-        self.patches = []
 
         self.rabbit = RabbitClient(TEST_VHOST_URL)
         self.rabbit.management.cleanup(delete_all=True)
         self.rabbit.declare()
 
         httpretty.enable()
+        http_mock_info()
         http_mock_checktoken()
 
+        self.initialize_empty_zodb()
+        self.initialize_test_deployment()
+        self.initialize_test_domain()
+
+        self.patches = []
         self.clients = {}
 
     def tearDown(self):
@@ -73,6 +76,27 @@ class UlearnhubSyncaclFunctionalTests(UlearnHUBBaseTestCase):
             for client in user_clients:
                 client.disconnect()
 
+    def assertMessagesInQueue(self, queue, retries=0, expected=None):
+        messages = self.rabbit.get_all(queue)
+        expected_message_count = expected if expected is not None else len(messages)
+
+        for retry in xrange(retries):
+            if len(messages) < expected_message_count:
+                messages += self.rabbit.get_all(queue)
+            else:
+                break
+
+            time.sleep(1)
+
+        if len(messages) < expected_message_count:
+            raise AssertionError(
+                'Missing messages on queue, expected {}, received {}, retryied {}'.format(
+                    expected_message_count,
+                    len(messages),
+                    retries
+                ))
+        return {item[0]['u']['u']: item[0] for item in messages}
+
     def test_domain_syncacl_initial_subscriptions(self):
         """
             Given a newly created context
@@ -84,7 +108,6 @@ class UlearnhubSyncaclFunctionalTests(UlearnHUBBaseTestCase):
         from .mockers.syncacl import initial_subscriptions as subscriptions
         from .mockers.syncacl import ldap_test_group, ldap_test_group2, ldap_test_group3
 
-        http_mock_info()
         http_mock_get_context(context)
         http_mock_get_context_subscriptions(subscriptions)
 
@@ -100,10 +123,7 @@ class UlearnhubSyncaclFunctionalTests(UlearnHUBBaseTestCase):
 
         # Index by username to be able to make asserts
         # This is mandatory, as we cannot assume the order of the queue
-        messages = self.rabbit.get_all('syncacl')
-        messages = {item[0]['u']['u']: item[0] for item in messages}
-
-        self.assertEqual(len(messages), 9)
+        messages = self.assertMessagesInQueue('syncacl', retries=3, expected=9)
 
         # Test group users new subscription without grants
         self.assertItemsEqual(messages['groupuser1']['d']['tasks'], ['subscribe'])
@@ -157,7 +177,6 @@ class UlearnhubSyncaclFunctionalTests(UlearnHUBBaseTestCase):
         from .mockers.syncacl import existing_subscriptions as subscriptions
         from .mockers.syncacl import ldap_test_group, ldap_test_group2, ldap_test_group3
 
-        http_mock_info()
         http_mock_get_context(context)
         http_mock_get_context_subscriptions(subscriptions)
 
@@ -173,10 +192,7 @@ class UlearnhubSyncaclFunctionalTests(UlearnHUBBaseTestCase):
 
         # Index by username to be able to make asserts
         # This is mandatory, as we cannot assume the order of the queue
-        messages = self.rabbit.get_all('syncacl')
-        messages = {item[0]['u']['u']: item[0] for item in messages}
-
-        self.assertEqual(len(messages), 6)
+        messages = self.assertMessagesInQueue('syncacl', retries=3, expected=6)
 
         # Testuser1 remains untouched
         self.assertNotIn('testuser1', messages)
@@ -224,7 +240,6 @@ class UlearnhubSyncaclFunctionalTests(UlearnHUBBaseTestCase):
         from .mockers.syncacl import initial_subscriptions as subscriptions
         from .mockers.syncacl import ldap_test_group4
 
-        http_mock_info()
         http_mock_get_context(context)
         http_mock_get_context_subscriptions(subscriptions)
 
@@ -238,10 +253,7 @@ class UlearnhubSyncaclFunctionalTests(UlearnHUBBaseTestCase):
 
         # Index by username to be able to make asserts
         # This is mandatory, as we cannot assume the order of the queue
-        messages = self.rabbit.get_all('syncacl')
-        messages = {item[0]['u']['u']: item[0] for item in messages}
-
-        self.assertEqual(len(messages), 2)
+        messages = self.assertMessagesInQueue('syncacl', retries=3, expected=2)
 
         self.assertItemsEqual(messages['groupuser1']['d']['tasks'], ['grant', 'subscribe'])
         self.assertItemsEqual(messages['groupuser1']['d']['tasks']['grant'], ['write', 'flag'])
@@ -265,7 +277,6 @@ class UlearnhubSyncaclFunctionalTests(UlearnHUBBaseTestCase):
         from .mockers.syncacl import context as context
         from .mockers.syncacl import initial_subscriptions as subscriptions
 
-        http_mock_info()
         http_mock_get_context(context)
         http_mock_get_context_subscriptions(subscriptions)
 
@@ -273,10 +284,7 @@ class UlearnhubSyncaclFunctionalTests(UlearnHUBBaseTestCase):
 
         # Index by username to be able to make asserts
         # This is mandatory, as we cannot assume the order of the queue
-        messages = self.rabbit.get_all('syncacl')
-        messages = {item[0]['u']['u']: item[0] for item in messages}
-
-        self.assertEqual(len(messages), 1)
+        messages = self.assertMessagesInQueue('syncacl', retries=3, expected=1)
 
         # Test subscribed user revoke permission, preserves most important role
         self.assertItemsEqual(messages['testuser.creator']['d']['tasks'], ['grant'])

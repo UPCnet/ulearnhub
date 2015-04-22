@@ -36,6 +36,19 @@ test_maxserver_component = {
     'name': 'testmaxserver1',
     'title': 'Test MaxServer',
     'params': {
-        'url': 'http://tests.max',
+        'url': 'http://localhost:8081',
+    }
+}
+
+RABBIT_URL = "amqp://guest:guest@localhost:5672"
+TEST_VHOST_URL = '{}/tests'.format(RABBIT_URL)
+RABBIT_MANAGEMENT_URL = "http://localhost:15672/api".format(RABBIT_URL)
+
+test_rabbitserver_component = {
+    'component': 'rabbitserver',
+    'name': 'testrabbit',
+    'title': 'Test RabbitServer',
+    'params': {
+        'url': TEST_VHOST_URL,
     }
 }

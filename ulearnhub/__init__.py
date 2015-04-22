@@ -1,50 +1,46 @@
-from pyramid.config import Configurator
+# -*- coding: utf-8 -*-
+from ulearnhub.resources import root_factory
+from ulearnhub.resources import create_defaults
+from ulearnhub.rest.exceptions import Unauthorized
+from ulearnhub.routes import ROUTES
+from ulearnhub.security.authentication import OauthAuthenticationPolicy
+from ulearnhub.views.login import login
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.authentication import AuthTktAuthenticationPolicy
-from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
+from pyramid.config import Configurator
+from pyramid_beaker import session_factory_from_settings
+from pyramid_beaker import set_cache_regions_from_settings
+from pyramid_multiauth import MultiAuthenticationPolicy
 
-from pyramid_zodbconn import get_connection
-
-import transaction
-from persistent.mapping import PersistentMapping
+import json
 import os
 import re
-from pyramid.security import Allow
-from pyramid.security import Authenticated
 
 
-class Root(PersistentMapping):
+def get_oauth_headers(request):
     """
+        Extracts oauth headers from request
     """
-    __name__ = 'ROOT'
-    __acl__ = [
-        (Allow, Authenticated, 'homepage')
-    ]
+    oauth_token = request.headers.get('X-Oauth-Token', '')
+    username = request.headers.get('X-Oauth-Username', '')
+    scope = request.headers.get('X-Oauth-Scope', '')
+
+    if not oauth_token or not username:
+        # This is for mental sanity in case we miss the body part when writing tests
+        if 'X-Oauth-Username' in request.params.keys():
+            raise Unauthorized("Authorization found in url params, not in request. Check your tests, you may be passing the authentication headers as the request body...")
+
+        if request.matched_route.name.startswith('api_'):
+            raise Unauthorized('No auth headers found.')
+
+    return oauth_token, username.lower(), scope
 
 
-def bootstrap(zodb_root):
-    if 'ulearnhub' not in zodb_root:
-        root = Root()
-        zodb_root['ulearnhub'] = root
-        transaction.commit()
-
-    return zodb_root['ulearnhub']
-
-
-def domains_factory(request):
-    root = root_factory(request)
-    return root['domains']
-
-
-def deployments_factory(request):
-    root = root_factory(request)
-    return root['deployments']
-
-
-def root_factory(request):
-    conn = get_connection(request)
-    root = bootstrap(conn.root())
-    return root
+def get_oauth_domain(request):
+    """
+        Extracts domain informatin from request
+    """
+    return request.headers.get('X-Oauth-Domain', None)
 
 
 def main(global_config, **settings):
@@ -56,7 +52,11 @@ def main(global_config, **settings):
     # Security & Authentication
     session_factory = session_factory_from_settings(settings)
 
-    authn_policy = AuthTktAuthenticationPolicy('auth_tkt')
+    authn_policy = MultiAuthenticationPolicy([
+        OauthAuthenticationPolicy(allowed_scopes=['widgetcli']),
+        AuthTktAuthenticationPolicy('secret')
+    ])
+
     authz_policy = ACLAuthorizationPolicy()
 
     # Create data folder
@@ -102,30 +102,18 @@ def main(global_config, **settings):
     config.add_route('logout', '/logout')
     config.add_route('initialize', '/initialize')
 
-    config.add_route('domains', '/domains', factory=domains_factory)
-    config.add_route('domain', '/domains/{domain}', traverse='/domains/{domain}')
+    config.add_request_method(get_oauth_headers, name='auth_headers', reify=True)
+    config.add_request_method(get_oauth_domain, name='auth_domain', reify=True)
 
-    config.add_route('domain_users', '/domains/{domain}/users', traverse='/domains/{domain}')
-    config.add_route('domain_user', '/domains/{domain}/users/{username}', traverse='/domains/{domain}')
-    config.add_route('domain_contexts', '/domains/{domain}/contexts', traverse='/domains/{domain}')
-    config.add_route('domain_components', '/domains/{domain}/components', traverse='/domains/{domain}')
+    # REST Resources
+    # Configure routes based on resources defined in RESOURCES
+    for name, properties in ROUTES.items():
+        route_params = {param: value for param, value in properties.items() if param in ['traverse']}
+        config.add_route(name, properties.get('route'), **route_params)
 
-    config.add_route('info', 'info', factory=domains_factory)
-
-    # DEPLOYMENT ENDPOINTS
-    config.add_route('api_deployments', '/api/deployments', traverse='/deployments')
-    config.add_route('api_deployment', '/api/deployments/{deployment}', traverse='/deployments/{deployment}')
-    config.add_route('api_deployment_components', '/api/deployments/{deployment}/components', traverse='/deployments/{deployment}')
-    config.add_route('api_deployment_component', '/api/deployments/{deployment}/components/{component}', traverse='/deployments/{deployment}')
-
-    # DOMAIN ENDPOINTS
-    config.add_route('api_domains', '/api/domains', factory=domains_factory)
-    config.add_route('api_domain', '/api/domains/{domain}', traverse='/domains/{domain}')
-    config.add_route('api_domain_components', '/api/domains/{domain}/components', traverse='/domains/{domain}')
-
-    # SERVICES ENDPOINTS
-    config.add_route('api_domain_services', '/api/domains/{domain}/services', traverse='/domains/{domain}')
-    config.add_route('api_domain_service', '/api/domains/{domain}/services/{service}', traverse='/domains/{domain}')
+    # Test for default structures and initialize them if not found
+    defaults = json.loads(open(settings['ulearnhub.defaults']).read())
+    create_defaults(config.registry, defaults)
 
     config.scan(ignore=['ulearnhub.tests'])
 

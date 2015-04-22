@@ -39,6 +39,10 @@ class TemplateAPI(object):
         return self.request.session['oauth_token']
 
     @property
+    def authenticated_user_domain(self):
+        return self.request.session['domain']
+
+    @property
     def authenticated_user_displayname(self):
         return self.request.session['display_name']
 

@@ -19,6 +19,7 @@ requires = [
     'pyramid_osiris',
     'pyramid_tm',
     'pyramid_zodbconn',
+    'pyramid_multiauth',
     'transaction',
     'waitress',
 ]

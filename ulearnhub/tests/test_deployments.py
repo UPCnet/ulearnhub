@@ -11,12 +11,6 @@ from ulearnhub.tests.mockers.http import http_mock_info
 import httpretty
 import json
 import os
-from pyramid.request import Request
-
-
-class FakeRequest(Request):
-    def __init__(self, registry):
-        self.registry = registry
 
 
 class DeploymentsTests(UlearnHUBBaseTestCase):
@@ -26,7 +20,7 @@ class DeploymentsTests(UlearnHUBBaseTestCase):
         self.app = loadapp('config:tests.ini', relative_to=conf_dir)
 
         self.testapp = UlearnhubTestApp(self)
-        self.initialize_empty_zodb()
+        self.initialize_empty_zodb(self.testapp.testapp.app.registry)
         self.patches = []
 
         httpretty.enable()

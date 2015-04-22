@@ -13,8 +13,8 @@
                   <tbody>
                     <tr ng-repeat="domain in ctrl.domains">
                       <td><a ui-sref="domain({domain:domain.name,server:domain.server})">{{ domain.name }}</a></td>
-                      <td>{{ domain.server }}</td>
-                      <td>{{ domain.oauth_server }}</td>
+                      <td>{{ domain.max }}</td>
+                      <td>{{ domain.oauth }}</td>
 
                     </tr>
                   </tbody>
@@ -63,7 +63,7 @@
                       <button class="btn btn-warning" ng-click="cancel()" translate="btn_cancel">Cancel</button>
                   </div>
               </script>
-              
+
           </div>
 
 

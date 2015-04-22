@@ -15,14 +15,14 @@ def http_mock_checktoken():
     )
 
 
-def http_mock_info():
+def http_mock_info(max_server='http://localhost:8081', oauth_server='https://oauth.upcnet.es'):
     info = {
-        "max.oauth_server": "https://oauth.upcnet.es",
+        "max.oauth_server": oauth_server,
         "version": "4.0.26.dev0",
         "max.server_id": "test"
     }
     httpretty.register_uri(
-        httpretty.GET, re.compile("http://tests.\w+/info"),
+        httpretty.GET, re.compile("{}/info".format(max_server)),
         body=json.dumps(info),
         status=200,
         content_type="application/json"

@@ -66,12 +66,7 @@ ulearnhub.controller('DomainController', ['$stateParams','$modal', '$log', '$tra
     $cookies.currentDomain = $stateParams.domain;
     self.domainObj = Domain.get({id:domainName});
 
-	self.domainObj.$promise.then(function(data){
-		MAXSession.username = hubSession.username;
-        MAXSession.oauth_token = hubSession.token;
-        MAXSession.max_server = data.server;
-	});
-  	
+
   self.changeLanguage = function (key) {
     $translate.use(key);
   };

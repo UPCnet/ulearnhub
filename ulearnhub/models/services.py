@@ -68,12 +68,12 @@ class SyncACL(Service):
 
         # Get target context and all of its subscriptions
         maxclient = maxserver.maxclient
-        username, token = self.request.auth
-        maxclient.setActor(maxserver.user)
-        maxclient.setToken(maxserver.token)
+        authenticated_username, authenticated_token = self.request.auth
+        maxclient.setActor(authenticated_username)
+        maxclient.setToken(authenticated_token)
 
         # Collect data and variables needed
-        context = maxclient.contexts[self.data['context']].get()
+        context = maxclient.contexts[self.data['context']].get(qs=dict(show_acls=True))
         subscriptions = maxclient.contexts[self.data['context']].subscriptions.get(qs={'limit': 0})
         acl_groups = self.data['acl'].get('groups', [])
         acl_users = self.data['acl'].get('users', [])

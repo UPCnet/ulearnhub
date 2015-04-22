@@ -5,7 +5,6 @@ from ulearnhub.rest import JSONResourceRoot
 
 
 @view_config(route_name='info', request_method='GET')
-@endpoint(authentication=False)
 def domains_list(domains, request):
 
     info = {

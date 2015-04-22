@@ -15,7 +15,7 @@ hubClient.factory('Domain', ['$resource', 'hubInfo', function($resource, hubInfo
     return $resource(hubInfo.server + '/api/domains/:id', null, {
         query: {method:'GET', isArray: true, headers:hubInfo.headers},
         save: {method:'POST', headers:hubInfo.headers},
-        get: {method:'GET', headers:hubInfo.headers},
+        get: {method:'GET', headers:hubInfo.headers}
     });
 }]);
 
@@ -24,6 +24,7 @@ hubClient.factory('hubInfo', ['hubSession', function(hubSession) {
     var hubinfo = {};
     hubinfo.headers = {'X-Oauth-Username': hubSession.username,
                        'X-Oauth-Token': hubSession.token,
+                       'X-Oauth-Domain': hubSession.domain,
                        'X-Oauth-Scope': 'widgetcli'};
     hubinfo.server = hubSession.server;
     return hubinfo;
@@ -44,6 +45,7 @@ hubClient.directive('ngHubInfo', [function() {
             hubSession.username = $attrs.username;
             hubSession.token = $attrs.token;
             hubSession.server = $attrs.server;
+            hubSession.domain = $attrs.domain;
         }
     };
 }]);

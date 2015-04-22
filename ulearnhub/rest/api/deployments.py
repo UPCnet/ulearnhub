@@ -2,10 +2,10 @@ from pyramid.view import view_config
 from ulearnhub.rest import endpoint
 from ulearnhub.rest import JSONResourceEntity
 from ulearnhub.rest import JSONResourceRoot
+from ulearnhub.security import permissions
 
 
-@view_config(route_name='api_deployments', request_method='POST')
-@endpoint()
+@view_config(route_name='api_deployments', request_method='POST', permission=permissions.add_deployment)
 def add_deployment(deployments, request):
     """
         Adds a new deployment.
@@ -30,8 +30,7 @@ def add_deployment(deployments, request):
     return response()
 
 
-@view_config(route_name='api_deployment', request_method='GET')
-@endpoint()
+@view_config(route_name='api_deployment', request_method='GET', permission=permissions.view_deployment)
 def get_deployment(deployment, request):
     """
         Gets an existing deployment.
@@ -40,8 +39,7 @@ def get_deployment(deployment, request):
     return response()
 
 
-@view_config(route_name='api_deployment_components', request_method='POST')
-@endpoint()
+@view_config(route_name='api_deployment_components', request_method='POST', permissions.add_component)
 def add_component(deployment, request):
     component_type = request.json['component']
     name = request.json['name']
