@@ -1,17 +1,24 @@
+# -*- coding: utf-8 -*-
+from ulearnhub.security import Manager
+from ulearnhub.security import permissions
+
 from pyramid.security import Allow
-from pyramid.security import Authenticated
 
-
+from persistent import Persistent
 from persistent.list import PersistentList
 from persistent.mapping import PersistentMapping
-from persistent import Persistent
 
 
 class Users(PersistentMapping):
-    __acl__ = [
-        (Allow, Authenticated, 'homepage')
-    ]
+
     __name__ = 'USERS'
+
+    @property
+    def __acl__(self):
+        return [
+            (Allow, Manager, permissions.list_domains),
+            (Allow, Manager, permissions.add_domain)
+        ]
 
     def __init__(self):
         """

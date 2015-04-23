@@ -5,7 +5,7 @@ from pyramid.view import view_config
 from pyramid.view import forbidden_view_config
 
 from pyramid.security import remember, forget
-
+from max.exceptions.hooks import main_forbidden
 from pyramid_osiris import Connector
 from ulearnhub.views.templates import TemplateAPI
 import logging
@@ -23,8 +23,15 @@ def real_request_url(request):
         return request.url
 
 
-@view_config(route_name='login', renderer='ulearnhub:templates/login.pt')
 @forbidden_view_config(renderer='ulearnhub:templates/login.pt')
+def catch_forbidden(context, request):
+    if request.matched_route.name.startswith('api_'):
+        return main_forbidden(request)
+    else:
+        return login(context, request)
+
+
+@view_config(route_name='login', renderer='ulearnhub:templates/login.pt')
 def login(context, request):
     """ The login view - pyramid_ldap enabled with the forbidden view logic.
     """

@@ -1,24 +1,42 @@
-from ulearnhub.models.components import MaxServer
+# -*- coding: utf-8 -*-
 from ulearnhub.models.components import LdapServer
+from ulearnhub.models.components import MaxServer
 from ulearnhub.models.components import RabbitServer
-
 from ulearnhub.models.utils import generate_actions
 from ulearnhub.models.utils import merge_actions
+from ulearnhub.security import permissions
+
+from pyramid.security import Allow
+from pyramid.security import Authenticated
 
 from itertools import chain
 
 
+class ServicesContainer(object):
+
+    def __init__(self, parent):
+        self.__parent__ = parent
+
+    def __getitem__(self, key):
+        Service = SERVICES[key]
+        return Service(self.__parent__)
+
+
 class Service(object):
 
-    def __init__(self, domain, request):
-        self.domain = domain
-        self.request = request
-        self.data = request.json
+    @property
+    def __acl__(self):
+        return [
+            (Allow, Authenticated, permissions.execute_service),
+        ]
 
-    def run(self):
+    def __init__(self, domain):
+        self.__parent = self.domain = domain
+
+    def run(self, request):
         for component_name in self.target_components:
             handler = self.get_component_handler(component_name)
-            handler()
+            handler(request)
         return {}
 
     def get_component_handler(self, component_name):
@@ -32,7 +50,7 @@ class SyncACL(Service):
     name = 'syncacl'
     target_components = ['rabbitmq']
 
-    def handle_rabbitmq(self, *args, **kwargs):
+    def handle_rabbitmq(self, request, *args, **kwargs):
         """
             Queues subscription tasks to the domain's rabbitmq broker.
 
@@ -61,6 +79,8 @@ class SyncACL(Service):
                 }
             }
         """
+
+        data = request.json
         # Get required components for this service
         maxserver = self.domain.get_component(MaxServer)
         ldapserver = self.domain.get_component(LdapServer)
@@ -68,16 +88,16 @@ class SyncACL(Service):
 
         # Get target context and all of its subscriptions
         maxclient = maxserver.maxclient
-        authenticated_username, authenticated_token = self.request.auth
+        authenticated_username, authenticated_token, scope = request.auth_headers
         maxclient.setActor(authenticated_username)
         maxclient.setToken(authenticated_token)
 
         # Collect data and variables needed
-        context = maxclient.contexts[self.data['context']].get(qs=dict(show_acls=True))
-        subscriptions = maxclient.contexts[self.data['context']].subscriptions.get(qs={'limit': 0})
-        acl_groups = self.data['acl'].get('groups', [])
-        acl_users = self.data['acl'].get('users', [])
-        permission_mapping = self.data['permission_mapping']
+        context = maxclient.contexts[data['context']].get(qs=dict(show_acls=True))
+        subscriptions = maxclient.contexts[data['context']].subscriptions.get(qs={'limit': 0})
+        acl_groups = data['acl'].get('groups', [])
+        acl_users = data['acl'].get('users', [])
+        permission_mapping = data['permission_mapping']
 
         policy_granted_permissions = set([permission for permission, value in context.get('permissions', {}).items() if value in ['subscribed', 'public']])
 

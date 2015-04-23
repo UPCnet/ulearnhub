@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from maxcarrot import RabbitClient
 
+from ulearnhub.resources import create_defaults
 from ulearnhub.tests.mockers.deployments import TEST_VHOST_URL
 from ulearnhub.tests import UlearnHUBBaseTestCase
 from ulearnhub.tests import test_user
@@ -10,6 +11,7 @@ from ulearnhub.tests.mockers.http import http_mock_get_context_subscriptions
 from ulearnhub.tests.mockers.http import http_mock_info
 from ulearnhub.tests.utils import UlearnhubTestApp
 from ulearnhub.tests import oauth2Header
+from ulearnhub.tests import BASE_DOMAIN
 
 from mock import patch
 from paste.deploy import loadapp
@@ -55,7 +57,7 @@ class UlearnhubSyncaclFunctionalTests(UlearnHUBBaseTestCase):
         http_mock_info()
         http_mock_checktoken()
 
-        self.initialize_empty_zodb()
+        create_defaults(self.testapp.testapp.app.registry, BASE_DOMAIN, quiet=True)
         self.initialize_test_deployment()
         self.initialize_test_domain()
 

@@ -1,7 +1,5 @@
 from pyramid.view import view_config
-from ulearnhub.rest import endpoint
-from ulearnhub.rest import JSONResourceEntity
-from ulearnhub.rest import JSONResourceRoot
+from max.rest import JSONResourceEntity
 
 
 @view_config(route_name='info', request_method='GET')
@@ -16,5 +14,5 @@ def domains_list(domains, request):
         info['domains'][name] = {
             "max_server_url": domain.server
         }
-    response = JSONResourceEntity(info)
+    response = JSONResourceEntity(request, info)
     return response()

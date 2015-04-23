@@ -2,7 +2,7 @@
 from maxcarrot import RabbitClient
 from maxcarrot import RabbitMessage
 
-from ulearnhub.rest.exceptions import ConnectionError
+from max.exceptions import ConnectionError
 
 from persistent.mapping import PersistentMapping
 from socket import error as socket_error

@@ -1,6 +1,6 @@
 from pyramid.view import view_config
-from ulearnhub.rest import JSONResourceEntity
-from ulearnhub.rest import JSONResourceRoot
+from max.rest import JSONResourceEntity
+from max.rest import JSONResourceRoot
 from ulearnhub import root_factory
 from ulearnhub.security import permissions
 import re
@@ -18,13 +18,13 @@ def domain_add(domains, request):
     name = request.json['name']
     title = request.json['title']
     new_domain = domains.add(name, title)
-    response = JSONResourceEntity(new_domain.as_dict(), status_code=201)
+    response = JSONResourceEntity(request, new_domain.as_dict(), status_code=201)
     return response()
 
 
 @view_config(route_name='api_domain', request_method='GET', permission=permissions.view_domain)
 def domain(domain, request):
-    response = JSONResourceEntity(domain.as_dict())
+    response = JSONResourceEntity(request, domain.as_dict())
     return response()
 
 
@@ -37,5 +37,5 @@ def domain_assign_component(domain, request):
     component = deployments['test'].get_component(component_type, name=component_name)
 
     domain.assign(component)
-    response = JSONResourceEntity(domain.as_dict(), status_code=201)
+    response = JSONResourceEntity(request, domain.as_dict(), status_code=201)
     return response()

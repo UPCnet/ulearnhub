@@ -22,6 +22,7 @@ requires = [
     'pyramid_multiauth',
     'transaction',
     'waitress',
+    'max'
 ]
 
 setup(name='ulearnhub',

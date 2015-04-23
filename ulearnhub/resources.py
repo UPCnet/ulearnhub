@@ -62,7 +62,12 @@ def initialize_zodb(request):
     return root
 
 
-def create_defaults(registry, defaults):
+def create_defaults(registry, defaults, quiet=False):
+
+    def log(message):
+        if not quiet:
+            print message
+
     root = initialize_zodb(registry)
 
     deployments = root['deployments']
@@ -71,26 +76,26 @@ def create_defaults(registry, defaults):
 
     for name, deploy_data in defaults.get('deployments', {}).items():
         if name in deployments:
-            print ' · Getting deployment "{}"'.format(name)
+            log(' · Getting deployment "{}"'.format(name))
         else:
-            print ' + Adding deployment "{}"'.format(name)
+            log(' + Adding deployment "{}"'.format(name))
         deployment = deployments.add(name=name, title=deploy_data['title'])
         for component_data in deploy_data['components']:
             if deployment.get_component(component_data['type'], name=component_data['name']) is None:
-                print '   + Added new "{type}" component named "{name}"'.format(**component_data)
+                log('   + Added new "{type}" component named "{name}"'.format(**component_data))
                 deployment.add_component(component_data['type'], component_data['name'], component_data['title'], component_data['config'])
 
     for name, domain_data in defaults.get('domains', {}).items():
         if name in domains:
-            print ' · Getting domain "{}"'.format(name)
+            log(' · Getting domain "{}"'.format(name))
         else:
-            print ' + Adding domain "{}"'.format(name)
+            log(' + Adding domain "{}"'.format(name))
 
         domain = domains.add(name=name, title=domain_data['title'])
         for component_data in domain_data['components']:
             if component_data['name'] not in domain:
                 component = deployments[component_data['deployment']].get_component(component_data['type'], name=component_data['name'])
-                print '   + Assigned "{type}" component named "{name}"'.format(**component_data)
+                log('   + Assigned "{type}" component named "{name}"'.format(**component_data))
                 domain.assign(component)
 
     for user_data in defaults.get('users', []):
@@ -98,17 +103,17 @@ def create_defaults(registry, defaults):
         domain = user_data['domain']
         roles = user_data['roles']
 
-        print ' · Setting user roles "{}"'.format(name)
+        log(' · Setting user roles "{}"'.format(name))
 
-        if not domain in users:
-            print '   + Adding user {username} on domain {domain} with roles {roles}'.format(**user_data)
+        if domain not in users:
+            log('   + Adding user {username} on domain {domain} with roles {roles}'.format(**user_data))
             users.add(username, domain, roles)
         else:
             if username not in users[domain]:
-                print '   + Adding user {username} on domain {domain} with roles {roles}'.format(**user_data)
+                log('   + Adding user {username} on domain {domain} with roles {roles}'.format(**user_data))
                 users.add(username, domain, roles)
             else:
-                print '   · Setting roles {roles} for user {username} on domain {domain}'.format(**user_data)
+                log('   · Setting roles {roles} for user {username} on domain {domain}'.format(**user_data))
                 users[domain][username].set_roles(roles)
 
     transaction.commit()

@@ -1,7 +1,5 @@
 from pyramid.view import view_config
-from ulearnhub.rest import endpoint
-from ulearnhub.rest import JSONResourceEntity
-from ulearnhub.rest import JSONResourceRoot
+from max.rest import JSONResourceEntity
 from ulearnhub.security import permissions
 
 
@@ -26,7 +24,7 @@ def add_deployment(deployments, request):
         status_code = 201
         deployment = deployments.add(name, title)
 
-    response = JSONResourceEntity(deployment.as_dict(), status_code=status_code)
+    response = JSONResourceEntity(request, deployment.as_dict(), status_code=status_code)
     return response()
 
 
@@ -35,17 +33,17 @@ def get_deployment(deployment, request):
     """
         Gets an existing deployment.
     """
-    response = JSONResourceEntity(deployment.as_dict(), status_code=200)
+    response = JSONResourceEntity(request, deployment.as_dict(), status_code=200)
     return response()
 
 
-@view_config(route_name='api_deployment_components', request_method='POST', permissions.add_component)
+@view_config(route_name='api_deployment_components', request_method='POST', permission=permissions.add_component)
 def add_component(deployment, request):
     component_type = request.json['component']
     name = request.json['name']
     title = request.json['title']
     params = request.json['params']
     component = deployment.add_component(component_type, name, title, params)
-    response = JSONResourceEntity(component.as_dict(), status_code=201)
+    response = JSONResourceEntity(request, component.as_dict(), status_code=201)
     return response()
 

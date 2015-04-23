@@ -1,16 +1,11 @@
 from pyramid.view import view_config
-from ulearnhub.rest import endpoint
-from ulearnhub.rest import JSONResourceEntity
+from max.rest import JSONResourceEntity
 
-from ulearnhub.models.services import SERVICES
-from ulearnhub.
+from ulearnhub.security.permissions import execute_service
 
 
-@view_config(route_name='api_domain_service', request_method='POST', permissions=)
-def domain_service(domain, request):
-    Service = SERVICES[request.matchdict['service']]
-    service = Service(domain, request)
-    result = service.run()
-
-    response = JSONResourceEntity(result)
+@view_config(route_name='api_domain_service', request_method='POST', permission=execute_service)
+def domain_service(service, request):
+    result = service.run(request)
+    response = JSONResourceEntity(request, result)
     return response()

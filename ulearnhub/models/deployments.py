@@ -1,8 +1,23 @@
-from persistent.mapping import PersistentMapping
+# -*- coding: utf-8 -*-
 from ulearnhub.models.components import get_component_by_name
+from ulearnhub.security import Manager
+from ulearnhub.security import permissions
+
+from pyramid.security import Allow
+
+from persistent.mapping import PersistentMapping
 
 
 class Deployments(PersistentMapping):
+
+    __name__ = 'DEPLOYMENTS'
+
+    @property
+    def __acl__(self):
+        return [
+            (Allow, Manager, permissions.list_deployments),
+            (Allow, Manager, permissions.add_deployment)
+        ]
 
     def __init__(self, *args, **kwargs):
         """
@@ -23,6 +38,15 @@ class Deployments(PersistentMapping):
 
 
 class Deployment(PersistentMapping):
+
+    __name__ = 'DEPLOYMENT'
+
+    @property
+    def __acl__(self):
+        return [
+            (Allow, Manager, permissions.view_deployment),
+            (Allow, Manager, permissions.add_component)
+        ]
 
     def __init__(self, name, title, *args, **kwargs):
         """

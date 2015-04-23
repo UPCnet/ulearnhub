@@ -1,19 +1,57 @@
 # -*- coding: utf-8 -*-
-from collections import namedtuple
-
 import json
 import unittest
 
 
-test_user = 'carles.bruguera'
+test_user = 'test.user'
 MOCK_TOKEN = "jfa1sDF2SDF234"
 
+BASE_DOMAIN = {
+    "deployments": {
+        "base": {
+            "title": "Local deployment",
+            "components": [
+                {
+                    "type": "maxcluster",
+                    "name": "basecluster",
+                    "title": "Base MAX Server Cluster",
+                    "config": {}
+                },
+                {
+                    "type": "maxserver",
+                    "name": "base",
+                    "title": "Base MAX Server",
+                    "config": {
+                        "url": "http://localhost:8081"
+                    }
+                }
+            ]
+        }
+    },
+    "domains": {
+        "base": {
+            "title": "Base domain",
+            "components": [
+                {
+                    "deployment": "base",
+                    "type": "maxserver",
+                    "name": "base"
+                }
+            ]
+        }
+    },
+    "users": [
+        {"domain": "base", "username": "test.user", "roles": ["Manager"]}
+    ]
+}
 
-def oauth2Header(username, token=MOCK_TOKEN, scope="widgetcli"):
+
+def oauth2Header(username, token=MOCK_TOKEN, scope="widgetcli", domain='base'):
     return {
         "X-Oauth-Token": token,
         "X-Oauth-Username": username,
-        "X-Oauth-Scope": scope}
+        "X-Oauth-Scope": scope,
+        "X-Oauth-Domain": domain}
 
 
 class UlearnHUBBaseTestCase(unittest.TestCase):
@@ -34,12 +72,9 @@ class UlearnHUBBaseTestCase(unittest.TestCase):
     def assign_component(self, domain_name, component_id, status=201):
         return self.testapp.post('/api/domains/{}/components'.format(domain_name), json.dumps({'component_id': component_id}), oauth2Header(test_user), status=201)
 
-    def initialize_empty_zodb(self, registry):
-        from ulearnhub import get_static_connection, bootstrap
-
-        connection = get_static_connection(registry)
-        root = bootstrap(connection.root())
-        return root
+    def initialize_empty_zodb(self, registry, defaults={}):
+        from ulearnhub.resources import create_defaults
+        return create_defaults(registry, defaults)
 
     def initialize_test_deployment(self):
         from ulearnhub.tests.mockers.deployments import test_deployment
@@ -60,3 +95,7 @@ class UlearnHUBBaseTestCase(unittest.TestCase):
         self.assign_component(test_domain['name'], 'test/maxserver:testmaxserver1')
         self.assign_component(test_domain['name'], 'test/ldapserver:testldap')
         self.assign_component(test_domain['name'], 'test/rabbitserver:testrabbit')
+
+
+import warnings
+warnings.filterwarnings("ignore")

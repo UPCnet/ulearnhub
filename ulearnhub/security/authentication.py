@@ -2,7 +2,7 @@
 from zope.interface import implementer
 
 from ulearnhub.resources import root_factory
-from ulearnhub.rest.exceptions import Unauthorized
+from max.exceptions import Unauthorized
 
 from pyramid.interfaces import IAuthenticationPolicy
 from pyramid.security import Authenticated
@@ -50,12 +50,14 @@ class OauthAuthenticationPolicy(object):
             return None
 
         oauth_token, username, scope = request.auth_headers
-        domain = request.auth_domain
+        domain_name = request.auth_domain
+        if domain_name is None:
+            raise Unauthorized('Missing domain on authorization headers.')
 
         if scope not in self.allowed_scopes:
             raise Unauthorized('The specified scope is not allowed for this resource.')
 
-        domain = root_factory(request)['domains'].get(domain)
+        domain = root_factory(request)['domains'].get(domain_name)
         if domain is None:
             raise Unauthorized('The specified domain is not registered on this hub.')
 

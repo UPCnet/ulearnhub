@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 from ulearnhub.resources import root_factory
 from ulearnhub.resources import create_defaults
-from ulearnhub.rest.exceptions import Unauthorized
+from max.exceptions import Unauthorized
 from ulearnhub.routes import ROUTES
 from ulearnhub.security.authentication import OauthAuthenticationPolicy
-from ulearnhub.views.login import login
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.config import Configurator
@@ -112,9 +111,12 @@ def main(global_config, **settings):
         config.add_route(name, properties.get('route'), **route_params)
 
     # Test for default structures and initialize them if not found
-    defaults = json.loads(open(settings['ulearnhub.defaults']).read())
-    create_defaults(config.registry, defaults)
+    defaults_file = settings.get('ulearnhub.defaults', '').strip()
+    if os.path.exists(defaults_file):
+        defaults = json.loads(open(defaults_file).read())
+        create_defaults(config.registry, defaults)
 
-    config.scan(ignore=['ulearnhub.tests'])
+    config.scan('ulearnhub', ignore=['ulearnhub.tests'])
+    config.scan('max.exceptions.views')
 
     return config.make_wsgi_app()
