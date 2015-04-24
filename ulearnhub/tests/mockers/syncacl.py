@@ -95,6 +95,7 @@ batch_subscribe_request4 = {
     }
 }
 
+from max.security import permissions
 context = {
     "displayName": "Test",
     "hash": "e6847aed3105e85ae603c56eb2790ce85e212997",
@@ -106,7 +107,12 @@ context = {
         "read": "subscribed",
         "delete": "restricted"
     },
-    "objectType": "context"
+    "objectType": "context",
+    "acls": [
+        permissions.add_subscription,
+        permissions.remove_subscription,
+        permissions.manage_subcription_permissions
+    ]
 }
 
 initial_subscriptions = [

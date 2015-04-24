@@ -5,7 +5,9 @@ from ulearnhub.models.components import RabbitServer
 from ulearnhub.models.utils import generate_actions
 from ulearnhub.models.utils import merge_actions
 from ulearnhub.security import permissions
-
+from max.security import permissions as max_permissions
+from max.exceptions import Forbidden
+from maxclient.client import RequestError
 from pyramid.security import Allow
 from pyramid.security import Authenticated
 
@@ -81,6 +83,7 @@ class SyncACL(Service):
         """
 
         data = request.json
+
         # Get required components for this service
         maxserver = self.domain.get_component(MaxServer)
         ldapserver = self.domain.get_component(LdapServer)
@@ -93,7 +96,26 @@ class SyncACL(Service):
         maxclient.setToken(authenticated_token)
 
         # Collect data and variables needed
-        context = maxclient.contexts[data['context']].get(qs=dict(show_acls=True))
+        try:
+            context = maxclient.contexts[data['context']].get(qs=dict(show_acls=True))
+        except RequestError as exc:
+            if exc.code == 403:
+                raise Forbidden('User {} has not enough permissions on max to use this service'.format(
+                    authenticated_username)
+                )
+            else:
+                raise exc
+
+        # Check if authenticated user meets the permissions on max to execute the service
+        can_execute_service = max_permissions.remove_subscription in context['acls'] \
+            and max_permissions.add_subscription in context['acls'] \
+            and max_permissions.manage_subcription_permissions in context['acls']
+
+        if not can_execute_service:
+            raise Forbidden('User {} has not enough permissions on max to use this service'.format(
+                authenticated_username)
+            )
+
         subscriptions = maxclient.contexts[data['context']].subscriptions.get(qs={'limit': 0})
         acl_groups = data['acl'].get('groups', [])
         acl_users = data['acl'].get('users', [])

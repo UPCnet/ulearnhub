@@ -99,6 +99,39 @@ class UlearnhubSyncaclFunctionalTests(UlearnHUBBaseTestCase):
                 ))
         return {item[0]['u']['u']: item[0] for item in messages}
 
+    def test_domain_syncacl_bad_subscription_permissions(self):
+        """
+            Given I'm a user without enough subscription permissions on max
+            When I try to execute the service
+            I get a Forbidden exception
+        """
+        from .mockers.syncacl import batch_subscribe_request
+        from .mockers.syncacl import context as context
+        from .mockers.syncacl import initial_subscriptions as subscriptions
+
+        aclless_context = context.copy()
+        aclless_context['acls'] = []
+
+        http_mock_get_context(aclless_context)
+        http_mock_get_context_subscriptions(subscriptions)
+
+        self.testapp.post('/api/domains/test/services/syncacl'.format(), json.dumps(batch_subscribe_request), oauth2Header(test_user), status=403)
+
+    def test_domain_syncacl_bad_context_permissions(self):
+        """
+            Given I'm a user without enough context permissions on max
+            When I try to execute the service
+            I get a Forbidden exception
+        """
+        from .mockers.syncacl import batch_subscribe_request
+        from .mockers.syncacl import context as context
+        from .mockers.syncacl import initial_subscriptions as subscriptions
+
+        http_mock_get_context(context, status=403)
+        http_mock_get_context_subscriptions(subscriptions)
+
+        self.testapp.post('/api/domains/test/services/syncacl'.format(), json.dumps(batch_subscribe_request), oauth2Header(test_user), status=403)
+
     def test_domain_syncacl_initial_subscriptions(self):
         """
             Given a newly created context
