@@ -12,7 +12,7 @@ def domains_list(domains, request):
 
     for name, domain in domains.items():
         info['domains'][name] = {
-            "max_server_url": domain.server
+            "max_server_url": domain.max_server
         }
     response = JSONResourceEntity(request, info)
     return response()
