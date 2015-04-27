@@ -79,15 +79,8 @@ def login(context, request):
             client = domain.maxclient
             client.setActor(auth_user)
             client.setToken(oauth_token)
-            client.admin.security.roles['HubManager'].users[auth_user].get()
             user_data = client.people[auth_user].get()
-            user_allowed = client.last_response_code == 200
-
-            if user_allowed:
-                headers = remember(request, auth_user)
-            else:
-                login_response['error'] = "You're not allowed to manage this hub."
-                return login_response
+            headers = remember(request, auth_user)
 
         # if not successful, try again
         else:
