@@ -84,7 +84,7 @@ class OauthAuthenticationPolicy(object):
 
         current_domain = request.auth_domain or request.session.get('domain', None)
         if current_domain:
-            domain_users = root_factory(request)['users'][current_domain]
+            domain_users = root_factory(request)['users'].get(current_domain, {})
             domain_user = domain_users.get(request.authenticated_userid, None)
             if domain_user:
                 principals.extend(domain_user.roles)
