@@ -71,7 +71,7 @@ class RabbitNotifications(object):
         self.enabled = True
 
         try:
-            self.client = RabbitClient(self.url, client_properties=client_properties)
+            self.client = RabbitClient(self.url, client_properties=client_properties, transport='gevent')
         except AttributeError:
             self.enabled = False
         except socket_error:
