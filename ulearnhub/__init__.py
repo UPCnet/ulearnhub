@@ -32,7 +32,8 @@ def get_oauth_headers(request):
         if request.matched_route.name.startswith('api_'):
             raise Unauthorized('No auth headers found.')
 
-    return oauth_token, username.lower(), scope
+    return username.lower(), oauth_token, scope
+
 
 
 def get_oauth_domain(request):

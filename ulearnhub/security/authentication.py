@@ -49,7 +49,7 @@ class OauthAuthenticationPolicy(object):
         if not request.matched_route.name.startswith('api_'):
             return None
 
-        oauth_token, username, scope = request.auth_headers
+        username, oauth_token, scope = request.auth_headers
         domain_name = request.auth_domain
         if domain_name is None:
             raise Unauthorized('Missing domain on authorization headers.')
