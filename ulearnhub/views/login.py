@@ -8,10 +8,8 @@ from pyramid.security import remember, forget
 from max.exceptions.hooks import main_forbidden
 from pyramid_osiris import Connector
 from ulearnhub.views.templates import TemplateAPI
-import logging
 import re
 
-logger = logging.getLogger('ulearnhub')
 
 
 def real_request_url(request):
