@@ -10,7 +10,7 @@ from max.exceptions import Forbidden
 from maxclient.client import RequestError
 from pyramid.security import Allow
 from pyramid.security import Authenticated
-
+from gevent.event import import AsyncResult
 from itertools import chain
 
 
@@ -176,15 +176,20 @@ class SyncACL(Service):
             # Store user to track overwrites
             actions_by_user[username] = actions
 
+        client = rabbitserver.notifications
+
         # All the users present in subscription and not in the ACL's will be unsubscribed
         missing_users = set(subscriptions_by_user.keys()) - set(actions_by_user.keys())
         for username in missing_users:
-            rabbitserver.notifications.sync_acl(self.domain.name, context['url'], username, {"unsubscribe": True})
+            client.sync_acl(self.domain.name, context['url'], username, {"unsubscribe": True})
+            gevent.sleep()
 
         for username, actions in actions_by_user.items():
             if actions:
-                rabbitserver.notifications.sync_acl(self.domain.name, context['url'], username, actions)
+                client.sync_acl(self.domain.name, context['url'], username, actions)
+                gevent.sleep()
 
+        gevent.sleep(0.1)
         return {}
 
 SERVICES = {klass.name: klass for klass in locals().values() if Service in getattr(klass, '__bases__', [])}
