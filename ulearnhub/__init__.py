@@ -11,6 +11,7 @@ from pyramid_beaker import session_factory_from_settings
 from pyramid_beaker import set_cache_regions_from_settings
 from pyramid_multiauth import MultiAuthenticationPolicy
 
+from max import patches
 import json
 import os
 import re
