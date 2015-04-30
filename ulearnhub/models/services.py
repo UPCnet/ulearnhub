@@ -10,9 +10,8 @@ from max.exceptions import Forbidden
 from maxclient.client import RequestError
 from pyramid.security import Allow
 from pyramid.security import Authenticated
-from gevent.event import import AsyncResult
 from itertools import chain
-
+import gevent
 
 class ServicesContainer(object):
 
