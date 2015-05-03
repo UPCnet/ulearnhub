@@ -35,19 +35,9 @@ ulearnhub.config(['$stateProvider','$urlRouterProvider','$translateProvider','ui
     $stateProvider
 
         // HOME STATES AND NESTED VIEWS ========================================
+
         .state('root', {
             url: '/',
-            templateUrl: 'templates/root.html'
-        })
-
-        .state('domains', {
-            url: '/domains',
-            templateUrl: 'templates/domains.html',
-            controller: 'DomainsController'
-        })
-
-        .state('domain', {
-            url: '/domain/:domain',
             templateUrl: 'templates/domain.html',
             controller: 'DomainController',
             resolve: {
@@ -56,7 +46,7 @@ ulearnhub.config(['$stateProvider','$urlRouterProvider','$translateProvider','ui
             }
         })
 
-        .state('domain.users', {
+        .state('users', {
             url: '/users',
             templateUrl: 'templates/users.html',
             controller: 'UsersManageController',
@@ -66,7 +56,7 @@ ulearnhub.config(['$stateProvider','$urlRouterProvider','$translateProvider','ui
             }
         })
 
-        .state('domain.contexts', {
+        .state('contexts', {
             url: '/contexts',
             templateUrl: 'templates/contexts.html',
             controller: 'ContextsManageController',
@@ -77,7 +67,7 @@ ulearnhub.config(['$stateProvider','$urlRouterProvider','$translateProvider','ui
             }
         })
 
-        .state('domain.user', {
+        .state('user', {
             url: '/users/:id',
             templateUrl: 'templates/user.html',
             controller: 'UserManageController',
@@ -87,7 +77,7 @@ ulearnhub.config(['$stateProvider','$urlRouterProvider','$translateProvider','ui
             }
         })
 
-        .state('domain.context', {
+        .state('context', {
             url: '/contexts/:id',
             templateUrl: 'templates/context.html',
             controller: 'ContextManageController',

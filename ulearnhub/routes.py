@@ -29,13 +29,6 @@ from collections import OrderedDict
 
 ROUTES = OrderedDict()
 
-ROUTES['domains'] = dict(route='/domains', traverse='/domains')
-ROUTES['domain'] = dict(route='/domains/{domain}', traverse='/domains/{domain}')
-
-ROUTES['domain_users'] = dict(route='/domains/{domain}/users', traverse='/domains/{domain}')
-ROUTES['domain_user'] = dict(route='/domains/{domain}/users/{username}', traverse='/domains/{domain}')
-ROUTES['domain_contexts'] = dict(route='/domains/{domain}/contexts', traverse='/domains/{domain}')
-ROUTES['domain_components'] = dict(route='/domains/{domain}/components', traverse='/domains/{domain}')
 
 ROUTES['info'] = dict(route='info', traverse='/domains')
 

@@ -103,6 +103,8 @@ def main(global_config, **settings):
 
     config.add_route('root', '/')
     config.add_route('login', '/login')
+    config.add_route('domain_login', '/{domain}/login', traverse="/domains/{domain}")
+    config.add_route('domain', '/{domain}', traverse="/domains/{domain}")
     config.add_route('logout', '/logout')
     config.add_route('initialize', '/initialize')
 
