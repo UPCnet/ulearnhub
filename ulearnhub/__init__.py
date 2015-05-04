@@ -5,7 +5,7 @@ from max.exceptions import Unauthorized
 from ulearnhub.routes import ROUTES
 from ulearnhub.security.authentication import OauthAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
-from pyramid.authentication import AuthTktAuthenticationPolicy
+from ulearnhub.security.authentication import MultiDomainAuthTktAuthenticationPolicy
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
 from pyramid_beaker import set_cache_regions_from_settings
@@ -39,7 +39,6 @@ def get_oauth_headers(request):
     return username.lower(), oauth_token, scope
 
 
-
 def get_oauth_domain(request):
     """
         Extracts domain informatin from request
@@ -58,7 +57,7 @@ def main(global_config, **settings):
 
     authn_policy = MultiAuthenticationPolicy([
         OauthAuthenticationPolicy(allowed_scopes=['widgetcli']),
-        AuthTktAuthenticationPolicy('secret')
+        MultiDomainAuthTktAuthenticationPolicy('secret')
     ])
 
     authz_policy = ACLAuthorizationPolicy()

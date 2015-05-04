@@ -1,19 +1,23 @@
 # -*- coding: utf-8 -*-
 from zope.interface import implementer
 
-from ulearnhub.resources import root_factory
 from max.exceptions import Unauthorized
 
+from ulearnhub.resources import root_factory
+
+from pyramid.authentication import AuthTktAuthenticationPolicy
+from pyramid.authentication import AuthTktCookieHelper
 from pyramid.interfaces import IAuthenticationPolicy
 from pyramid.security import Authenticated
 from pyramid.security import Everyone
 
-from beaker.cache import cache_region
+from ulearnhub.models.domains import Domain
+# from beaker.cache import cache_region
+from webob.cookies import CookieProfile
 
 import requests
 
 
-#@cache_region('oauth_token')
 def check_token(url, username, token, scope):
     """
         Checks if a user matches the given token.
@@ -130,3 +134,87 @@ class OauthAuthenticationPolicy(object):
     def forget(self, request):
         """ Not used neither needed"""
         return []  # pragma: no cover
+
+
+class MultiDomainCookieProfile(CookieProfile):
+    def __init__(self, *args, **kwargs):
+        self.__cookie_name__ = ''
+        super(MultiDomainCookieProfile, self).__init__(*args, **kwargs)
+
+    @property
+    def cookie_name(self):
+        return self.__cookie_name__
+
+    @cookie_name.setter
+    def cookie_name(self, value):
+        self.__cookie_name__ = value
+
+    def get_cookie_name(self, request):
+        calculated_cookie_name = self.__cookie_name__
+        if isinstance(getattr(request, 'context', None), Domain):
+            calculated_cookie_name = '{}_{}'.format(
+                request.context.name,
+                self.__cookie_name__
+            )
+        return calculated_cookie_name
+
+    def bind(self, request):
+        """ Bind a request to a copy of this instance and return it"""
+
+        selfish = CookieProfile(
+            self.get_cookie_name(request),
+            self.secure,
+            self.max_age,
+            self.httponly,
+            self.path,
+            self.domains,
+            self.serializer,
+        )
+        selfish.request = request
+        return selfish
+
+
+class MultiDomainAuthTktCookieHelper(AuthTktCookieHelper):
+    """
+    """
+
+    def __init__(self, secret, cookie_name='auth_tkt', secure=False,
+                 include_ip=False, timeout=None, reissue_time=None,
+                 max_age=None, http_only=False, path="/", wild_domain=True,
+                 hashalg='md5', parent_domain=False, domain=None):
+        super(MultiDomainAuthTktCookieHelper, self).__init__(
+            secret, cookie_name=cookie_name, secure=secure, include_ip=include_ip,
+            timeout=timeout, reissue_time=reissue_time, max_age=max_age,
+            http_only=http_only, path=path, wild_domain=wild_domain,
+            hashalg=hashalg, parent_domain=parent_domain, domain=domain)
+        self.__cookie_name__ = self.cookie_name
+        self.cookie_profile = MultiDomainCookieProfile(cookie_name, secure, max_age, http_only, path, self.cookie_profile.serializer)
+
+    def get_cookie_name(self, request):
+        calculated_cookie_name = self.__cookie_name__
+        if isinstance(getattr(request, 'context', None), Domain):
+            calculated_cookie_name = '{}_{}'.format(
+                request.context.name,
+                self.__cookie_name__
+            )
+        return calculated_cookie_name
+
+    def identify(self, request):
+        self.cookie_name = self.get_cookie_name(request)
+        return super(MultiDomainAuthTktCookieHelper, self).identify(request)
+
+    def remember(self, request, userid, max_age=None, tokens=()):
+        self.cookie_name = self.get_cookie_name(request)
+        return super(MultiDomainAuthTktCookieHelper, self).remember(request, userid, max_age, tokens)
+
+    def forget(self, request):
+        self.cookie_name = self.get_cookie_name(request)
+        return super(MultiDomainAuthTktCookieHelper, self).forget(request)
+
+
+class MultiDomainAuthTktAuthenticationPolicy(AuthTktAuthenticationPolicy):
+    """
+    """
+    def __init__(self, *args, **kwargs):
+        super(MultiDomainAuthTktAuthenticationPolicy, self).__init__(*args, **kwargs)
+        self.cookie = MultiDomainAuthTktCookieHelper(*args, **kwargs)
