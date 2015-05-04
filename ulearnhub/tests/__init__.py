@@ -48,6 +48,7 @@ BASE_DOMAIN = {
 
 def oauth2Header(username, token=MOCK_TOKEN, scope="widgetcli", domain='base'):
     return {
+        "Content-Type": "application/json",
         "X-Oauth-Token": token,
         "X-Oauth-Username": username,
         "X-Oauth-Scope": scope,

@@ -2,14 +2,37 @@ import httpretty
 import json
 import re
 
+from ulearnhub.tests import MOCK_TOKEN
 
 TEST_MAXSERVER = 'http://localhost:8081'
+
+
+def http_mock_gettoken():
+    httpretty.register_uri(
+        httpretty.POST, re.compile(".*?/token"),
+        body=json.dumps({"access_token": MOCK_TOKEN}),
+        status=200,
+        content_type="application/json"
+    )
 
 
 def http_mock_checktoken():
     httpretty.register_uri(
         httpretty.POST, re.compile(".*?/checktoken"),
         body="",
+        status=200,
+        content_type="application/json"
+    )
+
+
+def http_mock_user_info():
+    info = {
+        "username": "test.user",
+        "displayName": "Test User"
+    }
+    httpretty.register_uri(
+        httpretty.GET, re.compile("/people/[^\/]+$"),
+        body=json.dumps(info),
         status=200,
         content_type="application/json"
     )

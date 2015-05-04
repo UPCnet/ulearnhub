@@ -136,7 +136,24 @@ class OauthAuthenticationPolicy(object):
         return []  # pragma: no cover
 
 
-class MultiDomainCookieProfile(CookieProfile):
+class CookieGenerator(object):
+    def get_cookie_name(self, request):
+        calculated_cookie_name = self.__cookie_name__
+
+        if isinstance(request.context, Domain):
+            domain_name = request.context.name
+        else:
+            domain_name = request.params.get('domain')
+
+        calculated_cookie_name = '{}_{}'.format(
+            domain_name,
+            self.__cookie_name__
+        )
+
+        return calculated_cookie_name
+
+
+class MultiDomainCookieProfile(CookieProfile, CookieGenerator):
     def __init__(self, *args, **kwargs):
         self.__cookie_name__ = ''
         super(MultiDomainCookieProfile, self).__init__(*args, **kwargs)
@@ -148,15 +165,6 @@ class MultiDomainCookieProfile(CookieProfile):
     @cookie_name.setter
     def cookie_name(self, value):
         self.__cookie_name__ = value
-
-    def get_cookie_name(self, request):
-        calculated_cookie_name = self.__cookie_name__
-        if isinstance(getattr(request, 'context', None), Domain):
-            calculated_cookie_name = '{}_{}'.format(
-                request.context.name,
-                self.__cookie_name__
-            )
-        return calculated_cookie_name
 
     def bind(self, request):
         """ Bind a request to a copy of this instance and return it"""
@@ -174,7 +182,7 @@ class MultiDomainCookieProfile(CookieProfile):
         return selfish
 
 
-class MultiDomainAuthTktCookieHelper(AuthTktCookieHelper):
+class MultiDomainAuthTktCookieHelper(AuthTktCookieHelper, CookieGenerator):
     """
     """
 
@@ -189,15 +197,6 @@ class MultiDomainAuthTktCookieHelper(AuthTktCookieHelper):
             hashalg=hashalg, parent_domain=parent_domain, domain=domain)
         self.__cookie_name__ = self.cookie_name
         self.cookie_profile = MultiDomainCookieProfile(cookie_name, secure, max_age, http_only, path, self.cookie_profile.serializer)
-
-    def get_cookie_name(self, request):
-        calculated_cookie_name = self.__cookie_name__
-        if isinstance(getattr(request, 'context', None), Domain):
-            calculated_cookie_name = '{}_{}'.format(
-                request.context.name,
-                self.__cookie_name__
-            )
-        return calculated_cookie_name
 
     def identify(self, request):
         self.cookie_name = self.get_cookie_name(request)

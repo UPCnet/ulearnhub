@@ -1,9 +1,14 @@
+# -*- coding: utf-8 -*-
+import cookielib
+
+
 class UlearnhubTestApp(object):
 
-    def __init__(self, testcase):
+    def __init__(self, testcase, keep_cookies=False):
         from webtest import TestApp
         self.testcase = testcase
-        self.testapp = TestApp(testcase.app)
+        cookiejar = cookielib.CookieJar()
+        self.testapp = TestApp(testcase.app, cookiejar=cookiejar)
 
     def get(self, *args, **kwargs):
         return self.call_testapp('get', *args, **kwargs)
@@ -23,6 +28,7 @@ class UlearnhubTestApp(object):
     def call_testapp(self, method, *args, **kwargs):
 
         status = kwargs.get('status', None)
+        headers = kwargs.setdefault('headers', {})
         testapp_method = getattr(self.testapp, method)
         kwargs['expect_errors'] = True
         res = testapp_method(*args, **kwargs)
