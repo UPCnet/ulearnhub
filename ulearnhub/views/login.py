@@ -10,6 +10,8 @@ from pyramid_osiris import Connector
 from ulearnhub.views.templates import TemplateAPI
 import re
 from pyramid.renderers import render
+from maxclient.client import RequestError
+from maxclient.client import BadUsernameOrPasswordError
 
 
 def real_request_url(request):
@@ -73,12 +75,12 @@ def login(context, request):
             return render_response(request, login_response, template)
 
         if not domain.oauth_server:
-            login_response['error'] = "Error while authenticating with {} oauth server".format(domain_name)
+            login_response['error'] = "Error while contactint with {} oauth server".format(domain_name)
             return render_response(request, login_response, template)
 
         connector = Connector(request.registry, domain.oauth_server, False)
-        data = connector.authenticate(login, password)
-        if data:
+        try:
+            data = connector.authenticate(login, password)
             auth_user, oauth_token = data
 
             client = domain.maxclient
@@ -88,19 +90,27 @@ def login(context, request):
             headers = remember(request, auth_user)
 
         # if not successful, try again
-        else:
+        except BadUsernameOrPasswordError:
             login_response['error'] = 'Login failed. Please try again.'
             return render_response(request, login_response, template)
+
+        # Try to get username from max
+        try:
+            user_data = client.people[auth_user].get()
+            user_data.get('displayName', auth_user)
+            request.session['display_name'] = user_data.get('displayName', auth_user)
+        except RequestError:
+            request.session['display_name'] = auth_user
 
         # Store the user's oauth token in the current session
         request.session['domain'] = domain.name
         request.session['oauth_token'] = oauth_token
-        request.session['display_name'] = user_data.get('displayName', auth_user)
         request.session['avatar'] = '{}/people/{}/avatar'.format(domain.max_server, auth_user)
 
         # Finally, if all went OK
         # return the authenticated view
-        return HTTPFound(headers=headers, location=api.application_url)
+
+        return HTTPFound(headers=headers, location='{}/{}'.format(api.application_url, domain_name))
 
     return render_response(request, login_response, template)
 
@@ -111,7 +121,7 @@ def domain_login(context, request):
     """
     template = 'ulearnhub:templates/domain_login.pt'
     api = TemplateAPI(context, request, "uLearn HUB Login")
-    login_url = request.resource_url(request.context, 'login')
+    login_url = request.resource_url(request.context, '/login')
     context_url = request.resource_url(request.context, '')
     referrer = real_request_url(request)
     if referrer.endswith('login'):
@@ -144,25 +154,31 @@ def domain_login(context, request):
             return render_response(request, login_response, template)
 
         connector = Connector(request.registry, domain.oauth_server, False)
-        data = connector.authenticate(login, password)
-        if data:
+        try:
+            data = connector.authenticate(login, password)
             auth_user, oauth_token = data
 
             client = domain.maxclient
             client.setActor(auth_user)
             client.setToken(oauth_token)
-            user_data = client.people[auth_user].get()
             headers = remember(request, auth_user)
 
         # if not successful, try again
-        else:
+        except BadUsernameOrPasswordError:
             login_response['error'] = 'Login failed. Please try again.'
             return render_response(request, login_response, template)
+
+        # Try to get username from max
+        try:
+            user_data = client.people[auth_user].get()
+            request.session['display_name'] = user_data.get('displayName', auth_user)
+        except RequestError:
+            request.session['display_name'] = auth_user
 
         # Store the user's oauth token in the current session
         request.session['domain'] = domain.name
         request.session['oauth_token'] = oauth_token
-        request.session['display_name'] = user_data.get('displayName', auth_user)
+
         request.session['avatar'] = '{}/people/{}/avatar'.format(domain.max_server, auth_user)
 
         # Finally, if all went OK
@@ -173,10 +189,20 @@ def domain_login(context, request):
 
 
 @view_config(route_name='logout')
-def logout(request):
+def logout(context, request):
     headers = forget(request)
     request.session.pop('oauth_token')
     request.session.pop('display_name')
     request.session.pop('avatar')
     request.session.pop('domain')
     return HTTPFound(location='/', headers=headers)
+
+
+@view_config(route_name='domain_logout')
+def domain_logout(context, request):
+    headers = forget(request)
+    request.session.pop('oauth_token')
+    request.session.pop('display_name')
+    request.session.pop('avatar')
+    request.session.pop('domain')
+    return HTTPFound(location=request.resource_url(request.context, ''), headers=headers)

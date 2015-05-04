@@ -51,7 +51,7 @@ class Domain(PersistentMapping):
 
     def __resource_url__(self, request, info):
         app_url = request.headers.get('X-Virtual-Host-Uri', request.application_url).rstrip('/')
-        return '/'.join((app_url, self.name, ''))
+        return '/'.join((app_url, self.name))
 
     @property
     def __acl__(self):
