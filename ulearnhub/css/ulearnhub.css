@@ -143,3 +143,9 @@ h1.page-header {
   color: #fff;
   text-decoration: none;
 }
+#language-selector {
+  padding-top: 10px;
+}
+#language-selector select {
+  padding-right: 20px;
+}

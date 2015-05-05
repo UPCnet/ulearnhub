@@ -87,10 +87,17 @@ ulearnhub.config(['$stateProvider','$urlRouterProvider','$translateProvider','ui
 
 ulearnhub.controller('languageController', ['$translate','$cookies','$state', function($translate,$cookies,$state) {
     var self = this;
+    var valid_cookie_language = $cookies.currentLang == 'ca'
+    self.currentLang = {code: $cookies.currentLang == undefined ? 'ca': $cookies.currentLang}
+    self.languages = [
+        {code: 'ca', name: 'Català'},
+        {code: 'es', name: 'Castellano'},
+        {code: 'en', name: 'English'}
+    ]
 
-  self.changeLanguage = function (key) {
-    $translate.use(key);
-    $cookies.currentLang = key;
+  self.changeLanguage = function () {
+    $translate.use(self.currentLang.code);
+    $cookies.currentLang = self.currentLang.code;
     $state.go('domain',{domain:$cookies.currentDomain});
 
   };
