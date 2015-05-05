@@ -128,7 +128,7 @@ maxClient.factory('_MAXUI', [function() {
     }
 }]);
 
-maxClient.directive('oauthinfo', [function() {
+maxClient.directive('ngMaxInfo', [function() {
     return {
         restrict: 'E',
         controller: function($scope, $element, $attrs, MAXSession) {

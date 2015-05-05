@@ -36,55 +36,45 @@ ulearnhub.config(['$stateProvider','$urlRouterProvider','$translateProvider','ui
 
         // HOME STATES AND NESTED VIEWS ========================================
 
-        .state('root', {
-            url: '/',
+        .state('domain', {
+            url: '',
             templateUrl: 'templates/domain.html',
             controller: 'DomainController',
             resolve: {
-               domain: function($stateParams, Domain, MAXSession, hubSession) {
-                return setMaxSession($stateParams, Domain, MAXSession, hubSession); }
             }
         })
 
-        .state('users', {
+        .state('domain.users', {
             url: '/users',
             templateUrl: 'templates/users.html',
             controller: 'UsersManageController',
             resolve: {
-               domain: function($stateParams, Domain, MAXSession, hubSession) {
-                return setMaxSession($stateParams, Domain, MAXSession, hubSession); }
             }
         })
 
-        .state('contexts', {
+        .state('domain.contexts', {
             url: '/contexts',
             templateUrl: 'templates/contexts.html',
             controller: 'ContextsManageController',
             controllerAs:'contMan',
             resolve: {
-               domain: function($stateParams, Domain, MAXSession, hubSession) {
-                return setMaxSession($stateParams, Domain, MAXSession, hubSession); }
             }
         })
 
-        .state('user', {
+        .state('domain.user', {
             url: '/users/:id',
             templateUrl: 'templates/user.html',
             controller: 'UserManageController',
             resolve: {
-               domain: function($stateParams, Domain, MAXSession, hubSession) {
-                return setMaxSession($stateParams, Domain, MAXSession, hubSession); }
             }
         })
 
-        .state('context', {
+        .state('domain.context', {
             url: '/contexts/:id',
             templateUrl: 'templates/context.html',
             controller: 'ContextManageController',
             coontrollerAs: 'contEdit',
             resolve: {
-               domain: function($stateParams, Domain, MAXSession, hubSession) {
-                return setMaxSession($stateParams, Domain, MAXSession, hubSession); }
             }
         })
 
@@ -188,16 +178,16 @@ ulearnhub.factory('ContextPermissions',function(){
 
 
 
-function setMaxSession(state, Domain, MAXSession, hubSession) {
-    var domainName = state.domain;
-    self.domainObj = Domain.get({id:domainName});
+// function setMaxSession(state, Domain, MAXSession, hubSession) {
+//     var domainName = state.domain;
+//     self.domainObj = Domain.get({id:domainName});
 
-    return self.domainObj.$promise.then(function(data){
-        MAXSession.username = hubSession.username;
-        MAXSession.oauth_token = hubSession.token;
-        MAXSession.max_server = data['max'];
-      });
-   }
+//     return self.domainObj.$promise.then(function(data){
+//         MAXSession.username = hubSession.username;
+//         MAXSession.oauth_token = hubSession.token;
+//         MAXSession.max_server = data['max'];
+//       });
+//    }
 
 
 

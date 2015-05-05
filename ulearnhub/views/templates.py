@@ -40,7 +40,7 @@ class TemplateAPI(object):
 
     @property
     def authenticated_user_domain(self):
-        return self.context.name
+        return self.context
 
     @property
     def authenticated_user_displayname(self):
