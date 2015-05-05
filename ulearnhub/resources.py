@@ -16,6 +16,7 @@ import transaction
 class Root(PersistentMapping):
     """
     """
+    name = 'root'
     __name__ = 'ROOT'
     __acl__ = [
         (Allow, Authenticated, 'homepage')

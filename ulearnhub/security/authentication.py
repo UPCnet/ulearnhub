@@ -11,6 +11,7 @@ from pyramid.interfaces import IAuthenticationPolicy
 from pyramid.security import Authenticated
 from pyramid.security import Everyone
 
+from ulearnhub.resources import Root
 from ulearnhub.models.domains import Domain
 # from beaker.cache import cache_region
 from webob.cookies import CookieProfile
@@ -141,14 +142,12 @@ class CookieGenerator(object):
         calculated_cookie_name = self.__cookie_name__
 
         if isinstance(request.context, Domain):
-            domain_name = request.context.name
+            calculated_cookie_name = '{}_{}'.format(
+                request.context.name,
+                self.__cookie_name__
+            )
         else:
-            domain_name = request.params.get('domain')
-
-        calculated_cookie_name = '{}_{}'.format(
-            domain_name,
-            self.__cookie_name__
-        )
+            calculated_cookie_name = self.__cookie_name__
 
         return calculated_cookie_name
 
@@ -204,11 +203,35 @@ class MultiDomainAuthTktCookieHelper(AuthTktCookieHelper, CookieGenerator):
 
     def remember(self, request, userid, max_age=None, tokens=()):
         self.cookie_name = self.get_cookie_name(request)
-        return super(MultiDomainAuthTktCookieHelper, self).remember(request, userid, max_age, tokens)
+        headers = super(MultiDomainAuthTktCookieHelper, self).remember(request, userid, max_age, tokens)
+
+        # Add extra headers to log in also on the provided authenticated domain
+        original_cookie_name = self.cookie_profile.cookie_name
+        if isinstance(request.context, Root):
+            self.cookie_profile.cookie_name = '{}_{}'.format(request.params['domain'], self.__cookie_name__)
+            headers.extend(super(MultiDomainAuthTktCookieHelper, self).remember(request, userid, max_age, tokens))
+        self.cookie_profile.cookie_name = original_cookie_name
+        return headers
 
     def forget(self, request):
-        self.cookie_name = self.get_cookie_name(request)
-        return super(MultiDomainAuthTktCookieHelper, self).forget(request)
+        single_forget_headers = super(MultiDomainAuthTktCookieHelper, self).forget(request)
+        calculated_cookie_name = self.get_cookie_name(request)
+
+        def get_headers_for(domain):
+            headers = []
+            headers.extend(single_forget_headers)
+            for header, value in single_forget_headers:
+                domain_cookie_name = '{}_{}'.format(domain_name, self.__cookie_name__)
+                headers.append((header, value.replace(calculated_cookie_name, domain_cookie_name)))
+            return headers
+
+        if isinstance(request.context, Domain):
+            return single_forget_headers
+        else:
+            multiple_forget_headers = []
+            for domain_name in request.context['domains'].keys():
+                multiple_forget_headers.extend(get_headers_for(domain_name))
+        return multiple_forget_headers
 
 
 class MultiDomainAuthTktAuthenticationPolicy(AuthTktAuthenticationPolicy):

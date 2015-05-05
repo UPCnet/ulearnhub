@@ -98,19 +98,22 @@ def login(context, request):
         try:
             user_data = client.people[auth_user].get()
             user_data.get('displayName', auth_user)
-            request.session['display_name'] = user_data.get('displayName', auth_user)
+            display_name = user_data.get('displayName', auth_user)
         except RequestError:
-            request.session['display_name'] = auth_user
+            display_name = auth_user
 
-        # Store the user's oauth token in the current session
-        request.session['domain'] = domain.name
-        request.session['oauth_token'] = oauth_token
-        request.session['avatar'] = '{}/people/{}/avatar'.format(domain.max_server, auth_user)
+        # Store the user's oauth token in the current session domain data
+        request.session[domain.name] = dict(
+            oauth_token=oauth_token,
+            avatar='{}/people/{}/avatar'.format(domain.max_server, auth_user),
+            display_name=display_name
+        )
+        request.session['root'] = request.session[domain.name]
 
         # Finally, if all went OK
         # return the authenticated view
 
-        return HTTPFound(headers=headers, location='{}/{}'.format(api.application_url, domain_name))
+        return HTTPFound(headers=headers, location=api.application_url)
 
     return render_response(request, login_response, template)
 
@@ -171,16 +174,16 @@ def domain_login(context, request):
         # Try to get username from max
         try:
             user_data = client.people[auth_user].get()
-            request.session['display_name'] = user_data.get('displayName', auth_user)
+            display_name = user_data.get('displayName', auth_user)
         except RequestError:
-            request.session['display_name'] = auth_user
+            display_name = auth_user
 
-        # Store the user's oauth token in the current session
-        request.session['domain'] = domain.name
-        request.session['oauth_token'] = oauth_token
-
-        request.session['avatar'] = '{}/people/{}/avatar'.format(domain.max_server, auth_user)
-
+        # Store the user's oauth token in the current session domain data
+        request.session[domain.name] = dict(
+            oauth_token=oauth_token,
+            avatar='{}/people/{}/avatar'.format(domain.max_server, auth_user),
+            display_name=display_name
+        )
         # Finally, if all went OK
         # return the authenticated view
         return HTTPFound(headers=headers, location=context_url)
@@ -190,19 +193,17 @@ def domain_login(context, request):
 
 @view_config(route_name='logout')
 def logout(context, request):
+    for domain_name in request.session.keys():
+        if not domain_name.startswith('_'):
+            request.session.pop(domain_name, None)
+
+    request.session.pop('root', None)
     headers = forget(request)
-    request.session.pop('oauth_token')
-    request.session.pop('display_name')
-    request.session.pop('avatar')
-    request.session.pop('domain')
     return HTTPFound(location='/', headers=headers)
 
 
 @view_config(route_name='domain_logout')
-def domain_logout(context, request):
+def domain_logout(domain, request):
     headers = forget(request)
-    request.session.pop('oauth_token')
-    request.session.pop('display_name')
-    request.session.pop('avatar')
-    request.session.pop('domain')
+    request.session.pop(domain.name, None)
     return HTTPFound(location=request.resource_url(request.context, ''), headers=headers)

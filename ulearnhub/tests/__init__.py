@@ -68,10 +68,10 @@ class UlearnHUBBaseTestCase(unittest.TestCase):
         return self.testapp.post('/api/deployments/{}/components'.format(deployment['name']), json.dumps(component), headers=oauth2Header(test_user), status=status)
 
     def create_domain(self, domain, status=201):
-        return self.testapp.post('/api/domains', json.dumps(domain), oauth2Header(test_user), status=status)
+        return self.testapp.post('/api/domains', json.dumps(domain), headers=oauth2Header(test_user), status=status)
 
     def assign_component(self, domain_name, component_id, status=201):
-        return self.testapp.post('/api/domains/{}/components'.format(domain_name), json.dumps({'component_id': component_id}), oauth2Header(test_user), status=201)
+        return self.testapp.post('/api/domains/{}/components'.format(domain_name), json.dumps({'component_id': component_id}), headers=oauth2Header(test_user), status=201)
 
     def initialize_empty_zodb(self, registry, defaults={}):
         from ulearnhub.resources import create_defaults
