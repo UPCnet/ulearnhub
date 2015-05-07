@@ -75,7 +75,7 @@ def login(context, request):
             return render_response(request, login_response, template)
 
         if not domain.oauth_server:
-            login_response['error'] = "Error while contactint with {} oauth server".format(domain_name)
+            login_response['error'] = "Error while contacting with {} oauth server".format(domain_name)
             return render_response(request, login_response, template)
 
         connector = Connector(request.registry, domain.oauth_server, False)
@@ -102,6 +102,7 @@ def login(context, request):
         except RequestError:
             display_name = auth_user
 
+        request.session['root_auth_domain'] = domain_name
         # Store the user's oauth token in the current session domain data
         request.session[domain.name] = dict(
             oauth_token=oauth_token,
@@ -197,6 +198,7 @@ def logout(context, request):
         if not domain_name.startswith('_'):
             request.session.pop(domain_name, None)
 
+    request.session.pop('root_auth_domain', None)
     request.session.pop('root', None)
     headers = forget(request)
     return HTTPFound(location='/', headers=headers)

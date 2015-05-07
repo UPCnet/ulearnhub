@@ -4,34 +4,41 @@
 <body>
   <metal:main fill-slot="body">
 
-    <div class="container">
-      <div class="row login-form">
-
-          <div class="col-lg-3 col-lg-offset-3 logo">
-              <img src="${api.application_url}/static/hub.png">
-          </div>
-
-          <div class="col-lg-3">
-            <form class="form-signin" action="${api.application_url}/login" method="POST">
-              <h1 class="form-signin-heading">uLearn <strong>HUB</strong></h1>
-              <label for="inputUsername" class="sr-only">Email address</label>
-              <input type="text" id="inputUsername" name="username" class="form-control" placeholder="Username" required autofocus>
-              <label for="inputDomain" class="sr-only">Domain</label>
-              <input type="text" id="inputDomain" name="domain" class="form-control" placeholder="Domain" required autofocus>
-              <label for="inputPassword" class="sr-only">Password</label>
-              <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
-<!--               <div class="checkbox">
-                <label>
-                  <input type="checkbox" value="remember-me"> Remember me
-                </label>
-              </div> -->
-              <input name="form.submitted" type="hidden" value="1">
-              <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
-            </form>
-          </div>
-
-
-      </div>
+  <div id="page-container">
+      <!-- begin login -->
+        <div class="login bg-black animated fadeInDown">
+            <!-- begin brand -->
+            <div class="login-header">
+                <div class="brand">
+                    <span class="logo"></span> Ulearn HUB
+                    <small>Deployment & Domain Management</small>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-sign-in"></i>
+                </div>
+            </div>
+            <!-- end brand -->
+            <div class="login-content">
+                <form action="${api.application_url}/login" method="POST" class="margin-bottom-0">
+                    <div class="form-group m-b-5">
+                        <input name="domain" type="text" class="form-control input-md" placeholder="Domain" />
+                    </div>
+                    <div class="form-group m-b-5">
+                        <input name="username" type="text" class="form-control input-md" placeholder="Username" />
+                    </div>
+                    <div class="form-group m-b-5">
+                        <input name="password" type="password" class="form-control input-md" placeholder="Password" />
+                    </div>
+                    <div class="checkbox m-b-20">
+                        <label>
+                            <input type="checkbox" /> Remember Me
+                        </label>
+                    </div>
+                    <input name="form.submitted" type="hidden" value="1">
+                    <div class="login-buttons">
+                        <button type="submit" class="btn btn-success btn-block btn-lg">Log in</button>
+                    </div>
+                </form>
 
       <div class="row login-error" tal:condition="error">
           <div class="col-lg-6 alert alert-danger alert-dismissible" role="alert">
@@ -40,8 +47,13 @@
           </div>
       </div>
 
-    </div> <!-- /container -->
+            </div>
+        </div>
+        <!-- end login -->
 
+
+  </div>
+  <!-- end page container -->
 
   </metal:main>
 </body>

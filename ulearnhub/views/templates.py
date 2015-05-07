@@ -1,6 +1,8 @@
 from pyramid.security import authenticated_userid
 from pyramid.renderers import get_renderer
-
+from ulearnhub.security import ROLES
+from ulearnhub.models.domains import Domain
+from ulearnhub.resources import Root
 import re
 
 
@@ -22,33 +24,53 @@ class TemplateAPI(object):
         self.request = request
 
     @property
-    def domain(self):
-        return self.context
-
-    @property
     def masterTemplate(self):
         master = get_renderer('ulearnhub:templates/master.pt').implementation()
         return master
 
     @property
     def authenticated_user(self):
-        return normalize_userdn(authenticated_userid(self.request))
+        hub_roles = set(ROLES).intersection(set(self.request.effective_principals))
+        username = normalize_userdn(self.request.authenticated_userid)
+        try:
+            session_domain_data = self.request.session.get(self.domain['name'], {})
+        except:
+            return {'username': '', 'display_name': '', 'avatar': '', 'token': '', 'role': ''}
+
+        return dict(
+            username=username,
+            display_name=session_domain_data.get('display_name', username),
+            avatar=session_domain_data['avatar'],
+            token=session_domain_data['oauth_token'],
+            role='' if not hub_roles else list(hub_roles)[0]
+        )
 
     @property
-    def authenticated_user_token(self):
-        return self.request.session[self.context.name]['oauth_token']
+    def domain(self):
+        if isinstance(self.context, Domain):
+            domain_object = self.request.context
+        elif isinstance(self.context, Root):
+            domain_object = self.request.context['domains'][self.request.session['root_auth_domain']]
+
+        else:
+            return {'name': '', 'url': '', 'max_server': ''}
+
+        return dict(
+            name=domain_object.name,
+            url=self.request.resource_url(domain_object),
+            max_server=domain_object.max_server
+        )
+
+    def getVirtualHost(self):
+        return self.request.headers.get('X-Virtual-Host-Uri', None)
 
     @property
-    def authenticated_user_domain(self):
-        return self.context
-
-    @property
-    def authenticated_user_displayname(self):
-        return self.request.session.get(self.context.name, {}).get('display_name', self.authenticated_user)
-
-    @property
-    def authenticated_user_avatar(self):
-        return self.request.session[self.context.name]['avatar']
+    def logout_url(self):
+        if isinstance(self.context, Domain):
+            base = self.domain['url']
+        else:
+            base = self.application_url
+        return '{}/logout'.format(base)
 
     @property
     def application_url(self):
@@ -58,13 +80,3 @@ class TemplateAPI(object):
             return vh
         else:
             return app_url
-
-    @property
-    def context_url(self):
-        try:
-            return self.request.resource_url(self.request.context, '').rstrip('/')
-        except:
-            return self.application_url
-
-    def getVirtualHost(self):
-        return self.request.headers.get('X-Virtual-Host-Uri', None)

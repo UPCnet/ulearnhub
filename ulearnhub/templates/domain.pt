@@ -5,15 +5,15 @@
 
   <metal:main fill-slot="main">
 
-        <ng-hub-info username="${api.authenticated_user}"
+        <ng-hub-info username="${api.authenticated_user.username}"
                      server="${api.application_url}"
-                     token="${api.authenticated_user_token}"
-                     domain="${api.authenticated_user_domain.name}">
+                     token="${api.authenticated_user.token}"
+                     domain="${api.domain.name}">
         </ng-hub-info>
 
-        <ng-max-info username="${api.authenticated_user}"
-                     maxserver="${api.authenticated_user_domain.max_server}"
-                     oauthtoken="${api.authenticated_user_token}">
+        <ng-max-info username="${api.authenticated_user.username}"
+                     maxserver="${api.domain.max_server}"
+                     oauthtoken="${api.authenticated_user.token}">
         </ng-max-info>
 
         <div ui-view></div>

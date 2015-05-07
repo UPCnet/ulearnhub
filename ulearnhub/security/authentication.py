@@ -28,6 +28,27 @@ def check_token(url, username, token, scope):
     return requests.post('{}/checktoken'.format(url), data=payload, verify=False).status_code == 200
 
 
+def resolve_domain(request):
+    """
+        Resolves request domain, First match will be the one taken
+
+        1. OAuth headers domain
+        2. Current context domain name
+        3. Current authenticated root domain
+    """
+    current_domain = request.auth_domain
+
+    if current_domain is not None:
+        return current_domain
+
+    if isinstance(request.context, Domain):
+        return request.context.name
+
+    # And at last, if were
+    elif isinstance(request.context, Root):
+        return request.session.get('root_auth_domain', None)
+
+
 @implementer(IAuthenticationPolicy)
 class OauthAuthenticationPolicy(object):
     """
@@ -87,14 +108,12 @@ class OauthAuthenticationPolicy(object):
 
         principals = [Everyone, Authenticated, request.authenticated_userid]
 
-        current_domain = request.auth_domain or request.session.get('domain', None)
+        current_domain = resolve_domain(request)
         if current_domain:
             domain_users = root_factory(request)['users'].get(current_domain, {})
             domain_user = domain_users.get(request.authenticated_userid, None)
             if domain_user:
                 principals.extend(domain_user.roles)
-        else:
-            return principals
 
         request.__effective_principals__ = principals
         return principals

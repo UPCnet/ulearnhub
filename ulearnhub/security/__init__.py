@@ -1,1 +1,4 @@
 Manager = 'Manager'
+
+
+ROLES = [Manager]

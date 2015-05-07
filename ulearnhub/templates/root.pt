@@ -4,25 +4,8 @@
 <body>
 
   <metal:main fill-slot="main">
-      <div ng-app="uLearnHUB" ng-cloak>
 
-        <ng-hub-info username="${api.authenticated_user}"
-                     server="${api.application_url}"
-                     token="${api.authenticated_user_token}"
-                     domain="${api.authenticated_user_domain.name}">
-        </ng-hub-info>
-
-        <div ui-view></div>
-
-
-      </div>
   </metal:main>
-
-
-
-
-
-
 
 
 <metal:main fill-slot="view_scripts">
