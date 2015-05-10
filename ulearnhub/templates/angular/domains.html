@@ -1,7 +1,10 @@
-<!--
-          <div ng-controller="DomainsController as ctrl">
-              <table datatable="ng" dt-options="ctrl.dtOptions"
-                     dt-column-defs="ctrl.dtColumnDefs"
+    <h1 class="page-header">Domains
+          <small></small>
+      </h1>
+
+          <div>
+              <table datatable="ng" dt-options="domainsCtrl.dtOptions"
+                     dt-column-defs="domainsCtrl.dtColumnDefs"
                      class="compact table table-striped">
                   <thead>
                     <tr>
@@ -11,7 +14,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr ng-repeat="domain in ctrl.domains">
+                    <tr ng-repeat="domain in domainsCtrl.domains">
                       <td><a ui-sref="domain({domain:domain.name,server:domain.server})">{{ domain.name }}</a></td>
                       <td>{{ domain.max }}</td>
                       <td>{{ domain.oauth }}</td>
@@ -22,7 +25,7 @@
 
               <hr>
               <div class="view-actions pull-right">
-                <button class="btn btn-primary" ng-click="ctrl.open()" translate="btn_new_domain">New domain</button>
+                <button class="btn btn-primary" ng-click="domainsCtrl.open()" translate="btn_new_domain">New domain</button>
               </div>
 
 
@@ -68,4 +71,4 @@
 
 
 
- -->
+

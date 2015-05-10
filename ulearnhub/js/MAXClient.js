@@ -10,6 +10,12 @@
 
 var maxClient = angular.module('maxClient', ['ngResource']);
 
+maxClient.factory('Endpoints', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
+    return $resource(MAXInfo.max_server+'/info/api?by_category=1', null, {
+        query: {method:'GET', isArray: true, headers:MAXInfo.headers},
+    });
+}]);
+
 maxClient.factory('Context', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
     return $resource(MAXInfo.max_server+'/contexts/:id', null, {
         query: {method:'GET', headers:MAXInfo.headers, isArray: true},
@@ -117,7 +123,8 @@ maxClient.factory('MAXInfo', ['MAXSession', '_MAXUI', function(MAXSession, _MAXU
 maxClient.value('MAXSession', {
     username: '',
     oauth_token: '',
-    max_server: ''
+    max_server: '',
+    scope: 'widgetcli'
 });
 
 maxClient.factory('_MAXUI', [function() {

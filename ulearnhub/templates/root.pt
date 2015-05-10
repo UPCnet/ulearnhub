@@ -15,14 +15,27 @@
   </metal:main>
 
 
+  <metal:main fill-slot="main">
+
+        <ng-hub-info username="${api.authenticated_user.username}"
+                     server="${api.application_url}"
+                     token="${api.authenticated_user.token}"
+                     domain="${api.domain.name}">
+        </ng-hub-info>
+
+        <div ui-view></div>
+
+  </metal:main>
+
 <metal:main fill-slot="view_scripts">
     <script src="${api.application_url}/js/hubClient.js"></script>
     <script src="${api.application_url}/js/MAXClient.js"></script>
+    <script src="${api.application_url}/js/sidebar.js"></script>
     <script src="${api.application_url}/js/HubManagement/app.js"></script>
+    <script src="${api.application_url}/js/HubManagement/deployments.js"></script>
     <script src="${api.application_url}/js/HubManagement/domains.js"></script>
 </metal:main>
 
 
 </body>
 </html>
-

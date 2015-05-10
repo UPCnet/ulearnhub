@@ -37,8 +37,10 @@
     <script src="${api.application_url}/js/sidebar.js"></script>
     <script src="${api.application_url}/maxui/maxui.js"></script>
     <script src="${api.application_url}/js/DomainManagement/app.js"></script>
+    <script src="${api.application_url}/js/DomainManagement/api.js"></script>
     <script src="${api.application_url}/js/DomainManagement/users.js"></script>
     <script src="${api.application_url}/js/DomainManagement/contexts.js"></script>
+
 </metal:main>
 
 

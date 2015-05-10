@@ -20,6 +20,7 @@
   <link href="${api.application_url}/css/style.min.css" rel="stylesheet">
   <link href="${api.application_url}/css/style-responsive.min.css" rel="stylesheet">
   <link href="${api.application_url}/css/default.css" rel="stylesheet">
+  <link href="${api.application_url}/css/ulearnhub.css" rel="stylesheet">
   <link href="${api.application_url}/maxui/maxui.css" rel="stylesheet" />
 
   <!-- ================== END BASE CSS STYLE ================== -->
@@ -226,8 +227,21 @@
                 <!-- begin sidebar nav -->
                 <ul class="nav" ng-controller="SidebarController as ctrl">
                   <li class="nav-header">Navigation</li>
-                  <li class="{{ctrl.active(section.sref)}}" ng-repeat="section in ctrl.sections" >
-                      <a ui-sref="{{section.sref}}"><i class="fa fa-{{section.icon}}"></i> <span>{{section.title}}</span></a>
+                  <li class="{{ctrl.active(section.sref)}} {{ctrl.has_sub(section.subsections)}}" ng-repeat="section in ctrl.sections" >
+                      <a ui-sref="{{section.sref}}" ng-click="ctrl.expand(section, 'section')">
+                          <b class="caret pull-right" ng-if="ctrl.has_sub(section.subsections)"></b>
+                          <i class="fa fa-{{section.icon}}"></i> <span>{{section.title}}</span>
+                      </a>
+                      <ul class="sub-menu" ng-show="ctrl.expanded(section, 'section')" ng-if="ctrl.has_sub(section.subsections)">
+                          <li ng-repeat="subsection in section.subsections">
+                              <a href="" ng-click="ctrl.expand(subsection, 'subsection')">{{subsection.title}}</a>
+                              <ul class="sub-menu" ng-show="ctrl.expanded(subsection, 'subsection')">
+                                  <li ng-repeat="subsubsection in subsection.subsections">
+                                      <a href="">{{subsubsection.title}}</a>
+                                  </li>
+                              </ul>
+                          </li>
+                      </ul>
                   </li>
 
                       <!-- begin sidebar minify button -->

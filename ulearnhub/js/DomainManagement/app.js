@@ -21,8 +21,9 @@ ulearnhub.config(['sidebarSectionsProvider', '$stateProvider','$urlRouterProvide
     sidebarSectionsProvider.setSections([
         {title: 'Dashboard', sref: 'domain', icon: 'tachometer'},
         {title: 'Users', sref: 'users', icon: 'users'},
-        {title: 'Contexts', sref: 'contexts', icon: 'map-marker'}
-    ])
+        {title: 'Contexts', sref: 'contexts', icon: 'map-marker'},
+        {title: 'Api', sref: 'api', icon: 'paperclip'}
+    ]);
 
     uiSelectConfig.theme = 'bootstrap';
     $urlRouterProvider.otherwise('/');
@@ -75,6 +76,14 @@ ulearnhub.config(['sidebarSectionsProvider', '$stateProvider','$urlRouterProvide
             url: '/contexts/:id',
             templateUrl: 'templates/context.html',
             controller: 'ContextManageController as contextCtrl',
+            resolve: {
+            }
+        })
+
+        .state('api', {
+            url: '/api',
+            templateUrl: 'templates/api.html',
+            controller: 'ApiController as apiCtrl',
             resolve: {
             }
         })

@@ -1,151 +1,105 @@
-h1 {
-  font-family: 'Bitter', serif;
-  font-weight: 700;
-  line-height: 40px;
-  font-size: 40px;
-  margin: 0 0 43px 0;
+#api-view.panel h2 {
+  margin-top: 0px;
 }
-h2 {
-  font-family: 'PT Sans', sans-serif;
-  font-weight: normal;
-  font-size: 21px;
-  line-height: 23px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin: 0 0 23px 0;
+#api-view.panel .resource-item {
+  margin-bottom: 5px;
 }
-p {
-  font-family: 'PT Sans', sans-serif;
-  font-size: 15px;
-  line-height: 23px;
-  margin: 0 0 23px 0;
-}
-.login-form {
-  margin-top: 100px;
-}
-.login-form .logo {
-  text-align: center;
-}
-.login-form .logo img {
-  height: 236px;
-}
-.form-signin {
-  padding-left: 15px;
-}
-.form-signin .form-signin-heading,
-.form-signin .checkbox {
-  margin-bottom: 10px;
-}
-.form-signin .checkbox {
-  font-weight: normal;
-}
-.form-signin .form-control {
-  position: relative;
-  height: auto;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  padding: 10px;
-  font-size: 16px;
-}
-.form-signin .form-control:focus {
-  z-index: 2;
-}
-.form-signin input#inputUsername {
-  margin-bottom: -1px;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-}
-.form-signin input#inputDomain {
-  margin-bottom: -1px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-}
-.form-signin input#inputPassword {
-  margin-bottom: 10px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-}
-.login-error {
-  margin-top: 20px;
-  padding-right: 50px;
-  padding-left: 27px;
-}
-.login-error .alert {
-  padding: 8px;
-}
-.login-error .alert .close {
-  right: 0;
-}
-nav.navbar .navbar-brand {
-  padding: 8px;
-  padding-left: 60px;
-  padding-right: 20px;
-  background-image: url("../../static/hub.png");
-  background-size: 40px;
-  background-repeat: no-repeat;
-  background-position: 5px 4px;
-}
-nav.navbar .navbar-brand h1 {
-  font-size: 30px;
-  float: left;
-}
-nav.navbar .avatar {
-  height: 40px;
-  padding: 0px;
-  margin-top: 4px;
-  border-radius: 4px;
-  border: 1px #bbb solid;
-  float: left;
-}
-nav.navbar .nav.navbar-nav.navbar-right .dropdown-toggle {
-  float: left;
-}
-.sidebar {
-  position: fixed;
-  top: 52px;
-  bottom: 0;
-  left: 0;
-  padding: 0px;
-  z-index: 1000;
-  display: block;
-  overflow-x: hidden;
-  overflow-y: auto;
-  background-color: #ececec;
-  border-right: 1px solid #eee;
-}
-.sidebar .nav > li > a:focus,
-.sidebar .nav > li > a:hover {
-  background-color: #f1f1f1;
-}
-.sidebar .nav li {
-  border-bottom: 1px solid #dfdfdf;
-  padding: 0px 0px;
-}
-.sidebar .nav li a {
-  color: #555;
+#api-view.panel .resource-item label {
   font-size: 14px;
 }
-h1.page-header {
-  margin-top: 0px;
-  color: #666;
-  font-size: 20px;
+#api-view.panel .resource-item label span {
+  margin-left: 10px;
+  font-weight: normal;
 }
-.view-actions {
-  border-top: 1px #dfdfdf solid;
+#api-view.panel .form-group {
+  margin-bottom: 0px;
+  padding-bottom: 5px;
+  text-rendering: optimizelegibility;
+  font-size: 14px;
 }
-#sections.btn-group {
-  margin-bottom: 20px;
+#api-view.panel .form-group .form-group {
+  margin-bottom: 5px;
 }
-#sections.btn-group .btn a {
-  color: #fff;
-  text-decoration: none;
+#api-view.panel .form-group .form-group input,
+#api-view.panel .form-group .form-group label {
+  border-right: none;
+  font-size: 12px;
+  font-weight: normal;
+  height: 24px;
 }
-#language-selector {
-  padding-top: 10px;
+#api-view.panel .form-group .form-group input.param {
+  width: 100%;
 }
-#language-selector select {
-  padding-right: 20px;
+#api-view.panel .form-group .btn.active {
+  font-weight: bold;
+}
+#api-view.panel .form-group > label {
+  font-weight: bold;
+  border-right: 4px #ddd solid;
+  padding-bottom: 8px;
+}
+#api-view.panel .form-group h5 {
+  color: #428bca;
+}
+#api-view.panel .form-group input.param {
+  padding: 2px 4px;
+  width: 130px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  display: inline-block;
+  height: 30px;
+}
+#api-view.panel .form-group span.fixed,
+#api-view.panel .form-group label.fixed {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+#api-view.panel .form-group#resource-name h5 .label {
+  font-size: 90%;
+  margin-left: 10px;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+#api-view.panel .form-group#resource-uri input.param {
+  font-weight: bold;
+}
+#api-view.panel .form-group#resource-uri .col-sm* {
+  padding-top: 7px;
+}
+#api-view.panel .form-group#request-headers .col-sm-10,
+#api-view.panel .form-group#request-data .col-sm-10 {
+  border-left: 4px #ddd solid;
+  margin-left: -4px;
+}
+#api-view.panel .form-group#resource-description .col-sm-10 {
+  padding-top: 9px;
+}
+#api-view.panel .form-group#resource-description p {
+  margin-bottom: 0px;
+}
+#api-view.panel .form-group#request-data textarea {
+  min-height: 100px;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+#api-view.panel .form-group#request-submit label {
+  border-right: none;
+}
+#api-view.panel .form-group#request-submit i {
+  margin-right: 5px;
+}
+#api-view.panel .form-group#resource-method #methods-list {
+  margin-right: 20px;
+}
+#request-results .tab-pane {
+  padding: 10px;
+  padding-bottom: 0px;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+#request-results #response-content[data-type=image] {
+  text-align: center;
+}
+#request-results #response-content[data-type=image] img {
+  border: 1px solid #eee;
+  padding: 10px;
+  margin: 10px;
 }

@@ -430,7 +430,6 @@ label {
     margin: 0;
     background: #1a2229;
     position: relative;
-    display: none
 }
 .sidebar .sub-menu:before {
     content: '';
@@ -6223,3 +6222,12 @@ body.flat-black {
 .profile-section .title small {
     font-weight: 400
 }
+
+
+
+/*API PANEL*/
+
+#api-view.panel .form-group > label {
+  font-weight: bold;
+  border-right: 4px #ddd solid;
+  padding-bottom: 8px;

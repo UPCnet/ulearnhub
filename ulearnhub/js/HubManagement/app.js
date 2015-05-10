@@ -4,6 +4,7 @@ var ulearnhub = angular.module('uLearnHUBManagement', [
 
     'hubClient',
     'maxClient',
+    'sidebar',
     'datatables',
     'datatables.bootstrap',
     'ui.bootstrap',
@@ -20,7 +21,12 @@ var ulearnhub = angular.module('uLearnHUBManagement', [
 //});
 
 
-ulearnhub.config(['$stateProvider','$urlRouterProvider','$translateProvider','uiSelectConfig', function($stateProvider, $urlRouterProvider,$translateProvider,uiSelectConfig) {
+ulearnhub.config(['$stateProvider','$urlRouterProvider','$translateProvider','uiSelectConfig', 'sidebarSectionsProvider', function($stateProvider, $urlRouterProvider,$translateProvider,uiSelectConfig,sidebarSectionsProvider) {
+    sidebarSectionsProvider.setSections([
+        {title: 'Dashboard', sref: 'domain', icon: 'tachometer'},
+        {title: 'Deployments', sref: 'deployments', icon: 'server'},
+        {title: 'Domains', sref: 'domains', icon: 'globe'}
+    ]);
     uiSelectConfig.theme = 'bootstrap';
     $urlRouterProvider.otherwise('/');
 
@@ -36,37 +42,30 @@ ulearnhub.config(['$stateProvider','$urlRouterProvider','$translateProvider','ui
 
         // HOME STATES AND NESTED VIEWS ========================================
 
-        .state('root', {
+        .state('domain', {
             url: '',
             templateUrl: 'templates/hub.html',
-            controller: 'DomainController',
+            controller: 'HubDashboardController as dashboardCtrl',
             resolve: {
             }
         })
 
-        // ABOUT PAGE AND MULTIPLE NAMED VIEWS =================================
-        .state('about', {
-            // we'll get to this in a bit
-        });
+        .state('deployments', {
+            url: '/deployments',
+            templateUrl: 'templates/deployments.html',
+            controller: 'DeploymentsController as deploymentsCtrl',
+            resolve: {
+            }
+        })
 
-}]);
+        .state('domains', {
+            url: '/domains',
+            templateUrl: 'templates/domains.html',
+            controller: 'DomainsController as domainsCtrl',
+            resolve: {
+            }
+        })
 
-ulearnhub.controller('languageController', ['$translate','$cookies','$state', function($translate,$cookies,$state) {
-    var self = this;
-    var valid_cookie_language = $cookies.currentLang == 'ca'
-    self.currentLang = {code: $cookies.currentLang == undefined ? 'ca': $cookies.currentLang}
-    self.languages = [
-        {code: 'ca', name: 'Català'},
-        {code: 'es', name: 'Castellano'},
-        {code: 'en', name: 'English'}
-    ]
-
-  self.changeLanguage = function () {
-    $translate.use(self.currentLang.code);
-    $cookies.currentLang = self.currentLang.code;
-    $state.go('domain',{domain:$cookies.currentDomain});
-
-  };
 
 
 }]);
@@ -146,3 +145,8 @@ ulearnhub.value('DTTranslations', {
         }
     }
 });
+
+ulearnhub.controller('HubDashboardController', ['$stateParams','$modal', '$log', '$translate', 'Domain','MAXSession','hubSession', 'DTOptionsBuilder', 'DTColumnDefBuilder','$cookies', function($stateParams,$modal, $log, $translate, Domain,MAXSession,hubSession, DTOptionsBuilder, DTColumnDefBuilder,$cookies) {
+    var self = this;
+}]);
+
