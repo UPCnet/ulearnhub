@@ -1,6 +1,6 @@
 'use strict';
 
-var ulearn_users = angular.module('uLearnHUB');
+var ulearn_users = angular.module('uLearnHUBDomainManagement');
 
 ulearn_users.controller('UsersRolesController', ['$modal', '$log','$scope', 'UsersRoles','UserRoleManage','DTOptionsBuilder', 'DTColumnDefBuilder','$cookies','DTTranslations', function($modal, $log, $scope, UsersRoles, UserRoleManage, DTOptionsBuilder, DTColumnDefBuilder,$cookies,DTTranslations) {
   var self = this;
@@ -179,7 +179,7 @@ ulearn_users.controller('UsersManageController', ['$modal','getUrl', '$log', 'Us
     self.users = UserAll.query();
 
 
-// =============== ADD USER MODAL ================ // 
+// =============== ADD USER MODAL ================ //
 
   self.open = function (size) {
 

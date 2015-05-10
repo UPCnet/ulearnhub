@@ -29,19 +29,23 @@ class TemplateAPI(object):
         return master
 
     @property
+    def angular_name(self):
+        if isinstance(self.context, Domain):
+            return 'uLearnHUBDomainManagement'
+        elif isinstance(self.context, Root):
+            return 'uLearnHUBManagement'
+
+    @property
     def authenticated_user(self):
         hub_roles = set(ROLES).intersection(set(self.request.effective_principals))
         username = normalize_userdn(self.request.authenticated_userid)
-        try:
-            session_domain_data = self.request.session.get(self.domain['name'], {})
-        except:
-            return {'username': '', 'display_name': '', 'avatar': '', 'token': '', 'role': ''}
+        session_domain_data = self.request.session.get(self.domain['name'], {})
 
         return dict(
             username=username,
             display_name=session_domain_data.get('display_name', username),
-            avatar=session_domain_data['avatar'],
-            token=session_domain_data['oauth_token'],
+            avatar=session_domain_data.get('avatar', ''),
+            token=session_domain_data.get('oauth_token', ''),
             role='' if not hub_roles else list(hub_roles)[0]
         )
 

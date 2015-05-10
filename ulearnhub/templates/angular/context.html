@@ -1,5 +1,5 @@
 <br/><br/><br/>
-<div ng-controller="ContextManageController as contEdit">
+<div>
   <div class="panel panel-info">
     <div class="panel-heading" translate="label_edit_context">Edit Context</div>
     <div class="panel-body">
@@ -7,17 +7,17 @@
 
         <div class="form-group">
           <label class="control-label" for="displayName" translate="label_context">displayName</label>
-          <input type="text" class="form-control" ng-model="contEdit.context.displayName">
+          <input type="text" class="form-control" ng-model="contextCtrl.context.displayName">
           <p class="help-block"></p>
         </div>
 
         <div class="form-group">
           <label class="control-label" for="url">Url</label>
-          <input type="text" class="form-control" ng-model="contEdit.context.url">
+          <input type="text" class="form-control" ng-model="contextCtrl.context.url">
           <p class="help-block"></p>
         </div>
 
-        <button type="submit" class="btn btn-default" ng-click="contEdit.saveContext()" translate="btn_save">Save</button>
+        <button type="submit" class="btn btn-default" ng-click="contextCtrl.saveContext()" translate="btn_save">Save</button>
       </form>
       <br/>
       <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
@@ -27,7 +27,7 @@
   <br/><br/><br/>
 
   <div id="tabla_context">
-    <table datatable="ng" dt-options="contEdit.dtOptions" dt-column-defs="contEdit.dtColumnDefs" class="compact table table-striped">
+    <table datatable="ng" dt-options="contextCtrl.dtOptions" dt-column-defs="contextCtrl.dtColumnDefs" class="compact table table-striped">
       <thead>
         <tr>
           <th>UserName</th>
@@ -39,31 +39,31 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="user in contEdit.usersList">
+        <tr ng-repeat="user in contextCtrl.usersList">
           <td><a ui-sref="domain.user({id:user.username})">{{user.username}}</a></td>
 
           <td><input type="checkbox"
-            ng-change="contEdit.changePermission(user.hash,user.username,'read',user.permissionRead)"
+            ng-change="contextCtrl.changePermission(user.hash,user.username,'read',user.permissionRead)"
             ng-model="user.permissionRead">
           </td>
 
           <td><input type="checkbox"
-            ng-change="contEdit.changePermission(user.hash,user.username,'write',user.permissionWrite)"
+            ng-change="contextCtrl.changePermission(user.hash,user.username,'write',user.permissionWrite)"
             ng-model="user.permissionWrite">
           </td>
 
             <td><input type="checkbox"
-            ng-change="contEdit.changePermission(user.hash,user.username,'delete',user.permissionDelete)"
+            ng-change="contextCtrl.changePermission(user.hash,user.username,'delete',user.permissionDelete)"
             ng-model="user.permissionDelete">
           </td>
 
           <td><input type="checkbox"
-            ng-change="contEdit.changePermission(user.hash,user.username,'unsubscribe',user.permissionUnsubscribe)"
+            ng-change="contextCtrl.changePermission(user.hash,user.username,'unsubscribe',user.permissionUnsubscribe)"
             ng-model="user.permissionUnsubscribe">
           </td>
 
           <td>
-            <a href="" ng-click="contEdit.unsubscribeUser('sm',user.username,contEdit.contextHash)"><img ng-src="{{contEdit.application_url}}/static/borrar.jpg" alt="Remove subscribe" height="21" width="21"></a>
+            <a href="" ng-click="contextCtrl.unsubscribeUser('sm',user.username,contextCtrl.contextHash)"><img ng-src="{{contextCtrl.application_url}}/static/borrar.jpg" alt="Remove subscribe" height="21" width="21"></a>
           </td>
         </tr>
 
@@ -72,9 +72,9 @@
 
 
     <div id="search">
-	  <ui-select multiple ng-model="contEdit.usersSelected" theme="bootstrap" ng-disabled="disabled" on-select="contEdit.onSelect($item,$select)" style="width: 300px;">
+	  <ui-select multiple ng-model="contextCtrl.usersSelected" theme="bootstrap" ng-disabled="disabled" on-select="contextCtrl.onSelect($item,$select)" style="width: 300px;">
 	    <ui-select-match placeholder="{{'placeholder_add_users' | translate }}">{{$item.username}}</ui-select-match>
-	    <ui-select-choices repeat="user in contEdit.usersAvailable"	 refresh="contEdit.refreshUsersList($select.search)" refresh-delay="0">
+	    <ui-select-choices repeat="user in contextCtrl.usersAvailable"	 refresh="contextCtrl.refreshUsersList($select.search)" refresh-delay="0">
 	      <div ng-bind-html="user.username | highlight: $select.search"></div>
 	    </ui-select-choices>
 	  </ui-select>
@@ -82,7 +82,7 @@
     <br/>
 
     <div class="view-actions pull-left">
-		<button class="btn btn-primary" ng-click="contEdit.addUsersToContext()" translate="btn_add_users">Add users</button>
+		<button class="btn btn-primary" ng-click="contextCtrl.addUsersToContext()" translate="btn_add_users">Add users</button>
 	</div>
 
   </div>

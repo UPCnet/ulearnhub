@@ -3,18 +3,23 @@
 <head></head>
 <body>
 
-  <metal:main fill-slot="main">
+  <metal:navbar fill-slot="navbar">
+      <div metal:use-macro="api.masterTemplate.macros['navbar']"></div>
+  </metal:navbar>
 
+  <metal:sidebar fill-slot="sidebar">
+      <div metal:use-macro="api.masterTemplate.macros['sidebar']"></div>
+  </metal:sidebar>
+
+  <metal:main fill-slot="main">
   </metal:main>
 
 
 <metal:main fill-slot="view_scripts">
     <script src="${api.application_url}/js/hubClient.js"></script>
     <script src="${api.application_url}/js/MAXClient.js"></script>
-    <script src="${api.application_url}/js/app.js"></script>
-    <script src="${api.application_url}/js/domains.js"></script>
-    <script src="${api.application_url}/js/users.js"></script>
-    <script src="${api.application_url}/js/contexts.js"></script>
+    <script src="${api.application_url}/js/HubManagement/app.js"></script>
+    <script src="${api.application_url}/js/HubManagement/domains.js"></script>
 </metal:main>
 
 

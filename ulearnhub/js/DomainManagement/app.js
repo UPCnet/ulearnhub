@@ -1,26 +1,29 @@
 'use strict';
 
-var ulearnhub = angular.module('uLearnHUB', [
-
+var ulearnhub = angular.module('uLearnHUBDomainManagement', [
     'hubClient',
+    'sidebar',
     'maxClient',
     'datatables',
     'datatables.bootstrap',
     'ui.bootstrap',
     'ui.router',
     'ui.select',
+    'ui.jq',
     'ngSanitize',
     'ngCookies',
     'pascalprecht.translate'
 ]);
 
-//ulearnhub.run(function(DTDefaultOptions) {
- //   DTDefaultOptions.setLanguageSource('locales/locale-es.json');
-    //DTDefaultOptions.setLanguage({ sUrl: 'locales/locale-es.json'} );
-//});
 
+ulearnhub.config(['sidebarSectionsProvider', '$stateProvider','$urlRouterProvider','$translateProvider','uiSelectConfig', function(sidebarSectionsProvider, $stateProvider, $urlRouterProvider,$translateProvider,uiSelectConfig) {
 
-ulearnhub.config(['$stateProvider','$urlRouterProvider','$translateProvider','uiSelectConfig', function($stateProvider, $urlRouterProvider,$translateProvider,uiSelectConfig) {
+    sidebarSectionsProvider.setSections([
+        {title: 'Dashboard', sref: 'domain', icon: 'tachometer'},
+        {title: 'Users', sref: 'users', icon: 'users'},
+        {title: 'Contexts', sref: 'contexts', icon: 'map-marker'}
+    ])
+
     uiSelectConfig.theme = 'bootstrap';
     $urlRouterProvider.otherwise('/');
 
@@ -39,49 +42,42 @@ ulearnhub.config(['$stateProvider','$urlRouterProvider','$translateProvider','ui
         .state('domain', {
             url: '',
             templateUrl: 'templates/domain.html',
-            controller: 'DomainController',
+            controller: 'DomainController as domainCtrl',
             resolve: {
             }
         })
 
-        .state('domain.users', {
+        .state('users', {
             url: '/users',
             templateUrl: 'templates/users.html',
-            controller: 'UsersManageController',
+            controller: 'UsersManageController as usersCtrl',
             resolve: {
             }
         })
 
-        .state('domain.contexts', {
+        .state('contexts', {
             url: '/contexts',
             templateUrl: 'templates/contexts.html',
-            controller: 'ContextsManageController',
-            controllerAs:'contMan',
+            controller: 'ContextsManageController as contextsCtrl',
             resolve: {
             }
         })
 
-        .state('domain.user', {
+        .state('user', {
             url: '/users/:id',
             templateUrl: 'templates/user.html',
-            controller: 'UserManageController',
+            controller: 'UserManageController as userCtrl',
             resolve: {
             }
         })
 
-        .state('domain.context', {
+        .state('context', {
             url: '/contexts/:id',
             templateUrl: 'templates/context.html',
-            controller: 'ContextManageController',
-            coontrollerAs: 'contEdit',
+            controller: 'ContextManageController as contextCtrl',
             resolve: {
             }
         })
-
-        // ABOUT PAGE AND MULTIPLE NAMED VIEWS =================================
-        .state('about', {
-            // we'll get to this in a bit
-        });
 
 }]);
 
@@ -298,3 +294,29 @@ ulearnhub.value('DTTranslations', {
         }
     }
 });
+
+ulearnhub.controller('DomainController', ['$stateParams','$modal', '$log', '$translate', 'Domain','MAXSession','hubSession', 'DTOptionsBuilder', 'DTColumnDefBuilder','$cookies', function($stateParams,$modal, $log, $translate, Domain,MAXSession,hubSession, DTOptionsBuilder, DTColumnDefBuilder,$cookies) {
+    var self = this;
+    var domainName = hubSession.domain;
+    $cookies.currentDomain = $stateParams.domain;
+    self.domainObj = Domain.get({id:domainName});
+
+    self.maxuisettings = {
+        generatorName: "uLearn HUB",
+        language: "ca",
+        oAuthGrantType: "password",
+        avatarURLpattern: MAXSession.max_server + "/people/{0}/avatar",
+        profileURLpattern: "#",
+        username: MAXSession.username,
+        oAuthToken: MAXSession.oauth_token,
+        maxServerURL: MAXSession.max_server,
+        maxServerURLAlias: MAXSession.max_server,
+        maxTalkURL: MAXSession.max_server + "/stomp",
+    }
+
+
+  self.changeLanguage = function (key) {
+    $translate.use(key);
+  };
+}]);
+

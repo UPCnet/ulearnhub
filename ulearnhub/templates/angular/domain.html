@@ -1,25 +1,33 @@
+<div ui-view>
 
-<div ng-controller="DomainController as ctrl">
-  <br/>
-  <div class="btn-group">
-      <button class="btn btn-primary" ng-model="radioModel"  ui-sref="domain" translate="btn_manage">Manage</button>
-      <button class="btn btn-primary" ng-model="radioModel"  ui-sref="domain.users" translate="btn_users">Users</button>
-      <button class="btn btn-primary" ng-model="radioModel"  ui-sref="domain.contexts" translate="btn_contexts">Contexts</button>
-  </div>
+    <h1 class="page-header"><strong>{{domainCtrl.domainObj.name}}</strong> domain dashboard
+      <small>{{domainCtrl.domainObj['max']}}</small>
+    </h1>
 
+              <!-- begin row -->
+              <div class="row">
 
+                  <!-- begin col-3 -->
+                  <div class="col-md-6 col-sm-6">
 
-  <div ui-view>
-    <p>{{ctrl.domainObj.name}} - {{ctrl.domainObj['max']}}</p>
-    <p>{{"traduccion" | translate }}</p>
-  </div>
+                      <div class="panel panel-inverse">
+                          <div class="panel-heading">
+                              <h4 class="panel-title">Activity Stream</h4>
+                          </div>
+                          <div id="container" ui-jq="maxUI" ui-options="domainCtrl.maxuisettings">
 
+                          </div>
+                      </div>
+                  </div>
+                  <!-- end col-3 -->
+                  <!-- begin col-3 -->
+                  <div class="col-md-3 col-sm-6">
+                  </div>
+                  <!-- end col-3 -->
 
-
-
+              </div>
+              <!-- end row -->
 
 
 </div>
-
-
-
+</div>

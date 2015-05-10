@@ -3,6 +3,15 @@
 <head></head>
 <body>
 
+
+  <metal:navbar fill-slot="navbar">
+      <div metal:use-macro="api.masterTemplate.macros['navbar']"></div>
+  </metal:navbar>
+
+  <metal:sidebar fill-slot="sidebar">
+      <div metal:use-macro="api.masterTemplate.macros['sidebar']"></div>
+  </metal:sidebar>
+
   <metal:main fill-slot="main">
 
         <ng-hub-info username="${api.authenticated_user.username}"
@@ -25,10 +34,11 @@
 <metal:main fill-slot="view_scripts">
     <script src="${api.application_url}/js/hubClient.js"></script>
     <script src="${api.application_url}/js/MAXClient.js"></script>
-    <script src="${api.application_url}/js/app.js"></script>
-    <script src="${api.application_url}/js/domains.js"></script>
-    <script src="${api.application_url}/js/users.js"></script>
-    <script src="${api.application_url}/js/contexts.js"></script>
+    <script src="${api.application_url}/js/sidebar.js"></script>
+    <script src="${api.application_url}/maxui/maxui.js"></script>
+    <script src="${api.application_url}/js/DomainManagement/app.js"></script>
+    <script src="${api.application_url}/js/DomainManagement/users.js"></script>
+    <script src="${api.application_url}/js/DomainManagement/contexts.js"></script>
 </metal:main>
 
 

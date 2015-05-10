@@ -85,6 +85,8 @@ def main(global_config, **settings):
     config.add_static_view('bootstrap', 'components/bootstrap/dist', cache_max_age=3600)
     config.add_static_view('templates', 'templates/angular', cache_max_age=3600)
     config.add_static_view('angular', 'components/angular', cache_max_age=3600)
+    config.add_static_view('ui-utils', 'components/ui-utils', cache_max_age=3600)
+    config.add_static_view('maxui', 'maxui', cache_max_age=3600)
     config.add_static_view('angular-ui-router', 'components/angular-ui-router/release', cache_max_age=3600)
     config.add_static_view('angular-bootstrap', 'components/angular-bootstrap', cache_max_age=3600)
     config.add_static_view('angular-resource', 'components/angular-resource', cache_max_age=3600)
