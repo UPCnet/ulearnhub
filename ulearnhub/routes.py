@@ -30,7 +30,7 @@ from collections import OrderedDict
 ROUTES = OrderedDict()
 
 
-ROUTES['info'] = dict(route='info', traverse='/domains')
+ROUTES['info'] = dict(route='/info', traverse='/domains')
 
 # DEPLOYMENT ENDPOINTS
 ROUTES['api_deployments'] = dict(route='/api/deployments', traverse='/deployments')
