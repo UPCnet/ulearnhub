@@ -29,9 +29,6 @@ from collections import OrderedDict
 
 ROUTES = OrderedDict()
 
-
-ROUTES['info'] = dict(route='/info', traverse='/domains')
-
 # DEPLOYMENT ENDPOINTS
 ROUTES['api_deployments'] = dict(route='/api/deployments', traverse='/deployments')
 ROUTES['api_deployment'] = dict(route='/api/deployments/{deployment}', traverse='/deployments/{deployment}')
@@ -50,3 +47,15 @@ ROUTES['api_users'] = dict(route='/api/users', traverse='/users')
 # SERVICES ENDPOINTS
 ROUTES['api_domain_services'] = dict(route='/api/domains/{domain}/services', traverse='/domains/{domain}')
 ROUTES['api_domain_service'] = dict(route='/api/domains/{domain}/services/{service}', traverse='/domains/{domain}/services/{service}')
+
+# NON-API ROUTES
+ROUTES['root'] = dict(route='/')
+ROUTES['login'] = dict(route='/login')
+ROUTES['logout'] = dict(route='/logout')
+ROUTES['info'] = dict(route='/info', traverse='/domains')
+
+# DOMAIN-RELATED VIEWS
+# Those must be declared last to not override root views
+ROUTES['domain'] = dict(route='/{domain}', traverse="/domains/{domain}")
+ROUTES['domain_login'] = dict(route='/{domain}/login', traverse="/domains/{domain}")
+ROUTES['domain_logout'] = dict(route='/{domain}/logout', traverse="/domains/{domain}")
