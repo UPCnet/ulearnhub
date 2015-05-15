@@ -13,5 +13,10 @@ max_exceptions.controller('ExceptionController', ['$stateParams', '$cookies', 'E
     var self = this;
     self.hash = $stateParams.id;
     self.exception = Exception.get({id: self.hash});
+    self.request = '';
+    self.exception.$promise.then(function(data) {
+      self.request = Prism.highlight(data.request, Prism.languages.http);
+      self.traceback = Prism.highlight(data.traceback, Prism.languages.python)
+    });
 
 }]);

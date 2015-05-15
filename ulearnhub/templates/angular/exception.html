@@ -7,7 +7,7 @@
     <h5><strong>Exception hash: </strong>{{excCtrl.hash}}</h5>
     <h5><Strong>Raised on: </Strong>{{excCtrl.exception.date}}</h5>
 
-    <pre>{{excCtrl.exception.request}}</pre>
-    <pre>{{excCtrl.exception.traceback}}</pre>
+    <pre class="language-http"><code ng-bind-html="excCtrl.request"></code></pre>
+    <pre class="language-python"><code ng-bind-html="excCtrl.traceback"></code></pre>
     </div>
 </div>
