@@ -22,7 +22,8 @@ ulearnhub.config(['sidebarSectionsProvider', '$stateProvider','$urlRouterProvide
         {title: 'Dashboard', sref: 'domain', icon: 'tachometer'},
         {title: 'Users', sref: 'users', icon: 'users'},
         {title: 'Contexts', sref: 'contexts', icon: 'map-marker'},
-        {title: 'Api', sref: 'api', icon: 'paperclip'}
+        {title: 'Api', sref: 'api', icon: 'paperclip'},
+        {title: 'Exceptions', sref: 'exceptions', icon: 'exclamation-triangle'}
     ]);
 
     uiSelectConfig.theme = 'bootstrap';
@@ -87,6 +88,22 @@ ulearnhub.config(['sidebarSectionsProvider', '$stateProvider','$urlRouterProvide
             resolve: {
             }
         })
+
+        .state('exceptions', {
+            url: '/exceptions',
+            templateUrl: 'templates/exceptions.html',
+            controller: 'ExceptionsController as excsCtrl',
+            resolve: {
+            }
+        })
+
+        .state('exception', {
+            url: '/exceptions/:id',
+            templateUrl: 'templates/exception.html',
+            controller: 'ExceptionController as excCtrl',
+            resolve: {
+            }
+        });
 
 }]);
 

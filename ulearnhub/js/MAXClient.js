@@ -12,7 +12,14 @@ var maxClient = angular.module('maxClient', ['ngResource']);
 
 maxClient.factory('Endpoints', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
     return $resource(MAXInfo.max_server+'/info/api?by_category=1', null, {
+        query: {method:'GET', isArray: true, headers:MAXInfo.headers}
+    });
+}]);
+
+maxClient.factory('Exception', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
+    return $resource(MAXInfo.max_server+'/admin/maintenance/exceptions/:id', null, {
         query: {method:'GET', isArray: true, headers:MAXInfo.headers},
+        get:  {method:'GET', headers:MAXInfo.headers}
     });
 }]);
 
@@ -28,13 +35,13 @@ maxClient.factory('Context', ['$resource', 'MAXInfo', function($resource, MAXInf
 
 maxClient.factory('ContextAll', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
     return $resource(MAXInfo.max_server+'/contexts?limit=0', null, {
-        query: {method:'GET', isArray: true, headers:MAXInfo.headers},
+        query: {method:'GET', isArray: true, headers:MAXInfo.headers}
     });
 }]);
 
 maxClient.factory('ContextUsers', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
     return $resource(MAXInfo.max_server+'/contexts/:hash/subscriptions', {hash:'@hash'}, {
-        query: {method:'GET', headers:MAXInfo.headers, isArray: true},
+        query: {method:'GET', headers:MAXInfo.headers, isArray: true}
     });
 }]);
 
@@ -51,33 +58,33 @@ maxClient.factory('User', ['$resource', 'MAXInfo', function($resource, MAXInfo) 
 
 maxClient.factory('UserAll', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
     return $resource(MAXInfo.max_server+'/people?limit=0', null, {
-        query: {method:'GET', isArray: true, headers:MAXInfo.headers},
+        query: {method:'GET', isArray: true, headers:MAXInfo.headers}
     });
 }]);
 
 
 maxClient.factory('UserFiltered', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
     return $resource(MAXInfo.max_server+'/people?username=:username', {username:'username'}, {
-        query: {method:'GET', isArray: true, headers:MAXInfo.headers},
+        query: {method:'GET', isArray: true, headers:MAXInfo.headers}
     });
 }]);
 
 
 maxClient.factory('Subscriptions', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
     return $resource(MAXInfo.max_server+'/people/:id/subscriptions', {id:'@id'}, {
-        save: {method:'POST', headers:MAXInfo.headers},
+        save: {method:'POST', headers:MAXInfo.headers}
     });
 }]);
 
 maxClient.factory('UserSubscribe', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
     return $resource(MAXInfo.max_server+'/people/:id/subscriptions/:hash', {id:'@id',hash:'@hash'}, {
-        remove: {method:'DELETE', headers:MAXInfo.headers},
+        remove: {method:'DELETE', headers:MAXInfo.headers}
     });
 }]);
 
 maxClient.factory('UsersRoles', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
     return $resource(MAXInfo.max_server+'/admin/security/users?limit=0', null, {
-        query: {method:'GET', isArray: true, headers:MAXInfo.headers},
+        query: {method:'GET', isArray: true, headers:MAXInfo.headers}
     });
 }]);
 

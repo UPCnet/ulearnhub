@@ -1,0 +1,23 @@
+<h1 class="page-header">Exception list
+          <small>5xx Errors raised on this domain's MAX Server</small>
+      </h1>
+
+<div class="panel panel-inverse" data-sortable-id="table-basic-4">
+
+    <div class="panel-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Hash</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="exception in excsCtrl.exceptions">
+                    <td>{{exception.date}}</td>
+                    <td><a ui-sref="exception({id:exception.id})">{{exception.id}}</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
