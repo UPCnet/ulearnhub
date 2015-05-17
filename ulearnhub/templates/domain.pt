@@ -32,6 +32,9 @@
 
 
 <metal:main fill-slot="view_scripts">
+
+    <script src="${api.application_url}/angular-elastic-input/angular-elastic-input.min.js"></script>
+
     <script src="${api.application_url}/js/hubClient.js"></script>
     <script src="${api.application_url}/js/MAXClient.js"></script>
     <script src="${api.application_url}/js/sidebar.js"></script>

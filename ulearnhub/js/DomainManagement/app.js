@@ -12,7 +12,8 @@ var ulearnhub = angular.module('uLearnHUBDomainManagement', [
     'ui.jq',
     'ngSanitize',
     'ngCookies',
-    'pascalprecht.translate'
+    'pascalprecht.translate',
+    'puElasticInput'
 ]);
 
 
@@ -86,7 +87,16 @@ ulearnhub.config(['sidebarSectionsProvider', '$stateProvider','$urlRouterProvide
             templateUrl: 'templates/api.html',
             controller: 'ApiController as apiCtrl',
             resolve: {
+                endpoints: function(EndpointsService) {
+                    return EndpointsService.loadEndpoints();
+                }
             }
+        })
+
+        .state('api.endpoint', {
+            url: '/:endpoint',
+            templateUrl: 'templates/endpoint.html',
+            controller: 'EndpointController as endpointCtrl'
         })
 
         .state('exceptions', {
