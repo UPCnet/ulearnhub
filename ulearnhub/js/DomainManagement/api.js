@@ -121,11 +121,17 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
 
         if (missing_or_empty_params) {
           self.showError('Some parameters missing on destination url');
-          return
+          return;
         }
 
         var endpoint_url = MAXInfo.max_server + url_path;
-        $http[self.active_method.toLowerCase()](endpoint_url, {headers: MAXInfo.headers});
+        $http[self.active_method.toLowerCase()](endpoint_url, {headers: MAXInfo.headers})
+        .success(function(data, status, headers, config) {
+          debugger
+        })
+        .error(function(data, status, headers, config) {
+          self.response.pretty = JSON.stringify(data, undefined, 2);
+        });
     };
 
     self.methods = [];
@@ -143,6 +149,10 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
     self.name = current.route_name;
     self.route = self.routeParts(current.route_url);
     self.rest_params = {};
+    self.response = {
+      pretty: 'No response yet, launch a request first.'
+    };
+
     self.setActiveMethod(self.methods[0].name);
 
 }]);
