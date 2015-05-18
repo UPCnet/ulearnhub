@@ -149,8 +149,12 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
     };
 
     self.methods = [];
+    self.available_methods = [];
     angular.forEach(['GET', 'POST', 'PUT', 'DELETE', 'HEAD'], function(method, key) {
        var method_state = {name:method, implemented: current.methods[method] === undefined ? false : true};
+       if (current.methods[method] !== undefined) {
+          self.available_methods.push(method);
+       }
        this.push(method_state);
     }, self.methods);
 
@@ -166,7 +170,6 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
     self.response = {
       pretty: 'No response yet, <br/>launch a request first.'
     };
-
-    self.setActiveMethod(self.methods[0].name);
+    self.setActiveMethod(self.available_methods[0]);
 
 }]);

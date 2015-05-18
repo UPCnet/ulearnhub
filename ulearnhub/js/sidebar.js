@@ -51,6 +51,7 @@ sidebar.controller('SidebarController', ['$state', '$stateParams', 'sidebarSecti
 
 sidebar.provider('sidebarSections', function sidebarSectionsProvider() {
   var sections = [];
+  var collapsed = true;
   var expands = {
     section: undefined,
     subsection: undefined
@@ -63,6 +64,11 @@ sidebar.provider('sidebarSections', function sidebarSectionsProvider() {
 
   this.$get = ['Domain', function(Domain) {
     return {
+
+        toggle: function() {
+          collapsed = !collapsed;
+          return collapsed;
+        },
 
         get: function() {
           return sections;
