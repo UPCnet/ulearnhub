@@ -69,7 +69,6 @@
 
 
         &#resource-uri {
-            input.param {font-weight: bold;}
             .col-sm* {
                 padding-top: 7px;
             }
@@ -82,6 +81,14 @@
             }
         }
 
+        &#request-headers>label {
+            margin-bottom:5px;
+        }
+
+        &#request-headers .form-group>label {
+            font-size:10px;
+            height:auto;
+        }
         &#resource-description {
             .col-sm-10 {padding-top: 9px;}
             p {margin-bottom: 0px;}
@@ -128,5 +135,84 @@
     }
 
 }
+
+.sidebar .sub-menu>li.active>a:before {
+    color: #348fe2;
+}
+
+#api-view.panel .form-group#resource-method #methods-list {
+    margin-right: 0px;
+}
+
+.scroll-body {
+    height:100%;
+}
+
+@media (min-width: 500px) {
+
+    #request-results #response-content pre br {
+        display:none;
+    }
+}
+@media (max-width: 767px) {
+    .content {
+      margin-left: 0;
+      padding: 5px;
+    }
+
+    h1.page-header {
+        padding:10px;
+    }
+
+    #api-view.panel form > .form-group, #api-view.panel #resource-details > .form-group {
+      padding:10px 5px;
+      border-bottom: 2px #ddd solid;
+
+      &#request-submit, &#request-headers {
+        border:none;
+      }
+    }
+
+    #api-view.panel #request-submit button {
+        width: 100%;
+    }
+    #api-view.panel .form-group > label {
+      font-weight: bold;
+      border-right: none;
+      padding-bottom: 0px;
+      margin-bottom: 0px;
+    }
+
+    #api-view.panel .form-group h5 {
+      padding: 0px 0px;
+    }
+
+    .content small {
+        font-size: 16px;
+    }
+
+    #api-view .panel-body {
+        padding:7px;
+    }
+
+    #request-results {
+
+        .nav.nav-tabs li a {
+            padding: 10px 15px;
+            margin-right:0px;
+            font-size: 14px;
+        }
+
+    }
+
+    #api-view .btn-group {
+        margin-top: 5px;
+    }
+
+    #api-view .btn-group>.btn {
+        padding:5px 10px;
+    }
+}
+
 
 

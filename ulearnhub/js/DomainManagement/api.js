@@ -3,7 +3,7 @@
 var max_endpoints = angular.module('uLearnHUBDomainManagement');
 
 
-max_endpoints.factory('EndpointsService', ['$q', 'Endpoints', 'sidebarSections', function($q, Endpoints, sidebarSections) {
+max_endpoints.factory('EndpointsService', ['$state', '$q', 'Endpoints', 'sidebarSections', function($state, $q, Endpoints, sidebarSections) {
     var endpoints_by_category = {};
     var endpoints = {};
 
@@ -19,10 +19,13 @@ max_endpoints.factory('EndpointsService', ['$q', 'Endpoints', 'sidebarSections',
                   var thirdlevel = [];
                   angular.forEach(category.resources, function(resource, key) {
                      endpoints[resource.route_id] = resource;
-                     this.push({title: resource.route_name, sref: "api.endpoint({endpoint:'" + resource.route_id + "'})"});
+                     endpoints[resource.route_id].category = category.name;
+                     var url = $state.href('api.endpoint', {endpoint: resource.route_id});
+                     this.push({title: resource.route_name, sref: url});
                   }, thirdlevel);
 
                   subsection.subsections = thirdlevel;
+                  subsection.sref = 'api.' + subsection.title;
                   this.push(subsection);
               }, categories);
               sidebarSections.subsection('api', categories);
@@ -104,6 +107,13 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
       self.error.active = false;
     };
 
+    self.renderResponse = function(data, status, headers, config) {
+        var json_data = angular.fromJson(data);
+        var json_prettyfied = JSON.stringify(json_data, undefined, 2);
+        self.response.raw = data;
+        self.response.pretty = Prism.highlight(json_prettyfied, Prism.languages.javascript);
+    };
+
     self.launch = function() {
         self.hideError();
         var url_path = '';
@@ -125,13 +135,17 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
         }
 
         var endpoint_url = MAXInfo.max_server + url_path;
-        $http[self.active_method.toLowerCase()](endpoint_url, {headers: MAXInfo.headers})
-        .success(function(data, status, headers, config) {
-          debugger
-        })
-        .error(function(data, status, headers, config) {
-          self.response.pretty = JSON.stringify(data, undefined, 2);
-        });
+        $http[self.active_method.toLowerCase()](endpoint_url, {
+          headers: MAXInfo.headers,
+          transformResponse: function(data, headers) {
+            return data;
+          }
+          }).success(function(data, status, headers, config) {
+            self.renderResponse(data, status, headers, config);
+          })
+          .error(function(data, status, headers, config) {
+            self.renderResponse(data, status, headers, config);
+          });
     };
 
     self.methods = [];
@@ -150,7 +164,7 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
     self.route = self.routeParts(current.route_url);
     self.rest_params = {};
     self.response = {
-      pretty: 'No response yet, launch a request first.'
+      pretty: 'No response yet, <br/>launch a request first.'
     };
 
     self.setActiveMethod(self.methods[0].name);

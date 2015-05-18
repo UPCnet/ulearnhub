@@ -45,7 +45,6 @@ ulearnhub.config(['$stateProvider','$urlRouterProvider','$translateProvider','ui
         .state('domain', {
             url: '',
             templateUrl: 'templates/hub.html',
-            controller: 'HubDashboardController as dashboardCtrl',
             resolve: {
             }
         })
@@ -64,7 +63,7 @@ ulearnhub.config(['$stateProvider','$urlRouterProvider','$translateProvider','ui
             controller: 'DomainsController as domainsCtrl',
             resolve: {
             }
-        })
+        });
 
 
 
@@ -146,7 +145,7 @@ ulearnhub.value('DTTranslations', {
     }
 });
 
-ulearnhub.controller('HubDashboardController', ['$stateParams','$modal', '$log', '$translate', 'Domain','MAXSession','hubSession', 'DTOptionsBuilder', 'DTColumnDefBuilder','$cookies', function($stateParams,$modal, $log, $translate, Domain,MAXSession,hubSession, DTOptionsBuilder, DTColumnDefBuilder,$cookies) {
+ulearnhub.controller('MainAppController', ['$stateParams','$modal', '$log', '$translate', 'Domain','MAXSession','hubSession', 'DTOptionsBuilder', 'DTColumnDefBuilder','$cookies', function($stateParams,$modal, $log, $translate, Domain,MAXSession,hubSession, DTOptionsBuilder, DTColumnDefBuilder,$cookies) {
     var self = this;
 }]);
 

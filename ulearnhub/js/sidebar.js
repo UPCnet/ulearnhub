@@ -15,7 +15,7 @@ var sidebar = angular.module('sidebar',
 );
 
 
-sidebar.controller('SidebarController', ['$state', 'sidebarSections', function($state, sidebarSections) {
+sidebar.controller('SidebarController', ['$state', '$stateParams', 'sidebarSections', function($state, $stateParams, sidebarSections) {
     var self = this;
 
     self.sections = sidebarSections.get();
@@ -25,7 +25,10 @@ sidebar.controller('SidebarController', ['$state', 'sidebarSections', function($
     };
 
     self.active = function(section_sref) {
-        return section_sref === $state.current.name ? 'active' : '';
+        var is_child = $state.includes(section_sref);
+        var url = $state.href($state.current.name, $stateParams);
+        var is_active = (section_sref === url) | is_child;
+        return is_active ? 'active' : '';
     };
 
     self.has_sub = function(subsection) {
@@ -34,16 +37,12 @@ sidebar.controller('SidebarController', ['$state', 'sidebarSections', function($
     };
 
     self.expanded = function(section, which) {
-      return self.expands[which] === section;
+      return sidebarSections.expanded(section, which);
     };
 
 
     self.expand = function(section, which) {
-      if (self.expands[which] === section) {
-        self.expands[which] = undefined;
-      } else {
-        self.expands[which] = section;
-      }
+      return sidebarSections.expand(section, which);
     };
 
 }]);
@@ -52,6 +51,10 @@ sidebar.controller('SidebarController', ['$state', 'sidebarSections', function($
 
 sidebar.provider('sidebarSections', function sidebarSectionsProvider() {
   var sections = [];
+  var expands = {
+    section: undefined,
+    subsection: undefined
+  };
 
   this.setSections = function(value) {
     sections = value;
@@ -60,6 +63,7 @@ sidebar.provider('sidebarSections', function sidebarSectionsProvider() {
 
   this.$get = ['Domain', function(Domain) {
     return {
+
         get: function() {
           return sections;
         },
@@ -71,6 +75,19 @@ sidebar.provider('sidebarSections', function sidebarSectionsProvider() {
           var section = sections.filter(function(el) {return el.sref === section_sref;})[0];
           sections[sections.indexOf(section)].subsections = items;
           return section;
+        },
+
+        expanded: function(section, which) {
+          var value = expands[which] === section;
+          return value;
+        },
+
+        expand: function(section, which, force) {
+          if (expands[which] !== section | force === true) {
+            expands[which] = section;
+          } else {
+            expands[which] = undefined;
+          }
         }
 
     };

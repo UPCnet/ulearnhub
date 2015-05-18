@@ -20,10 +20,9 @@
   <link href="${api.application_url}/css/style.min.css" rel="stylesheet">
   <link href="${api.application_url}/css/style-responsive.min.css" rel="stylesheet">
   <link href="${api.application_url}/css/default.css" rel="stylesheet">
-  <link href="${api.application_url}/css/ulearnhub.css" rel="stylesheet">
   <link href="${api.application_url}/maxui/maxui.css" rel="stylesheet" />
   <link href="${api.application_url}/prism/themes/prism-okaidia.css" rel="stylesheet" />
-
+  <link href="${api.application_url}/css/ulearnhub.css" rel="stylesheet">
 
   <!-- ================== END BASE CSS STYLE ================== -->
 
@@ -36,7 +35,7 @@
 
 
         <!-- begin #page-container -->
-          <div id="page-container" class="page-sidebar-fixed page-header-fixed">
+          <div id="page-container" ng-controller="MainAppController as mainCtrl" class="page-sidebar-fixed page-header-fixed {{mainCtrl.sidebar_status}}">
 
             <div metal:define-slot="navbar"></div>
             <div metal:define-slot="sidebar"></div>
@@ -44,7 +43,7 @@
 
             <div id="content" class="content">
               <div metal:define-slot="main"></div>
-            </div>>
+            </div>
 
 
 
@@ -60,6 +59,7 @@
     <script src="${api.application_url}/jquery/jquery.min.js"></script>
     <script src="${api.application_url}/bootstrap/js/bootstrap.min.js"></script>
     <script src="${api.application_url}/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="${api.application_url}/slimscroll/jquery.slimscroll.min.js"></script>
 
     <!-- Angular and extension modules -->
     <script src="${api.application_url}/angular/angular.min.js"></script>
@@ -74,10 +74,12 @@
     <script src="${api.application_url}/angular-translate/angular-translate.min.js"></script>
     <script src="${api.application_url}/angular-cookies/angular-cookies.min.js"></script>
     <script src="${api.application_url}/angular-translate-static/angular-translate-loader-static-files.min.js"></script>
+    <script src="${api.application_url}/angular-slimscroll/angular-slimscroll.js"></script>
     <script src="${api.application_url}/underscore/underscore-min.js"></script>
     <script src="${api.application_url}/prism/prism.js"></script>
     <script src="${api.application_url}/prism/components/prism-python.min.js"></script>
     <script src="${api.application_url}/prism/components/prism-http.min.js"></script>
+    <script src="${api.application_url}/prism/components/prism-javascript.min.js"></script>
 
 
     <div metal:define-slot="view_scripts"></div>
@@ -100,10 +102,10 @@
                 <!-- begin mobile sidebar expand / collapse button -->
                 <div class="navbar-header">
                   <a href="index.html" class="navbar-brand"><span class="navbar-logo"></span> ULearn HUB</a>
-                  <button type="button" class="navbar-toggle" data-click="sidebar-toggled">
+                  <button type="button" class="navbar-toggle" ng-click="mainCtrl.toggleSidebar()">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
+                    <span class="icon-bar" ></span>
                   </button>
                 </div>
                 <!-- end mobile sidebar expand / collapse button -->
@@ -216,7 +218,7 @@
             <!-- begin #sidebar -->
             <div id="sidebar" class="sidebar">
               <!-- begin sidebar scrollbar -->
-              <div data-scrollbar="true" data-height="100%">
+              <div class="scroll-body" slimscroll="{height:'auto'}" style="height:100%; overflow-x:scroll;">
                 <!-- begin sidebar user -->
                 <ul class="nav">
                   <li class="nav-profile">
@@ -235,16 +237,16 @@
                 <ul class="nav" ng-controller="SidebarController as ctrl">
                   <li class="nav-header">Navigation</li>
                   <li class="{{ctrl.active(section.sref)}} {{ctrl.has_sub(section.subsections)}}" ng-repeat="section in ctrl.sections" >
-                      <a ui-sref="{{section.sref}}" ng-click="ctrl.expand(section, 'section')">
+                      <a ui-sref="{{section.sref}}" ng-click="ctrl.expand(section.sref, 'section')">
                           <b class="caret pull-right" ng-if="ctrl.has_sub(section.subsections)"></b>
                           <i class="fa fa-{{section.icon}}"></i> <span>{{section.title}}</span>
                       </a>
-                      <ul class="sub-menu" ng-show="ctrl.expanded(section, 'section')" ng-if="ctrl.has_sub(section.subsections)">
+                      <ul class="sub-menu" ng-show="ctrl.expanded(section.sref, 'section')" ng-if="ctrl.has_sub(section.subsections)">
                           <li ng-repeat="subsection in section.subsections">
-                              <a href="" ng-click="ctrl.expand(subsection, 'subsection')">{{subsection.title}}</a>
-                              <ul class="sub-menu" ng-show="ctrl.expanded(subsection, 'subsection')">
-                                  <li ng-repeat="subsubsection in subsection.subsections">
-                                      <a ui-sref="{{subsubsection.sref}}">{{subsubsection.title}}</a>
+                              <a href="" ng-click="ctrl.expand(subsection.sref, 'subsection')">{{subsection.title}}</a>
+                              <ul class="sub-menu" ng-show="ctrl.expanded(subsection.sref, 'subsection')">
+                                  <li ng-repeat="subsubsection in subsection.subsections" class="{{ctrl.active(subsubsection.sref)}}">
+                                      <a href="{{subsubsection.sref}}">{{subsubsection.title}}</a>
                                   </li>
                               </ul>
                           </li>

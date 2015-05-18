@@ -10,6 +10,7 @@ var ulearnhub = angular.module('uLearnHUBDomainManagement', [
     'ui.router',
     'ui.select',
     'ui.jq',
+    'ui.slimscroll',
     'ngSanitize',
     'ngCookies',
     'pascalprecht.translate',
@@ -45,7 +46,6 @@ ulearnhub.config(['sidebarSectionsProvider', '$stateProvider','$urlRouterProvide
         .state('domain', {
             url: '',
             templateUrl: 'templates/domain.html',
-            controller: 'DomainController as domainCtrl',
             resolve: {
             }
         })
@@ -96,7 +96,18 @@ ulearnhub.config(['sidebarSectionsProvider', '$stateProvider','$urlRouterProvide
         .state('api.endpoint', {
             url: '/:endpoint',
             templateUrl: 'templates/endpoint.html',
-            controller: 'EndpointController as endpointCtrl'
+            controller: 'EndpointController as endpointCtrl',
+            resolve: {
+                expanded: function($stateParams, sidebarSections, endpoints, EndpointsService) {
+
+                    var current_category = EndpointsService.getEndpoint($stateParams.endpoint).category
+                    sidebarSections.expand('api', 'section', true);
+                    sidebarSections.expand('api.' + current_category, 'subsection', true);
+                    console.log(current_category)
+                    return;
+                }
+            }
+
         })
 
         .state('exceptions', {
@@ -116,6 +127,7 @@ ulearnhub.config(['sidebarSectionsProvider', '$stateProvider','$urlRouterProvide
         });
 
 }]);
+
 
 ulearnhub.controller('languageController', ['$translate','$cookies','$state', function($translate,$cookies,$state) {
     var self = this;
@@ -331,11 +343,13 @@ ulearnhub.value('DTTranslations', {
     }
 });
 
-ulearnhub.controller('DomainController', ['$stateParams','$modal', '$log', '$translate', 'Domain','MAXSession','hubSession', 'DTOptionsBuilder', 'DTColumnDefBuilder','$cookies', function($stateParams,$modal, $log, $translate, Domain,MAXSession,hubSession, DTOptionsBuilder, DTColumnDefBuilder,$cookies) {
+
+ulearnhub.controller('MainAppController', ['sidebarSections', '$stateParams','$modal', '$log', '$translate', 'Domain','MAXSession','hubSession', 'DTOptionsBuilder', 'DTColumnDefBuilder','$cookies', function(sidebarSections, $stateParams,$modal, $log, $translate, Domain,MAXSession,hubSession, DTOptionsBuilder, DTColumnDefBuilder,$cookies) {
     var self = this;
     var domainName = hubSession.domain;
     $cookies.currentDomain = $stateParams.domain;
     self.domainObj = Domain.get({id:domainName});
+    self.sidebar_status = '';
 
     self.maxuisettings = {
         generatorName: "uLearn HUB",
@@ -347,9 +361,13 @@ ulearnhub.controller('DomainController', ['$stateParams','$modal', '$log', '$tra
         oAuthToken: MAXSession.oauth_token,
         maxServerURL: MAXSession.max_server,
         maxServerURLAlias: MAXSession.max_server,
-        maxTalkURL: MAXSession.max_server + "/stomp",
-    }
+        maxTalkURL: MAXSession.max_server + "/stomp"
+    };
 
+  self.toggleSidebar = function() {
+      var collapsed = sidebarSections.toggle();
+      self.sidebar_status = collapsed ? '' : 'page-sidebar-toggled';
+  };
 
   self.changeLanguage = function (key) {
     $translate.use(key);
