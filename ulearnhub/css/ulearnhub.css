@@ -107,7 +107,30 @@
   padding: 10px;
   margin: 10px;
 }
-
+.table-responsive .row {
+  margin: 0px;
+}
+.dataTables_filter,
+.dataTables_paginate {
+  float: right;
+}
+.table > tbody > tr > td,
+.table > tbody > tr > th,
+.table > tfoot > tr > td,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > thead > tr > th {
+  padding: 4px 8px;
+}
+button.delete {
+  border: none;
+  background: none;
+  font-size: 16px;
+  color: #ff5b57;
+}
+span.prop {
+  font-weight: bold;
+}
 .sidebar .sub-menu > li.active > a:before {
   color: #348fe2;
 }

@@ -37,7 +37,9 @@
                       <td><a ui-sref="domain.user({id:user.username})">{{user.username}}</a></td>
                       <td>{{user.displayName}}</td>
                       <td>
-                          <a href="" ng-click="usersCtrl.confirmModal('sm',user.username)"><img ng-src="{{usersCtrl.application_url}}/static/borrar.jpg" alt="Eliminar usuario" height="21" width="21"></a>
+                          <a href="" ng-click="usersCtrl.confirmModal('sm',user.username)">
+                              <button class="delete fa fa-minus-square" alt="Eliminar usuari"></button>
+                          </a>
                       </td>
                   </tr>
               </tbody>

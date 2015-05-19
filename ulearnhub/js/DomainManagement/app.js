@@ -23,7 +23,7 @@ ulearnhub.config(['sidebarSectionsProvider', '$stateProvider','$urlRouterProvide
 
     sidebarSectionsProvider.setSections([
         {title: 'Dashboard', sref: 'domain', icon: 'tachometer'},
-        {title: 'Users', sref: 'users', icon: 'users'},
+        {title: 'Users', sref: 'users', icon: 'user'},
         {title: 'Contexts', sref: 'contexts', icon: 'map-marker'},
         {title: 'Api', sref: 'api', icon: 'paperclip'},
         {title: 'Exceptions', sref: 'exceptions', icon: 'exclamation-triangle'}
