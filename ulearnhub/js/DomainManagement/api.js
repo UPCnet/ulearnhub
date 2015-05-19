@@ -49,7 +49,10 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
     var self = this;
     var route = $stateParams.endpoint;
     var current = EndpointsService.getEndpoint(route);
-
+    var statuses = {
+      200: 'Ok',
+      400: 'Bad Request'
+    };
     self.isActiveMethod = function(method) {
       return method === self.active_method ? 'active': '';
     };
@@ -107,11 +110,17 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
       self.error.active = false;
     };
 
-    self.renderResponse = function(data, status, headers, config) {
+    self.renderResponse = function(data, status, headers, config, finishTime) {
         var json_data = angular.fromJson(data);
         self.response.raw = data;
         self.response.placeholder = '';
         self.response.json = json_data;
+        self.response.status = status + ' '+ statuses[status];
+        self.response.type = status >= 200 && status < 400 ? 'success' : 'failure';
+
+        var time = finishTime - self.requestStartTime;
+        self.response.time = "(" + time + " ms)";
+
     };
 
     self.launch = function() {
@@ -135,16 +144,19 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
         }
 
         var endpoint_url = MAXInfo.max_server + url_path;
+        self.requestStartTime =  new Date().getTime();
         $http[self.active_method.toLowerCase()](endpoint_url, {
           headers: MAXInfo.headers,
           transformResponse: function(data, headers) {
             return data;
           }
           }).success(function(data, status, headers, config) {
-            self.renderResponse(data, status, headers, config);
+            var requestFinishTime = new Date().getTime();
+            self.renderResponse(data, status, headers, config, requestFinishTime);
           })
           .error(function(data, status, headers, config) {
-            self.renderResponse(data, status, headers, config);
+            var requestFinishTime = new Date().getTime();
+            self.renderResponse(data, status, headers, config, requestFinishTime);
           });
     };
 

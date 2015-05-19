@@ -93,6 +93,15 @@
 #api-view.panel .form-group#resource-method #methods-list {
   margin-right: 20px;
 }
+#response-info {
+  font-size: 14px;
+}
+#response-info strong.failure {
+  color: #ff5b57;
+}
+#response-info strong.success {
+  color: #4cae4c;
+}
 #request-results .tab-pane {
   padding: 10px;
   padding-bottom: 0px;
