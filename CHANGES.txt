@@ -1,4 +1,12 @@
-0.0
----
+CHANGELOG
+=========
 
--  Initial version
+1.0 (2015-05-19)
+----------------
+
+Initial version, featuring:
+
+ * Centralized deployments and domain managenment
+ * Incorporation of bigmax features
+ * First implementation of users, contexts & subscriptions admin interface~                                                                                                                                                        
+                              
