@@ -124,6 +124,11 @@ def main(global_config, **settings):
         defaults = json.loads(open(defaults_file).read())
         create_defaults(config.registry, defaults)
 
+    # Create exceptions log folfer if it doesnt exists
+    exceptions_folder = config.registry.settings.get('exceptions_folder')
+    if not os.path.exists(exceptions_folder):
+        os.makedirs(exceptions_folder)
+
     config.scan('ulearnhub', ignore=['ulearnhub.tests'])
     config.scan('max.exceptions.views')
 
