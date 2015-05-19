@@ -14,7 +14,8 @@ var ulearnhub = angular.module('uLearnHUBDomainManagement', [
     'ngSanitize',
     'ngCookies',
     'pascalprecht.translate',
-    'puElasticInput'
+    'puElasticInput',
+    'ngJsonExplorer'
 ]);
 
 
@@ -348,7 +349,6 @@ ulearnhub.controller('MainAppController', ['sidebarSections', '$stateParams','$m
     $cookies.currentDomain = $stateParams.domain;
     self.domainObj = Domain.get({id:domainName});
     self.sidebar_status = '';
-
     self.maxuisettings = {
         generatorName: "uLearn HUB",
         language: "ca",

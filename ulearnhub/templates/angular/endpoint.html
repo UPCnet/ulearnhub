@@ -82,7 +82,7 @@
             </ul>
             <!-- Tab panes -->
             <div class="tab-content">
-                <div class="tab-pane active" id="response-content"> <pre class="language-javascript" ng-bind-html="endpointCtrl.response.pretty"></pre> </div>
+                <div class="tab-pane active" id="response-content"> <pre><json-explorer collapsed="true" data="endpointCtrl.response.json"></json-explorer><div ng-bind-html="endpointCtrl.response.placeholder"></div></pre> </div>
                 <div class="tab-pane" id="response-raw"> <pre>{{endpointCtrl.response.raw}}</pre> </div>
                 <div class="tab-pane" id="http-request-headers"> </div>
             </div>

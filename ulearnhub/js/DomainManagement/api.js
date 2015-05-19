@@ -109,15 +109,15 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
 
     self.renderResponse = function(data, status, headers, config) {
         var json_data = angular.fromJson(data);
-        var json_prettyfied = JSON.stringify(json_data, undefined, 2);
         self.response.raw = data;
-        self.response.pretty = Prism.highlight(json_prettyfied, Prism.languages.javascript);
+        self.response.placeholder = '';
+        self.response.json = json_data;
     };
 
     self.launch = function() {
         self.hideError();
         var url_path = '';
-        var missing_or_empty_params = true;
+        var missing_or_empty_params = false;
         angular.forEach(self.route, function(route_segment, key) {
             if (route_segment.fixed) {
                 url_path += route_segment.text;
@@ -168,7 +168,7 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
     self.route = self.routeParts(current.route_url);
     self.rest_params = {};
     self.response = {
-      pretty: 'No response yet, <br/>launch a request first.'
+      placeholder: 'No response yet, <br/>launch a request first.'
     };
     self.setActiveMethod(self.available_methods[0]);
 

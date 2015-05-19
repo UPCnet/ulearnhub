@@ -102,6 +102,7 @@ def main(global_config, **settings):
     config.add_static_view('datatables', 'components/datatables/media', cache_max_age=3600)
     config.add_static_view('underscore', 'components/underscore', cache_max_age=3600)
     config.add_static_view('slimscroll', 'components/slimScroll', cache_max_age=3600)
+    config.add_static_view('json-explorer', 'components/ng-json-explorer/dist', cache_max_age=3600)
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_static_view('css', 'css', cache_max_age=3600)
     config.add_static_view('fonts', 'fonts', cache_max_age=3600)

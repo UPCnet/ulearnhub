@@ -107,6 +107,7 @@
   padding: 10px;
   margin: 10px;
 }
+
 .sidebar .sub-menu > li.active > a:before {
   color: #348fe2;
 }

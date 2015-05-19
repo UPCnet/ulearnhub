@@ -1,7 +1,7 @@
 <div ui-view>
 
-    <h1 class="page-header"><strong>{{domainCtrl.domainObj.name}}</strong> domain dashboard
-      <br/><small>{{domainCtrl.domainObj['max']}}</small>
+    <h1 class="page-header"><strong>{{mainCtrl.domainObj.name}}</strong> domain dashboard
+      <br/><small>{{mainCtrl.domainObj['max']}}</small>
     </h1>
 
               <!-- begin row -->
@@ -14,7 +14,7 @@
                           <div class="panel-heading">
                               <h4 class="panel-title">Activity Stream</h4>
                           </div>
-                          <div id="container" ui-jq="maxUI" ui-options="domainCtrl.maxuisettings">
+                          <div id="container" ui-jq="maxUI" ui-options="mainCtrl.maxuisettings">
 
                           </div>
                       </div>

@@ -22,7 +22,9 @@
   <link href="${api.application_url}/css/default.css" rel="stylesheet">
   <link href="${api.application_url}/maxui/maxui.css" rel="stylesheet" />
   <link href="${api.application_url}/prism/themes/prism-okaidia.css" rel="stylesheet" />
-  <link href="${api.application_url}/css/ulearnhub.css" rel="stylesheet">
+  <link href="${api.application_url}/json-explorer/angular-json-explorer.css" rel="stylesheet">
+      <link href="${api.application_url}/css/ulearnhub.css" rel="stylesheet">
+
 
   <!-- ================== END BASE CSS STYLE ================== -->
 
@@ -33,6 +35,17 @@
     <div metal:define-slot="body">
       <div ng-app="${api.angular_name}" ng-cloak>
 
+
+        <ng-hub-info username="${api.authenticated_user.username}"
+                     server="${api.application_url}"
+                     token="${api.authenticated_user.token}"
+                     domain="${api.domain.name}">
+        </ng-hub-info>
+
+        <ng-max-info username="${api.authenticated_user.username}"
+                     maxserver="${api.domain.max_server}"
+                     oauthtoken="${api.authenticated_user.token}">
+        </ng-max-info>
 
         <!-- begin #page-container -->
           <div id="page-container" ng-controller="MainAppController as mainCtrl" class="page-sidebar-fixed page-header-fixed {{mainCtrl.sidebar_status}}">
@@ -75,6 +88,7 @@
     <script src="${api.application_url}/angular-cookies/angular-cookies.min.js"></script>
     <script src="${api.application_url}/angular-translate-static/angular-translate-loader-static-files.min.js"></script>
     <script src="${api.application_url}/angular-slimscroll/angular-slimscroll.js"></script>
+    <script src="${api.application_url}/json-explorer/angular-json-explorer.min.js"></script>
     <script src="${api.application_url}/underscore/underscore-min.js"></script>
     <script src="${api.application_url}/prism/prism.js"></script>
     <script src="${api.application_url}/prism/components/prism-python.min.js"></script>
