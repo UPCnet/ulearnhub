@@ -19,7 +19,7 @@ var ulearnhub = angular.module('uLearnHUBDomainManagement', [
 ]);
 
 
-ulearnhub.config(['sidebarSectionsProvider', '$httpProvider', '$stateProvider','$urlRouterProvider','$translateProvider','uiSelectConfig', function(sidebarSectionsProvider, $httpProvider, $stateProvider, $urlRouterProvider,$translateProvider,uiSelectConfig) {
+ulearnhub.config(['sidebarSectionsProvider', '$stateProvider','$urlRouterProvider','$translateProvider','uiSelectConfig', function(sidebarSectionsProvider, $stateProvider, $urlRouterProvider,$translateProvider,uiSelectConfig) {
 
     sidebarSectionsProvider.setSections([
         {title: 'Dashboard', sref: 'domain', icon: 'tachometer'},
