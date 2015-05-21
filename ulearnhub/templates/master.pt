@@ -36,16 +36,7 @@
       <div ng-app="${api.angular_name}" ng-cloak>
 
 
-        <ng-hub-info username="${api.authenticated_user.username}"
-                     server="${api.application_url}"
-                     token="${api.authenticated_user.token}"
-                     domain="${api.domain.name}">
-        </ng-hub-info>
-
-        <ng-max-info username="${api.authenticated_user.username}"
-                     maxserver="${api.domain.max_server}"
-                     oauthtoken="${api.authenticated_user.token}">
-        </ng-max-info>
+        <div meta:define-slot="authentication_data"></div>
 
         <!-- begin #page-container -->
           <div id="page-container" ng-controller="MainAppController as mainCtrl" class="page-sidebar-fixed page-header-fixed {{mainCtrl.sidebar_status}}">
@@ -280,4 +271,19 @@
             <!-- end #sidebar -->
 
 </metal:sidebar>
+
+
+<metal:authentication_data define-macro="authentication_data">
+        <ng-hub-info username="${api.authenticated_user.username}"
+                     server="${api.application_url}"
+                     token="${api.authenticated_user.token}"
+                     domain="${api.domain.name}">
+        </ng-hub-info>
+
+        <ng-max-info username="${api.authenticated_user.username}"
+                     maxserver="${api.domain.max_server}"
+                     oauthtoken="${api.authenticated_user.token}">
+        </ng-max-info>
+</metal:authentication_data
+
 

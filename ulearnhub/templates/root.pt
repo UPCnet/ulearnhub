@@ -3,6 +3,10 @@
 <head></head>
 <body>
 
+  <metal:navbar fill-slot="authentication_data">
+      <div metal:use-macro="api.masterTemplate.macros['authentication_data']"></div>
+  </metal:navbar>
+
   <metal:navbar fill-slot="navbar">
       <div metal:use-macro="api.masterTemplate.macros['navbar']"></div>
   </metal:navbar>

@@ -149,6 +149,16 @@ span.prop {
 .scroll-body {
   height: 100%;
 }
+.login-error {
+  margin-top: 10px;
+  font-size: 14px;
+}
+.login-content .domain_name h2 {
+  color: #fff;
+  margin: 10px 0px 30px;
+  font-family: Courier;
+  text-align: center;
+}
 @media (min-width: 500px) {
   #request-results #response-content pre br {
     display: none;
