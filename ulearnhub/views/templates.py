@@ -40,6 +40,10 @@ class TemplateAPI(object):
             return 'uLearnHUBManagement'
 
     @property
+    def domain_session(self):
+        return self.request.session.get(self.domain['name'], {})
+
+    @property
     def authenticated_user(self):
         hub_roles = set(ROLES).intersection(set(self.request.effective_principals))
         username = normalize_userdn(self.request.authenticated_userid)
@@ -52,6 +56,33 @@ class TemplateAPI(object):
             token=session_domain_data.get('oauth_token', ''),
             role='' if not hub_roles else list(hub_roles)[0]
         )
+
+    @property
+    def impersonated(self):
+        return 'impersonation' in self.domain_session
+
+    @property
+    def impersonated_class(self):
+        return 'impersonated' if self.impersonated else ''
+
+    @property
+    def impersonated_user(self):
+        impersonation = self.domain_session['impersonation']
+        impersonated_username = normalize_userdn(impersonation['username'])
+        return dict(
+            username=impersonated_username,
+            display_name=impersonation['display_name'],
+            avatar=impersonation['avatar'],
+            token=impersonation['token'],
+            role='Impersonated'
+        )
+
+    @property
+    def effective_user(self):
+        if self.impersonated:
+            return self.impersonated_user
+        else:
+            return self.authenticated_user
 
     @property
     def domain(self):

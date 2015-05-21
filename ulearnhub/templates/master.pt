@@ -29,7 +29,7 @@
   <!-- ================== END BASE CSS STYLE ================== -->
 
 </head>
-<body class="pace-top view-${api.view}">
+<body class="pace-top view-${api.view} ${api.impersonated_class}">
     <!-- begin #page-container -->
 
     <div metal:define-slot="body">
@@ -104,7 +104,7 @@
               <div class="container-fluid">
                 <!-- begin mobile sidebar expand / collapse button -->
                 <div class="navbar-header">
-                  <a href="index.html" class="navbar-brand">
+                  <a href="${api.application_url}" class="navbar-brand">
                     <span class="navbar-logo"></span> ULearn HUB
 
                   </a>
@@ -116,7 +116,7 @@
                   </button>
                 </div>
                 <div class="navbar-domain" ng-if="mainCtrl.domainObj" ng-cloak>
-                     :<span>{{mainCtrl.domainObj.name}}</span>
+                     <a href="${api.application_url}/${api.domain.name}">:<span>${api.domain.name}</span></a>
                 </div>
                 <!-- end mobile sidebar expand / collapse button -->
 
@@ -233,11 +233,11 @@
                 <ul class="nav">
                   <li class="nav-profile">
                     <div class="image">
-                      <a href="javascript:;"><img src="${api.authenticated_user.avatar}" alt="" /></a>
+                      <a href="javascript:;"><img src="${api.effective_user.avatar}" alt="" /></a>
                     </div>
                     <div class="info">
-                      ${api.authenticated_user.display_name}
-                      <small>${api.authenticated_user.role}</small>
+                      ${api.effective_user.display_name}
+                      <small>${api.effective_user.role}</small>
                     </div>
                   </li>
                 </ul>
@@ -285,9 +285,9 @@
                      domain="${api.domain.name}">
         </ng-hub-info>
 
-        <ng-max-info username="${api.authenticated_user.username}"
-                     maxserver="${api.domain.max_server}"
-                     oauthtoken="${api.authenticated_user.token}">
+        <ng-max-info maxserver="${api.domain.max_server}"
+                     username="${api.effective_user.username}"
+                     oauthtoken="${api.effective_user.token}">
         </ng-max-info>
 </metal:authentication
 

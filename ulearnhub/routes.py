@@ -59,3 +59,6 @@ ROUTES['info'] = dict(route='/info', traverse='/domains')
 ROUTES['domain'] = dict(route='/{domain}', traverse="/domains/{domain}")
 ROUTES['domain_login'] = dict(route='/{domain}/login', traverse="/domains/{domain}")
 ROUTES['domain_logout'] = dict(route='/{domain}/logout', traverse="/domains/{domain}")
+ROUTES['domain_impersonate_exit'] = dict(route='/{domain}/impersonate/exit', traverse="/domains/{domain}")
+ROUTES['domain_impersonate'] = dict(route='/{domain}/impersonate/{username}', traverse="/domains/{domain}")
+

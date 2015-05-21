@@ -57,7 +57,8 @@ class Domain(PersistentMapping):
     def __acl__(self):
         return [
             (Allow, Manager, permissions.view_domain),
-            (Allow, Manager, permissions.assign_component)
+            (Allow, Manager, permissions.assign_component),
+            (Allow, Manager, permissions.impersonate)
         ]
 
     @property

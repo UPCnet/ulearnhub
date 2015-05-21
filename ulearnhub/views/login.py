@@ -14,6 +14,23 @@ from maxclient.client import RequestError
 from maxclient.client import BadUsernameOrPasswordError
 
 
+def get_max_user_data(client, username):
+    """
+        Get userdata from max or fallback to defaults
+    """
+    try:
+        user_data = client.people[username].get()
+        display_name = user_data.get('displayName', username)
+    except RequestError:
+        display_name = username
+
+    return {
+        'username': username,
+        'display_name': display_name,
+        'avatar': '{}/people/{}/avatar'.format(client.url, username),
+    }
+
+
 def real_request_url(request):
     """
         Gets the real request url
@@ -86,11 +103,9 @@ def login_into_domain(context, request, api, login_response, domain, redirect=''
     try:
         data = connector.authenticate(login, password)
         auth_user, oauth_token = data
-
         client = domain.maxclient
         client.setActor(auth_user)
         client.setToken(oauth_token)
-        user_data = client.people[auth_user].get()
         headers = remember(request, auth_user)
 
     # if not successful, try again
@@ -98,22 +113,11 @@ def login_into_domain(context, request, api, login_response, domain, redirect=''
         login_response['error'] = 'Please check your username and password and try again.'
         return login_response
 
-    # Try to get username from max
-    try:
-        user_data = client.people[auth_user].get()
-        user_data.get('displayName', auth_user)
-        display_name = user_data.get('displayName', auth_user)
-    except RequestError:
-        display_name = auth_user
-
-    request.session['root_auth_domain'] = domain.name
-    # Store the user's oauth token in the current session domain data
-    request.session[domain.name] = dict(
-        oauth_token=oauth_token,
-        avatar='{}/people/{}/avatar'.format(domain.max_server, auth_user),
-        display_name=display_name
-    )
-    request.session['root'] = request.session[domain.name]
+    # Store the user's oauth token and other data in the domain's session
+    user_data = get_max_user_data(client, auth_user)
+    request.session[domain.name] = {}
+    request.session[domain.name]['oauth_token'] = oauth_token
+    request.session[domain.name].update(user_data)
 
     # Finally, if all went OK
     # return the authenticated view
@@ -147,6 +151,10 @@ def login(context, request):
         domain_name = request.POST.get('domain')
         domain = context['domains'].get(domain_name)
         response = login_into_domain(context, request, api, login_response, domain, redirect='')
+        if isinstance(response, Response):
+            request.session['root'] = request.session[domain.name]
+            request.session['root_auth_domain'] = domain.name
+
         return render_response(request, response, template)
 
     return render_response(request, login_response, template)

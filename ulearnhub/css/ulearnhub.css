@@ -176,8 +176,28 @@ span.prop {
   font-family: Monospace;
   font-size: 22px;
 }
+.navbar-domain a {
+  text-decoration: none;
+}
+.navbar-domain a:hover {
+  color: #eee;
+}
 .navbar-domain span {
   color: #fff;
+}
+.navbar-domain span:hover {
+  color: #eee;
+}
+.impersonated .navbar.navbar-inverse .navbar-brand,
+.impersonated .sidebar .nav > li.active > a,
+.impersonated .sidebar .nav > li.active > a:focus,
+.impersonated .sidebar .nav > li.active > a:hover,
+.impersonated .page-sidebar-minified .sidebar .nav > li.has-sub.active:focus > a,
+.impersonated .page-sidebar-minified .sidebar .nav > li.has-sub.active:hover > a,
+.impersonated .page-sidebar-minified .sidebar .nav > li.has-sub.active > a,
+.impersonated .label.label-theme,
+.impersonated .btn.btn-scroll-to-top {
+  background: #f59c1a;
 }
 @media (min-width: 500px) {
   #request-results #response-content pre br {
