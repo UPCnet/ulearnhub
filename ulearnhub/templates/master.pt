@@ -29,7 +29,7 @@
   <!-- ================== END BASE CSS STYLE ================== -->
 
 </head>
-<body class="pace-top">
+<body class="pace-top view-${api.view}">
     <!-- begin #page-container -->
 
     <div metal:define-slot="body">
@@ -96,9 +96,7 @@
 
 
 
-
 <metal:navbar define-macro="navbar">
-
 
             <!-- begin #header -->
             <div id="header" class="header navbar navbar-default navbar-fixed-top navbar-inverse">
@@ -106,25 +104,32 @@
               <div class="container-fluid">
                 <!-- begin mobile sidebar expand / collapse button -->
                 <div class="navbar-header">
-                  <a href="index.html" class="navbar-brand"><span class="navbar-logo"></span> ULearn HUB</a>
+                  <a href="index.html" class="navbar-brand">
+                    <span class="navbar-logo"></span> ULearn HUB
+
+                  </a>
+
                   <button type="button" class="navbar-toggle" ng-click="mainCtrl.toggleSidebar()">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar" ></span>
                   </button>
                 </div>
+                <div class="navbar-domain" ng-if="mainCtrl.domainObj" ng-cloak>
+                     :<span>{{mainCtrl.domainObj.name}}</span>
+                </div>
                 <!-- end mobile sidebar expand / collapse button -->
 
                 <!-- begin header navigation right -->
                 <ul class="nav navbar-nav navbar-right">
-                  <li>
+     <!--              <li>
                     <form class="navbar-form full-width">
                       <div class="form-group">
                         <input type="text" class="form-control" placeholder="Enter keyword" />
                         <button type="submit" class="btn btn-search"><i class="fa fa-search"></i></button>
                       </div>
                     </form>
-                  </li>
+                  </li> -->
 <!--  NOTIFICATIONS DROPDOWN
                   <li class="dropdown">
 

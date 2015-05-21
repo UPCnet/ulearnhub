@@ -24,6 +24,10 @@ class TemplateAPI(object):
         self.request = request
 
     @property
+    def view(self):
+        return self.request.matched_route.name
+
+    @property
     def masterTemplate(self):
         master = get_renderer('ulearnhub:templates/master.pt').implementation()
         return master

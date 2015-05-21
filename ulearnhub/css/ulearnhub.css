@@ -1,3 +1,11 @@
+[ng\:cloak],
+[ng-cloak],
+[data-ng-cloak],
+[x-ng-cloak],
+.ng-cloak,
+.x-ng-cloak {
+  display: none !important;
+}
 #api-view.panel h2 {
   margin-top: 0px;
 }
@@ -156,8 +164,20 @@ span.prop {
 .login-content .domain_name h2 {
   color: #fff;
   margin: 10px 0px 30px;
-  font-family: Courier;
+  font-family: Monospace;
   text-align: center;
+}
+.navbar-domain {
+  font-weight: normal;
+  margin-top: 10px;
+  margin-left: 5px;
+  height: 100%;
+  float: left;
+  font-family: Monospace;
+  font-size: 22px;
+}
+.navbar-domain span {
+  color: #fff;
 }
 @media (min-width: 500px) {
   #request-results #response-content pre br {
