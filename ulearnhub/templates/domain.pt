@@ -4,8 +4,8 @@
 <body>
 
 
-  <metal:navbar fill-slot="authentication_data">
-      <div metal:use-macro="api.masterTemplate.macros['authentication_data']"></div>
+  <metal:navbar fill-slot="authentication-data">
+      <div metal:use-macro="api.masterTemplate.macros['authentication-data']"></div>
   </metal:navbar>
 
   <metal:navbar fill-slot="navbar">

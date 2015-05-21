@@ -36,7 +36,7 @@
       <div ng-app="${api.angular_name}" ng-cloak>
 
 
-        <div meta:define-slot="authentication_data"></div>
+        <div metal:define-slot="authentication-data"></div>
 
         <!-- begin #page-container -->
           <div id="page-container" ng-controller="MainAppController as mainCtrl" class="page-sidebar-fixed page-header-fixed {{mainCtrl.sidebar_status}}">
@@ -273,7 +273,7 @@
 </metal:sidebar>
 
 
-<metal:authentication_data define-macro="authentication_data">
+<metal:authentication define-macro="authentication-data">
         <ng-hub-info username="${api.authenticated_user.username}"
                      server="${api.application_url}"
                      token="${api.authenticated_user.token}"
@@ -284,6 +284,6 @@
                      maxserver="${api.domain.max_server}"
                      oauthtoken="${api.authenticated_user.token}">
         </ng-max-info>
-</metal:authentication_data
+</metal:authentication
 
 
