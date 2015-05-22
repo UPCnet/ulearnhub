@@ -7,55 +7,148 @@
                     <h5>{{endpointCtrl.name}}</h5> </div>
             </div>
             <div class="form-group" id="resource-uri">
-                <label for="resource-uri" class="col-sm-2 col-xs-12 control-label">Destination</label>
+                <label for="resource-uri" class="col-sm-2 col-xs-12 control-label">Parameters</label>
                 <div class="col-sm-10 col-xs-12">
                     <span ng-repeat-start="part in endpointCtrl.route" ng-if="part.fixed" class="fixed">{{part.text}}</span>
-                    <input ng-repeat-end pu-elastic-input ng-model="endpointCtrl.rest_params[part.name]" class="param form-control" ng-if="!part.fixed" placeholder="{{part.text}}">
+                    <input ng-repeat-end pu-elastic-input ng-model="endpointCtrl.rest_params[part.name]" ng-change="endpointCtrl.forgeURL()" ng-if="!part.fixed" class="param form-control" placeholder="{{part.text}}">
                 </div>
             </div>
             <div class="form-group" id="resource-method">
                 <label for="resource-method" class="col-sm-2 col-xs-5 control-label">Req. Method</label>
                 <div class="col-sm-10 col-xs-12">
                     <div class="btn-group" id="methods-list" data-toggle="buttons">
-
                         <label class="btn btn-primary {{endpointCtrl.isActiveMethod(method.name)}}" ng-repeat="method in endpointCtrl.methods" ng-disabled="!method.implemented" ng-click="endpointCtrl.setActiveMethod(method.name)">
                             <input type="radio" name="methods-list" data-value="GET" id="method-get">{{method.name}}
                         </label>
                     </div>
                 </div>
             </div>
-            <div id="resource-details">
-                <div class="form-group" id="resource-description">
-                    <label for="resource-description" class="col-sm-2 col-xs-5 control-label">Description</label>
-                    <div class="col-sm-10 col-xs-12">
-                        <p>{{endpointCtrl.description}}</p>
-                    </div>
+
+            <div class="form-group" id="resource-description">
+                <label for="resource-description" class="col-sm-2 col-xs-5 control-label">Description</label>
+                <div class="col-sm-10 col-xs-12">
+                    <p>{{endpointCtrl.description}}</p>
                 </div>
-                <div class="form-group" id="request-headers">
-                    <label for="request-headers" class="col-sm-2 col-xs-12 control-label">Headers</label>
-                    <div class="col-sm-10 col-xs-12">
-                        <div class="form-group" id="X-Oauth-Username" >
-                            <label class="col-sm-4 col-md-2 col-xs-12 control-label fixed">X-Oauth-Username</label>
-                            <div class="col-sm-8 col-xs-12">
-                                <input class="param form-control" type="text" value="{{endpointCtrl.info['X-Oauth-Username']}}"> </div>
+            </div>
+            <div class="form-group toggable" id="request-headers" >
+                <label ng-click="endpointCtrl.toggle('headers')" for="request-headers" class="col-sm-2 col-xs-12 control-label"><b class="caret"></b>Headers</label>
+
+                <div class="col-sm-10 col-xs-12" ng-switch="endpointCtrl.visibility.headers">
+                  <span class="literal" ng-switch-when="false"> (Toggle section to see options)</span>
+                  <div ng-switch-when="true">
+                    <div class="form-group" id="X-Oauth-Username">
+                        <label class="col-sm-4 col-md-3 col-xs-12 control-label fixed">X-Oauth-Username</label>
+                        <div class="col-sm-8 col-md-9 col-xs-12">
+                            <input class="param form-control" type="text" value="{{endpointCtrl.info['X-Oauth-Username']}}"> </div>
+                    </div>
+                    <div class="form-group" id="X-Oauth-Token">
+                        <label class="col-sm-4 col-md-3 col-xs-12 control-label fixed">X-Oauth-Token</label>
+                        <div class="col-sm-8 col-md-9 col-xs-12">
+                            <input class="param form-control" type="text" value="{{endpointCtrl.info['X-Oauth-Token']}}"> </div>
+                    </div>
+                    <div class="form-group" id="X-Oauth-Scope">
+                        <label class="col-sm-4 col-md-3 col-xs-12 control-label fixed">X-Oauth-Scope</label>
+                        <div class="col-sm-8 col-md-9 col-xs-12">
+                            <input class="param form-control" type="text" value="{{endpointCtrl.info['X-Oauth-Scope']}}"> </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+
+            <div class="form-group toggable" id="resource-modifiers">
+                <label ng-click="endpointCtrl.toggle('modifiers')" for="resource-modifiers" class="col-sm-2 col-xs-12 control-label"><b class="caret"></b>Modifiers
+                </label>
+                <div class="col-sm-10 col-xs-12" ng-switch="endpointCtrl.visibility.modifiers">
+                    <span class="literal" ng-switch-when="false"> (Toggle section to see options)</span>
+                    <div ng-switch-when="true">
+                    <!-- Start Limit parameter -->
+                    <div class="form-group" id="qs-limit">
+                        <label class="col-sm-4 col-md-3 col-xs-2 control-label fixed">limit</label>
+                        <div class="col-sm-8 col-md-9 col-xs-10">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <input class="qs-status" type="checkbox" ng-change="endpointCtrl.forgeURL()" ng-model="endpointCtrl.qs_params.limit.enabled" />
+                                </span>
+                                <input class="qs-value form-control" type="text" ng-change="endpointCtrl.forgeURL()" ng-disabled="!endpointCtrl.qs_params.limit.enabled" ng-model="endpointCtrl.qs_params.limit.value" />
+                            </div>
                         </div>
-                        <div class="form-group" id="X-Oauth-Token">
-                            <label class="col-sm-4 col-md-2 col-xs-12 control-label fixed">X-Oauth-Token</label>
-                            <div class="col-sm-8 col-xs-12">
-                                <input class="param form-control" type="text" value="{{endpointCtrl.info['X-Oauth-Token']}}"> </div>
+                    </div>
+                    <!-- End limit parameter -->
+                    <!-- Start sort order parameter -->
+                    <div class="form-group" id="qs-limit">
+                        <label class="col-sm-4 col-md-3 col-xs-2 control-label fixed">sort</label>
+                        <div class="col-sm-8 col-md-9 col-xs-10">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <input class="qs-status" type="checkbox" ng-change="endpointCtrl.forgeURL()" ng-model="endpointCtrl.qs_params.sort.enabled" />
+                                </span>
+                                <select class="qs-value form-control" ng-change="endpointCtrl.forgeURL()" ng-disabled="!endpointCtrl.qs_params.sort.enabled" ng-model="endpointCtrl.qs_params.sort.value">
+                                    <option>published</option>
+                                    <option>likes</option>
+                                    <option>flagged</option>
+                                </select>
+
+                            </div>
                         </div>
-                        <div class="form-group" id="X-Oauth-Scope">
-                            <label class="col-sm-4 col-md-2 col-xs-12 control-label fixed">X-Oauth-Scope</label>
-                            <div class="col-sm-8 col-xs-12">
-                                <input class="param form-control" type="text" value="{{endpointCtrl.info['X-Oauth-Scope']}}"> </div>
+                    </div>
+                    <!-- End sort order parameter -->
+                    <!-- Start sort priority parameter -->
+                    <div class="form-group" id="qs-sort-priority">
+                        <label class="col-sm-4 col-md-3 col-xs-2 control-label fixed">priority</label>
+                        <div class="col-sm-8 col-md-9 col-xs-10">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <input class="qs-status" type="checkbox" ng-change="endpointCtrl.forgeURL()" ng-model="endpointCtrl.qs_params.priority.enabled" />
+                                </span>
+                                <select class="qs-value form-control" ng-change="endpointCtrl.forgeURL()" ng-disabled="!endpointCtrl.qs_params.priority.enabled" ng-model="endpointCtrl.qs_params.priority.value">
+                                    <option>activity</option>
+                                    <option>comments</option>
+                                </select>
+
+                            </div>
                         </div>
+                    </div>
+                    <!-- End sort order parameter -->
+                    <!-- Start after parameter -->
+                    <div class="form-group" id="qs-after">
+                        <label class="col-sm-4 col-md-3 col-xs-2 control-label fixed">after</label>
+                        <div class="col-sm-8 col-md-9 col-xs-10">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <input class="qs-status" type="checkbox" ng-change="endpointCtrl.forgeURL()" ng-model="endpointCtrl.qs_params.after.enabled" />
+                                </span>
+                                <input class="qs-value form-control" type="text" ng-change="endpointCtrl.forgeURL()" ng-disabled="!endpointCtrl.qs_params.after.enabled" ng-model="endpointCtrl.qs_params.after.value" />
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End after parameter -->
+                    <!-- Start before parameter -->
+                    <div class="form-group" id="qs-before">
+                        <label class="col-sm-4 col-md-3 col-xs-2 control-label fixed">before</label>
+                        <div class="col-sm-8 col-md-9 col-xs-10">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <input class="qs-status" type="checkbox" ng-change="endpointCtrl.forgeURL()" ng-model="endpointCtrl.qs_params.before.enabled" />
+                                </span>
+                                <input class="qs-value form-control" type="text" ng-change="endpointCtrl.forgeURL()" ng-disabled="!endpointCtrl.qs_params.before.enabled" ng-model="endpointCtrl.qs_params.before.value" />
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End before parameter -->
                     </div>
                 </div>
             </div>
 
-            <div class="form-group" id="request-submit">
-                <label class="col-sm-2 col-xs-5 control-label"></label>
 
+            <div class="form-group" id="resource-url">
+                <label for="resource-url" class="col-sm-2 col-xs-5 control-label">Request URL</label>
+                <div class="col-sm-10 col-xs-12">
+                    {{endpointCtrl.url}}
+                </div>
+            </div>
+
+            <div id="request-submit">
+                <label class="col-sm-2 col-xs-5 control-label"></label>
                 <div class="col-sm-10 col-xs-12">
                     <button type="submit" class="btn btn-large btn-primary" id="execute_button" ng-click="endpointCtrl.launch()"> <i class="fa glyphicon glyphicon-random"></i> Launch Request </button>
                 </div>
@@ -63,27 +156,24 @@
         </form>
     </div>
 </div>
-
-
-
 <div class="alert alert-danger fade in" ng-show="endpointCtrl.error.active">
-    <strong>Error!</strong>
-    {{endpointCtrl.error.message}}
+    <strong>Error!</strong> {{endpointCtrl.error.message}}
     <span class="close" data-dismiss="alert">×</span>
 </div>
-
-        <div id="response-info"><p><strong class="{{endpointCtrl.response.type}}">{{endpointCtrl.response.status}}</strong>   {{endpointCtrl.response.time}}</p></div>
-        <div id="request-results">
-            <!-- Nav tabs -->
-            <ul class="nav nav-tabs">
-                <li class="active"><a href="#response-content" data-toggle="tab">Response</a></li>
-                <li><a href="#response-raw" data-toggle="tab">RAW Response</a></li>
-                <li><a href="#http-request-headers" data-toggle="tab">Request</a></li>
-            </ul>
-            <!-- Tab panes -->
-            <div class="tab-content">
-                <div class="tab-pane active" id="response-content"> <pre><json-explorer collapsed="true" data="endpointCtrl.response.json"></json-explorer><div ng-bind-html="endpointCtrl.response.placeholder"></div></pre> </div>
-                <div class="tab-pane" id="response-raw"> <pre>{{endpointCtrl.response.raw}}</pre> </div>
-                <div class="tab-pane" id="http-request-headers"> </div>
-            </div>
-        </div>
+<div id="response-info">
+    <p><strong class="{{endpointCtrl.response.type}}">{{endpointCtrl.response.status}}</strong> {{endpointCtrl.response.time}}</p>
+</div>
+<div id="request-results">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#response-content" data-toggle="tab">Response</a></li>
+        <li><a href="#response-raw" data-toggle="tab">RAW Response</a></li>
+        <li><a href="#http-request-headers" data-toggle="tab">Request</a></li>
+    </ul>
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div class="tab-pane active" id="response-content"> <pre><json-explorer collapsed="true" data="endpointCtrl.response.json"></json-explorer><div ng-bind-html="endpointCtrl.response.placeholder"></div></pre> </div>
+        <div class="tab-pane" id="response-raw"> <pre>{{endpointCtrl.response.raw}}</pre> </div>
+        <div class="tab-pane" id="http-request-headers"> </div>
+    </div>
+</div>

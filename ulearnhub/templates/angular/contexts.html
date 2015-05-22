@@ -20,7 +20,7 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="context in contextsCtrl.contexts">
-                        <td><a ui-sref="domain.context({id:context.hash})">{{context.displayName}}</a></td>
+                        <td><a ui-sref="context({id:context.hash})">{{context.displayName}}</a></td>
                         <td>{{context.url}}</td>
                         <td>
                             <a href="" ng-click="contextsCtrl.confirmModal('sm',context.hash)">

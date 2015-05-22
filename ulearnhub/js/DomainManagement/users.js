@@ -61,6 +61,7 @@ ulearn_users.controller('UserManageController', ['$scope','$stateParams','$modal
     var res = ContextPermissions.getToContextList(data);
     self.contextsList = res[0];
     self.urlList = res[1];
+    self.user.large_avatar = 'http://localhost:8081/people/'+ self.user.username +'/avatar/large'
 
   });
 

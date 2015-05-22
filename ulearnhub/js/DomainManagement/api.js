@@ -53,6 +53,8 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
       200: 'Ok',
       400: 'Bad Request'
     };
+
+
     self.isActiveMethod = function(method) {
       return method === self.active_method ? 'active': '';
     };
@@ -123,8 +125,10 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
 
     };
 
-    self.launch = function() {
-        self.hideError();
+    self.forgeURL = function() {
+
+        // Prepare path part of the url filling in the supplied
+        // rest parameters into the route gaps
         var url_path = '';
         var missing_or_empty_params = false;
         angular.forEach(self.route, function(route_segment, key) {
@@ -134,16 +138,37 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
                 var segment_value = self.rest_params[route_segment.name];
                 var empty = segment_value === undefined | segment_value === '';
                 missing_or_empty_params = missing_or_empty_params && empty;
-                url_path += segment_value;
+                url_path += segment_value === undefined ? '' : segment_value;
             }
         }, url_path);
+
+        // Prepare the query string part of the url using only
+        // the enabled ones
+        var qs_enabled = {};
+        angular.forEach(self.qs_params, function(qs_param, key) {
+          if (qs_param.enabled && !_.isEmpty(qs_param.value)) {
+            qs_enabled[key] = qs_param.value;
+          }
+        }, qs_enabled);
+        var qs = _.isEmpty(qs_enabled) ? '' : '?' + jQuery.param(qs_enabled);
+
+        // Forge final url combining all parts
+        var endpoint_url = MAXInfo.max_server + url_path +  qs;
+
+        self.url = endpoint_url;
+        return endpoint_url;
+    };
+
+    self.launch = function() {
+        self.hideError();
+        var missing_or_empty_params = false;
+        var endpoint_url = self.forgeURL();
 
         if (missing_or_empty_params) {
           self.showError('Some parameters missing on destination url');
           return;
         }
 
-        var endpoint_url = MAXInfo.max_server + url_path;
         self.requestStartTime =  new Date().getTime();
         $http[self.active_method.toLowerCase()](endpoint_url, {
           headers: MAXInfo.headers,
@@ -160,7 +185,14 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
           });
     };
 
+    self.toggle = function(section) {
+      self.visibility[section] = !self.visibility[section];
+    };
     self.methods = [];
+    self.visibility = {
+      modifiers: false,
+      headers: false
+    };
     self.available_methods = [];
     angular.forEach(['GET', 'POST', 'PUT', 'DELETE', 'HEAD'], function(method, key) {
        var method_state = {name:method, implemented: current.methods[method] === undefined ? false : true};
@@ -179,9 +211,13 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
     self.name = current.route_name;
     self.route = self.routeParts(current.route_url);
     self.rest_params = {};
+    self.qs_params = {
+      limit: {enabled:false, value:10}
+    };
     self.response = {
       placeholder: 'No response yet, <br/>launch a request first.'
     };
     self.setActiveMethod(self.available_methods[0]);
+    self.url = self.forgeURL()
 
 }]);

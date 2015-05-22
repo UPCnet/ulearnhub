@@ -6223,11 +6223,3 @@ body.flat-black {
     font-weight: 400
 }
 
-
-
-/*API PANEL*/
-
-#api-view.panel .form-group > label {
-  font-weight: bold;
-  border-right: 4px #ddd solid;
-  padding-bottom: 8px;
