@@ -1,0 +1,106 @@
+<br/><br/><br/>
+<div>
+  <div class="panel panel-info">
+      <div class="panel-heading" translate="label_edit_user">Editar Usuario</div>
+      <div class="panel-body">
+        <form role="form">
+
+          <div class="form-group">
+            <label class="control-label" for="userName">UserName</label>
+            <input type="text" class="form-control" ng-model="userCtrl.user.username" readonly>
+            <p class="help-block"></p>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label" for="displayName">displayName</label>
+            <input type="text" class="form-control" ng-model="userCtrl.user.displayName">
+            <p class="help-block"></p>
+          </div>
+
+          <button type="submit" class="btn btn-default" ng-click="saveUser()" translate="btn_save">Save</button>
+        </form>
+        <br/>
+        <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+
+
+    </div>
+  </div>
+  <br/><br/><br/>
+  <div id="tabla_context">
+    <table datatable="ng" dt-options="userCtrl.dtOptions" dt-column-defs="userCtrl.dtColumnDefs" class="compact table table-striped">
+        <thead>
+          <tr>
+            <th translate="col_context">DisplayName</th>
+            <th>Url</th>
+            <th>Read</th>
+            <th>Write</th>
+            <th>Delete</th>
+            <th>Unsubscribe</th>
+            <th translate="col_actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="subscribe in userCtrl.contextsList">
+            <td><a ui-sref="domain.context({id:subscribe.hash})">{{subscribe.displayName}}</a></td>
+            <td>{{subscribe.url}}</td>
+
+            <td><input type="checkbox"
+                        ng-change="userCtrl.changePermission(subscribe.hash,userCtrl.user.username,'read',subscribe.permissionRead)"
+                        ng-model="subscribe.permissionRead"></td>
+
+            <td><input type="checkbox"
+                        ng-change="userCtrl.changePermission(subscribe.hash,userCtrl.user.username,'write',subscribe.permissionWrite)"
+                        ng-model="subscribe.permissionWrite"></td>
+
+            <td><input type="checkbox"
+                        ng-change="userCtrl.changePermission(subscribe.hash,userCtrl.user.username,'unsubscribe',subscribe.permissionWrite)"
+                        ng-model="subscribe.permissionUnsubscribe"></td>
+
+            <td><input type="checkbox"
+                        ng-change="userCtrl.changePermission(subscribe.hash,userCtrl.user.username,'delete',subscribe.permissionDelete)"
+                        ng-model="subscribe.permissionDelete"></td>
+
+            <td>
+              <a href="" ng-click="userCtrl.unsubscribeContext('sm',userCtrl.user.username,subscribe.hash)"><img ng-src="{{userCtrl.application_url}}/static/borrar.jpg" alt="Remove subscribe" height="21" width="21"></a>
+
+            </td>
+
+          </tr>
+        </tbody>
+   </table>
+
+    <div id="search">
+	  <ui-select multiple ng-model="userCtrl.contextsSelected" theme="bootstrap" ng-disabled="disabled" style="width: 300px;">
+	    <ui-select-match placeholder="{{'placeholder_add_context' | translate}}">{{$item.displayName}}</ui-select-match>
+	    <ui-select-choices repeat="context in userCtrl.contextAvailable | filter:$select.search" refresh="contEdit.refreshContextList($select.search)" refresh-delay="0">
+	      <div ng-bind-html="context.displayName | highlight: $select.search"></div>
+	    </ui-select-choices>
+	  </ui-select>
+    </div>
+    <br/>
+
+    <div class="view-actions pull-left">
+		<button class="btn btn-primary" ng-click="userCtrl.addContextToUser()" translate="btn_add_context">Add context</button>
+	</div>
+
+
+  </div>
+
+  <script type="text/ng-template" id="unsubscribe-context.html">
+      <div class="modal-header">
+          <h3 class="modal-title" translate="label_unsubscribe_title">Confirm unsubscribe user</h3>
+      </div>
+      <div class="modal-body">
+
+        <div class="alert alert-warning" role="alert" translate="label_confirm_unsubscribe">Are you sure to unsubscribe this context?</div>
+
+      <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+
+      </div>
+      <div class="modal-footer">
+          <button class="btn btn-primary" ng-click="ok()" translate="btn_ok">OK</button>
+          <button class="btn btn-warning" ng-click="cancel()" translate="btn_cancel">Cancel</button>
+      </div>
+  </script>
+
+</div>

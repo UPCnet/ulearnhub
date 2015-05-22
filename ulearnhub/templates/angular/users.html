@@ -34,7 +34,7 @@
               </thead>
               <tbody>
                   <tr ng-repeat="user in usersCtrl.users">
-                      <td><a ui-sref="domain.user({id:user.username})">{{user.username}}</a></td>
+                      <td><a ui-sref="user({id:user.username})">{{user.username}}</a></td>
                       <td>{{user.displayName}}</td>
                       <td>
                           <a href="" ng-click="usersCtrl.confirmModal('sm',user.username)">
@@ -134,7 +134,7 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="user in userRol.users">
-                        <td><a ui-sref="domain.user({id:user.username})">{{user.username}}</a></td>
+                        <td><a ui-sref="user({id:user.username})">{{user.username}}</a></td>
                         <td ng-repeat="role in user.roles">
                             <input type="checkbox" ng-change="userRol.changeRole(role.active, role.name,user.username)" ng-model="role.active">
                         </td>
