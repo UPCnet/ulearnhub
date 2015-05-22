@@ -51,16 +51,22 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
     var current = EndpointsService.getEndpoint(route);
     var statuses = {
       200: 'Ok',
-      400: 'Bad Request'
+      400: 'Bad Request',
+      401: 'Unauthorized',
+      403: 'Forbidden',
+      404: 'Not Found'
     };
 
-
     self.isActiveMethod = function(method) {
+      /*
+          Determine if the
+      */
       return method === self.active_method ? 'active': '';
     };
 
     self.setActiveMethod = function(method) {
       self.active_method = method;
+      self.data = method === 'PUT' | method === 'POST' ? '{}' : undefined;
       self.description = current.methods[self.active_method].description;
       self.documentation = current.methods[self.active_method].documentation;
     };
@@ -169,30 +175,64 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
           return;
         }
 
-        self.requestStartTime =  new Date().getTime();
-        $http[self.active_method.toLowerCase()](endpoint_url, {
+        var request = {
+          url: endpoint_url,
+          method: self.active_method,
           headers: MAXInfo.headers,
           transformResponse: function(data, headers) {
             return data;
           }
-          }).success(function(data, status, headers, config) {
+        };
+
+        if (self.active_method === 'POST' | self.active_method === 'PUT') {
+          request.data = angular.fromJson(self.data);
+        }
+
+        self.requestStartTime =  new Date().getTime();
+        $http(request)
+        .success(function(data, status, headers, config) {
             var requestFinishTime = new Date().getTime();
             self.renderResponse(data, status, headers, config, requestFinishTime);
-          })
-          .error(function(data, status, headers, config) {
+        })
+        .error(function(data, status, headers, config) {
             var requestFinishTime = new Date().getTime();
             self.renderResponse(data, status, headers, config, requestFinishTime);
-          });
+        });
     };
 
     self.toggle = function(section) {
       self.visibility[section] = !self.visibility[section];
     };
-    self.methods = [];
+
+    // Default values for current endpoint data
+    self.name = current.route_name;
+    self.route = self.routeParts(current.route_url);
+    self.info = MAXInfo.headers;
+    self.data = undefined;
+    self.response = {
+      placeholder: 'No response yet, <br/>launch a request first.'
+    };
+
+    // Controls the initial state of the toggable sections
     self.visibility = {
       modifiers: false,
       headers: false
     };
+
+    // Default values and state of the elements on Modifiers section
+    self.qs_params = {
+      limit: {enabled:false, value:10}
+    };
+
+    // Variable to hold the values for the inputs of the rest variable parts
+    self.rest_params = {};
+
+    // Load the methods implemented for the current resource.
+    // self.methods will hold the object representing each method
+    // self.available methods will hold a list of the implemented ones names
+    // This last var is mainly used to determine the method that will be active
+    // in the ui by default
+    self.methods = [];
     self.available_methods = [];
     angular.forEach(['GET', 'POST', 'PUT', 'DELETE', 'HEAD'], function(method, key) {
        var method_state = {name:method, implemented: current.methods[method] === undefined ? false : true};
@@ -201,23 +241,14 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
        }
        this.push(method_state);
     }, self.methods);
+    self.setActiveMethod(self.available_methods[0]);
 
+    // Object to control display of the endpoint view error message
     self.error = {
       active: false,
       message: 'Error message'
     };
 
-    self.info = MAXInfo.headers;
-    self.name = current.route_name;
-    self.route = self.routeParts(current.route_url);
-    self.rest_params = {};
-    self.qs_params = {
-      limit: {enabled:false, value:10}
-    };
-    self.response = {
-      placeholder: 'No response yet, <br/>launch a request first.'
-    };
-    self.setActiveMethod(self.available_methods[0]);
-    self.url = self.forgeURL()
-
+    // Make an initial render of the url with the default parameters
+    self.url = self.forgeURL();
 }]);

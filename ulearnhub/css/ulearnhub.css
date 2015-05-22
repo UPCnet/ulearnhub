@@ -112,7 +112,9 @@
 #api-view.panel .form-group#resource-modifiers select {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
-  margin-left: -4px;
+  -webkit-appearance: none;
+  -webkit-border-top-left-radius: 0px;
+  -webkit-border-bottom-left-radius: 0px;
 }
 #api-view.panel .form-group#resource-url div {
   margin: 10px 0px;
