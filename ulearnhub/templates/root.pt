@@ -32,12 +32,12 @@
   </metal:main>
 
 <metal:main fill-slot="view_scripts">
-    <script src="${api.application_url}/js/hubClient.js"></script>
-    <script src="${api.application_url}/js/MAXClient.js"></script>
-    <script src="${api.application_url}/js/sidebar.js"></script>
-    <script src="${api.application_url}/js/HubManagement/app.js"></script>
-    <script src="${api.application_url}/js/HubManagement/deployments.js"></script>
-    <script src="${api.application_url}/js/HubManagement/domains.js"></script>
+    <script src="${api.application_url}/angular/hubClient.js"></script>
+    <script src="${api.application_url}/angular/MAXClient.js"></script>
+    <script src="${api.application_url}/angular/sidebar.js"></script>
+    <script src="${api.application_url}/angular/HubManagement/app.js"></script>
+    <script src="${api.application_url}/angular/HubManagement/deployments.js"></script>
+    <script src="${api.application_url}/angular/HubManagement/domains.js"></script>
 </metal:main>
 
 

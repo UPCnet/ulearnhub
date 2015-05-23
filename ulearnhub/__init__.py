@@ -83,8 +83,8 @@ def main(global_config, **settings):
     # View routes configuration
     config.add_static_view('jquery', 'components/jquery/dist', cache_max_age=3600)
     config.add_static_view('bootstrap', 'components/bootstrap/dist', cache_max_age=3600)
-    config.add_static_view('templates', 'templates/angular', cache_max_age=3600)
-    config.add_static_view('angular', 'components/angular', cache_max_age=3600)
+    config.add_static_view('templates', 'angular/templates', cache_max_age=3600)
+    config.add_static_view('angularjs', 'components/angular', cache_max_age=3600)
     config.add_static_view('ui-utils', 'components/ui-utils', cache_max_age=3600)
     config.add_static_view('maxui', 'maxui', cache_max_age=3600)
     config.add_static_view('prism', 'components/prism', cache_max_age=3600)
@@ -106,7 +106,7 @@ def main(global_config, **settings):
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_static_view('css', 'css', cache_max_age=3600)
     config.add_static_view('fonts', 'fonts', cache_max_age=3600)
-    config.add_static_view('js', 'js', cache_max_age=3600)
+    config.add_static_view('angular', 'angular', cache_max_age=3600)
     config.add_static_view('locales', 'locales', cache_max_age=3600)
 
     config.add_request_method(get_oauth_headers, name='auth_headers', reify=True)

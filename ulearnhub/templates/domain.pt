@@ -27,15 +27,15 @@
 
     <script src="${api.application_url}/angular-elastic-input/angular-elastic-input.min.js"></script>
 
-    <script src="${api.application_url}/js/hubClient.js"></script>
-    <script src="${api.application_url}/js/MAXClient.js"></script>
-    <script src="${api.application_url}/js/sidebar.js"></script>
+    <script src="${api.application_url}/angular/hubClient.js"></script>
+    <script src="${api.application_url}/angular/MAXClient.js"></script>
+    <script src="${api.application_url}/angular/sidebar.js"></script>
     <script src="${api.application_url}/maxui/maxui.js"></script>
-    <script src="${api.application_url}/js/DomainManagement/app.js"></script>
-    <script src="${api.application_url}/js/DomainManagement/api.js"></script>
-    <script src="${api.application_url}/js/DomainManagement/users.js"></script>
-    <script src="${api.application_url}/js/DomainManagement/contexts.js"></script>
-    <script src="${api.application_url}/js/DomainManagement/exceptions.js"></script>
+    <script src="${api.application_url}/angular/DomainManagement/app.js"></script>
+    <script src="${api.application_url}/angular/DomainManagement/api.js"></script>
+    <script src="${api.application_url}/angular/DomainManagement/users.js"></script>
+    <script src="${api.application_url}/angular/DomainManagement/contexts.js"></script>
+    <script src="${api.application_url}/angular/DomainManagement/exceptions.js"></script>
 
 </metal:main>
 

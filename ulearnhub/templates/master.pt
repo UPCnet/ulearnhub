@@ -66,7 +66,7 @@
     <script src="${api.application_url}/slimscroll/jquery.slimscroll.min.js"></script>
 
     <!-- Angular and extension modules -->
-    <script src="${api.application_url}/angular/angular.min.js"></script>
+    <script src="${api.application_url}/angularjs/angular.min.js"></script>
     <script src="${api.application_url}/ui-utils/ui-utils.min.js"></script>
     <script src="${api.application_url}/angular-ui-router/angular-ui-router.min.js"></script>
     <script src="${api.application_url}/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
