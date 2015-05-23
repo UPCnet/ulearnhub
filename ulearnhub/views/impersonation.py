@@ -34,6 +34,8 @@ def impersonate_view(domain, request):
             client.setToken(impersonated_token)
             user_data = get_max_user_data(client, username)
             request.session[domain.name]['impersonation'].update(user_data)
+        else:
+            request.session[domain.name]['error'] = 'Could not impersonate as {}'.format(username)
 
     return HTTPFound(location='{}/{}'.format(api.application_url, domain.name))
 

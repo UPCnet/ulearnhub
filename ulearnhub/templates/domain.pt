@@ -18,6 +18,10 @@
 
   <metal:main fill-slot="main">
 
+        <div class="alert alert-danger fade in" tal:condition="api.error">
+            <strong>Error!</strong> ${api.error}
+            <span class="close" data-dismiss="alert">×</span>
+        </div>
         <div ui-view></div>
 
   </metal:main>

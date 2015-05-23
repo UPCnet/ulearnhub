@@ -22,6 +22,7 @@ class TemplateAPI(object):
     def __init__(self, context, request, page_title=None):
         self.context = context
         self.request = request
+        self.error = self.domain_session.pop('error', None)
 
     @property
     def view(self):
