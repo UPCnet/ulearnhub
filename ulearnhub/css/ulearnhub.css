@@ -41,9 +41,6 @@
   cursor: pointer;
   text-decoration: underline;
 }
-#api-view.panel .form-group .form-group {
-  margin-bottom: 5px;
-}
 #api-view.panel .form-group .form-group input,
 #api-view.panel .form-group .form-group label {
   border-right: none;
