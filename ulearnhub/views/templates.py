@@ -3,6 +3,7 @@ from pyramid.renderers import get_renderer
 from ulearnhub.security import ROLES
 from ulearnhub.models.domains import Domain
 from ulearnhub.resources import Root
+from collections import namedtuple
 import re
 
 
@@ -87,19 +88,21 @@ class TemplateAPI(object):
 
     @property
     def domain(self):
-        if isinstance(self.context, Domain):
-            domain_object = self.request.context
-        elif isinstance(self.context, Root):
-            domain_object = self.request.context['domains'][self.request.session['root_auth_domain']]
+        domain_object = None
+        try:
+            if isinstance(self.context, Domain):
+                domain_object = self.request.context
+            elif isinstance(self.context, Root):
+                root_auth_domain = self.request.session.get('root_auth_domain')
+                domain_object = self.request.context['domains'].get(root_auth_domain, None)
 
-        else:
-            return {'name': '', 'url': '', 'max_server': ''}
-
-        return dict(
-            name=domain_object.name,
-            url=self.request.resource_url(domain_object),
-            max_server=domain_object.max_server
-        )
+            return dict(
+                name=domain_object.name,
+                url=self.request.resource_url(domain_object),
+                max_server=domain_object.max_server
+            )
+        except:
+            return dict(name='', url='', max_server='')
 
     def getVirtualHost(self):
         return self.request.headers.get('X-Virtual-Host-Uri', None)

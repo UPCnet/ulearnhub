@@ -85,9 +85,11 @@ def login_into_domain(context, request, api, login_response, domain, redirect=''
     """
     login = request.POST.get('username')
     password = request.POST.get('password')
-
+    if domain == '':
+        login_response['error'] = "Unknown domain"
+        return login_response
     if not login or not password or not domain:
-        login_response['error'] = 'Missing fields.',
+        login_response['error'] = 'Missing fields.'
         return login_response
 
     # Try to authenticate with Osiris, using oauth server from the context
@@ -149,7 +151,7 @@ def login(context, request):
     if request.params.get('form.submitted', None) is not None:
         # identify
         domain_name = request.POST.get('domain')
-        domain = context['domains'].get(domain_name)
+        domain = context['domains'].get(domain_name, '') if domain_name else None
         response = login_into_domain(context, request, api, login_response, domain, redirect='')
         if isinstance(response, Response):
             request.session['root'] = request.session[domain.name]
