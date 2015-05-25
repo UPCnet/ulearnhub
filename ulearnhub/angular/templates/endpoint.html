@@ -33,10 +33,114 @@
                 </div>
 
             </div>
+
+
+            <div class="form-group" ng-class="{toggable: endpointCtrl.has_modifiers}" id="resource-modifiers">
+                <label ng-click="endpointCtrl.toggle('modifiers')" for="resource-modifiers" class="col-sm-2 col-xs-12 control-label"><b ng-if="endpointCtrl.has_modifiers" class="caret"></b>Modifiers
+                </label>
+                <div class="col-sm-10 col-xs-12" ng-switch="endpointCtrl.visibility.modifiers">
+                    <span class="literal" ng-switch-when="false"> {{endpointCtrl.modifiers_toggle_message}}</span>
+                    <div ng-switch-when="true">
+                        <!-- Start Limit parameter -->
+                        <div class="form-group" id="qs-limit" ng-if="endpointCtrl.modifiers.limit.available">
+                            <label class="col-sm-4 col-md-3 col-xs-2 control-label fixed">limit</label>
+                            <div class="col-sm-8 col-md-9 col-xs-10">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                    <input class="qs-status" type="checkbox" ng-change="endpointCtrl.forgeURL()" ng-model="endpointCtrl.modifiers.limit.enabled" />
+                                </span>
+                                    <input class="qs-value form-control" type="text" ng-change="endpointCtrl.forgeURL()" ng-disabled="!endpointCtrl.modifiers.limit.enabled" ng-model="endpointCtrl.modifiers.limit.value" />
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End limit parameter -->
+                        <!-- Start sort order parameter -->
+                        <div class="form-group" id="qs-sort" ng-if="endpointCtrl.modifiers.priority.available">
+                            <label class="col-sm-4 col-md-3 col-xs-2 control-label fixed">sort</label>
+                            <div class="col-sm-8 col-md-9 col-xs-10">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                    <input class="qs-status" type="checkbox" ng-change="endpointCtrl.forgeURL()" ng-model="endpointCtrl.modifiers.sort.enabled" />
+                                </span>
+                                    <select class="qs-value form-control" ng-change="endpointCtrl.forgeURL()" ng-disabled="!endpointCtrl.modifiers.sort.enabled" ng-model="endpointCtrl.modifiers.sort.value">
+                                        <option>published</option>
+                                        <option>likes</option>
+                                        <option>flagged</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End sort order parameter -->
+                        <!-- Start sort priority parameter -->
+                        <div class="form-group" id="qs-priority" ng-if="endpointCtrl.modifiers.priority.available">
+                            <label class="col-sm-4 col-md-3 col-xs-2 control-label fixed">priority</label>
+                            <div class="col-sm-8 col-md-9 col-xs-10">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                    <input class="qs-status" type="checkbox" ng-change="endpointCtrl.forgeURL()" ng-model="endpointCtrl.modifiers.priority.enabled" />
+                                </span>
+                                    <select class="qs-value form-control" ng-change="endpointCtrl.forgeURL()" ng-disabled="!endpointCtrl.modifiers.priority.enabled" ng-model="endpointCtrl.modifiers.priority.value">
+                                        <option>activity</option>
+                                        <option>comments</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End sort order parameter -->
+                        <!-- Start after parameter -->
+                        <div class="form-group" id="qs-after" ng-if="endpointCtrl.modifiers.after.available">
+                            <label class="col-sm-4 col-md-3 col-xs-2 control-label fixed">after</label>
+                            <div class="col-sm-8 col-md-9 col-xs-10">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                    <input class="qs-status" type="checkbox" ng-change="endpointCtrl.forgeURL()" ng-model="endpointCtrl.modifiers.after.enabled" />
+                                </span>
+                                    <input class="qs-value form-control" type="text" ng-change="endpointCtrl.forgeURL()" ng-disabled="!endpointCtrl.modifiers.after.enabled" ng-model="endpointCtrl.modifiers.after.value" />
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End after parameter -->
+                        <!-- Start before parameter -->
+                        <div class="form-group" id="qs-before" ng-if="endpointCtrl.modifiers.before.available">
+                            <label class="col-sm-4 col-md-3 col-xs-2 control-label fixed">before</label>
+                            <div class="col-sm-8 col-md-9 col-xs-10">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                    <input class="qs-status" type="checkbox" ng-change="endpointCtrl.forgeURL()" ng-model="endpointCtrl.modifiers.before.enabled" />
+                                </span>
+                                    <input class="qs-value form-control" type="text" ng-change="endpointCtrl.forgeURL()" ng-disabled="!endpointCtrl.modifiers.before.enabled" ng-model="endpointCtrl.modifiers.before.value" />
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End before parameter -->
+                        <!-- Start notifications parameter-->
+                        <div class="form-group" id="qs-notifications" ng-if="endpointCtrl.modifiers.notifications.available">
+                            <label class="col-sm-4 col-md-3 col-xs-2 control-label fixed">notifications</label>
+                            <div class="col-sm-8 col-md-9 col-xs-10">
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                    <input class="qs-status" type="checkbox" ng-change="endpointCtrl.forgeURL()" ng-model="endpointCtrl.modifiers.notifications.enabled" />
+                                </span>
+                                    <input class="qs-value form-control" type="text" ng-change="endpointCtrl.forgeURL()" ng-disabled="!endpointCtrl.modifiers.before.enabled" ng-model="endpointCtrl.modifiers.notifications.value" />
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End notifications parameter -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" id="request-data" ng-show="endpointCtrl.data">
+                <label for="resource-description" class="col-sm-2 control-label">Data</label>
+                <div class="col-sm-10">
+                    <textarea class="form-control" ng-model="endpointCtrl.data"></textarea>
+                </div>
+            </div>
+
             <div class="form-group toggable" id="request-headers">
                 <label ng-click="endpointCtrl.toggle('headers')" for="request-headers" class="col-sm-2 col-xs-12 control-label"><b class="caret"></b>Headers</label>
                 <div class="col-sm-10 col-xs-12" ng-switch="endpointCtrl.visibility.headers">
-                    <span class="literal" ng-switch-when="false"> (Toggle section to see options)</span>
+                    <span class="literal" ng-switch-when="false"> (Toggle section to modify headers)</span>
                     <div ng-switch-when="true">
                         <div class="form-group" id="X-Oauth-Username">
                             <label class="col-sm-4 col-md-3 col-xs-12 control-label fixed">X-Oauth-Username</label>
@@ -56,94 +160,7 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group toggable" id="resource-modifiers">
-                <label ng-click="endpointCtrl.toggle('modifiers')" for="resource-modifiers" class="col-sm-2 col-xs-12 control-label"><b class="caret"></b>Modifiers
-                </label>
-                <div class="col-sm-10 col-xs-12" ng-switch="endpointCtrl.visibility.modifiers">
-                    <span class="literal" ng-switch-when="false"> (Toggle section to see options)</span>
-                    <div ng-switch-when="true">
-                        <!-- Start Limit parameter -->
-                        <div class="form-group" id="qs-limit">
-                            <label class="col-sm-4 col-md-3 col-xs-2 control-label fixed">limit</label>
-                            <div class="col-sm-8 col-md-9 col-xs-10">
-                                <div class="input-group">
-                                    <span class="input-group-addon">
-                                    <input class="qs-status" type="checkbox" ng-change="endpointCtrl.forgeURL()" ng-model="endpointCtrl.qs_params.limit.enabled" />
-                                </span>
-                                    <input class="qs-value form-control" type="text" ng-change="endpointCtrl.forgeURL()" ng-disabled="!endpointCtrl.qs_params.limit.enabled" ng-model="endpointCtrl.qs_params.limit.value" />
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End limit parameter -->
-                        <!-- Start sort order parameter -->
-                        <div class="form-group" id="qs-limit">
-                            <label class="col-sm-4 col-md-3 col-xs-2 control-label fixed">sort</label>
-                            <div class="col-sm-8 col-md-9 col-xs-10">
-                                <div class="input-group">
-                                    <span class="input-group-addon">
-                                    <input class="qs-status" type="checkbox" ng-change="endpointCtrl.forgeURL()" ng-model="endpointCtrl.qs_params.sort.enabled" />
-                                </span>
-                                    <select class="qs-value form-control" ng-change="endpointCtrl.forgeURL()" ng-disabled="!endpointCtrl.qs_params.sort.enabled" ng-model="endpointCtrl.qs_params.sort.value">
-                                        <option>published</option>
-                                        <option>likes</option>
-                                        <option>flagged</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End sort order parameter -->
-                        <!-- Start sort priority parameter -->
-                        <div class="form-group" id="qs-sort-priority">
-                            <label class="col-sm-4 col-md-3 col-xs-2 control-label fixed">priority</label>
-                            <div class="col-sm-8 col-md-9 col-xs-10">
-                                <div class="input-group">
-                                    <span class="input-group-addon">
-                                    <input class="qs-status" type="checkbox" ng-change="endpointCtrl.forgeURL()" ng-model="endpointCtrl.qs_params.priority.enabled" />
-                                </span>
-                                    <select class="qs-value form-control" ng-change="endpointCtrl.forgeURL()" ng-disabled="!endpointCtrl.qs_params.priority.enabled" ng-model="endpointCtrl.qs_params.priority.value">
-                                        <option>activity</option>
-                                        <option>comments</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End sort order parameter -->
-                        <!-- Start after parameter -->
-                        <div class="form-group" id="qs-after">
-                            <label class="col-sm-4 col-md-3 col-xs-2 control-label fixed">after</label>
-                            <div class="col-sm-8 col-md-9 col-xs-10">
-                                <div class="input-group">
-                                    <span class="input-group-addon">
-                                    <input class="qs-status" type="checkbox" ng-change="endpointCtrl.forgeURL()" ng-model="endpointCtrl.qs_params.after.enabled" />
-                                </span>
-                                    <input class="qs-value form-control" type="text" ng-change="endpointCtrl.forgeURL()" ng-disabled="!endpointCtrl.qs_params.after.enabled" ng-model="endpointCtrl.qs_params.after.value" />
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End after parameter -->
-                        <!-- Start before parameter -->
-                        <div class="form-group" id="qs-before">
-                            <label class="col-sm-4 col-md-3 col-xs-2 control-label fixed">before</label>
-                            <div class="col-sm-8 col-md-9 col-xs-10">
-                                <div class="input-group">
-                                    <span class="input-group-addon">
-                                    <input class="qs-status" type="checkbox" ng-change="endpointCtrl.forgeURL()" ng-model="endpointCtrl.qs_params.before.enabled" />
-                                </span>
-                                    <input class="qs-value form-control" type="text" ng-change="endpointCtrl.forgeURL()" ng-disabled="!endpointCtrl.qs_params.before.enabled" ng-model="endpointCtrl.qs_params.before.value" />
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End before parameter -->
-                    </div>
-                </div>
-            </div>
 
-            <div class="form-group" id="request-data" ng-show="endpointCtrl.data">
-                <label for="resource-description" class="col-sm-2 control-label">Data</label>
-                <div class="col-sm-10">
-                    <textarea class="form-control" ng-model="endpointCtrl.data"></textarea>
-                </div>
-            </div>
 
             <div class="form-group" id="resource-url">
                 <label for="resource-url" class="col-sm-2 col-xs-5 control-label">Request URL</label>

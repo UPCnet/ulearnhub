@@ -66,6 +66,12 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
       self.data = method === 'PUT' | method === 'POST' ? current.methods[self.active_method].payload : undefined;
       self.description = current.methods[self.active_method].description;
       self.documentation = current.methods[self.active_method].documentation;
+      var available_method_modifiers = current.methods[self.active_method].modifiers;
+      self.has_modifiers = !_.isEmpty(available_method_modifiers);
+      self.modifiers_toggle_message = self.has_modifiers ? '(Toggle section to see available modifiers)' : 'No modifiers available';
+      angular.forEach(self.modifiers, function(modifier, key) {
+          self.modifiers[key].available = _.contains(available_method_modifiers, key);
+      });
     };
 
     self.routeParts = function(route_url) {
@@ -148,7 +154,7 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
         // Prepare the query string part of the url using only
         // the enabled ones
         var qs_enabled = {};
-        angular.forEach(self.qs_params, function(qs_param, key) {
+        angular.forEach(self.modifiers, function(qs_param, key) {
           if (qs_param.enabled && !_.isEmpty(qs_param.value)) {
             qs_enabled[key] = qs_param.value;
           }
@@ -218,9 +224,16 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
     };
 
     // Default values and state of the elements on Modifiers section
-    self.qs_params = {
-      limit: {enabled:false, value:10}
+
+    self.modifiers = {
+        limit: {enabled:false, value:10, available:true},
+        sort: {enabled:false, value: 'published', available:true},
+        priority: {enabled:false, value: 'activity', available:true},
+        before: {enabled:false, value:'', available:true},
+        after: {enabled:false, value:'', available:true},
+        notifications: {enabled:false, value:0, available:true}
     };
+
 
     // Variable to hold the values for the inputs of the rest variable parts
     self.rest_params = {};
