@@ -89,11 +89,20 @@
 #api-view.panel .form-group#request-headers .form-group > label {
   height: auto;
 }
+#api-view.panel .form-group #resource-documentation {
+  margin-top: 15px;
+}
+#api-view.panel .form-group #resource-documentation code {
+  color: #4F86CF;
+  background-color: #EAEDFF;
+}
 #api-view.panel .form-group#resource-description .col-sm-10 {
   padding-top: 9px;
 }
-#api-view.panel .form-group#resource-description p {
-  margin-bottom: 0px;
+#api-view.panel .form-group#resource-description h4 {
+  margin: 0px;
+  font-weight: bold;
+  font-size: 14px;
 }
 #api-view.panel .form-group#resource-modifiers span,
 #api-view.panel .form-group#resource-modifiers input,
@@ -130,6 +139,9 @@
 }
 #api-view.panel .form-group#resource-method #methods-list {
   margin-right: 20px;
+}
+#api-view.panel .form-group#resource-method #methods-list label[disabled] {
+  color: #7FB5E5;
 }
 #response-info {
   font-size: 14px;

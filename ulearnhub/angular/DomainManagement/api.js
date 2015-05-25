@@ -63,7 +63,7 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
 
     self.setActiveMethod = function(method) {
       self.active_method = method;
-      self.data = method === 'PUT' | method === 'POST' ? '{}' : undefined;
+      self.data = method === 'PUT' | method === 'POST' ? current.methods[self.active_method].payload : undefined;
       self.description = current.methods[self.active_method].description;
       self.documentation = current.methods[self.active_method].documentation;
     };

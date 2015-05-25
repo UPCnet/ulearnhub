@@ -107,10 +107,17 @@
             height:auto;
         }
 
+        #resource-documentation {
+            margin-top:15px;
+
+            code {
+                color: #4F86CF;
+                background-color: #EAEDFF;            }
+        }
 
         &#resource-description {
             .col-sm-10 {padding-top: 9px;}
-            p {margin-bottom: 0px;}
+            h4 {margin: 0px; font-weight: bold; font-size:14px;}
         }
 
         &#resource-modifiers {
@@ -157,6 +164,10 @@
         &#resource-method {
             #methods-list {
                 margin-right: 20px;
+
+                label[disabled] {
+                    color: #7FB5E5;
+                }
             }
         }
     }

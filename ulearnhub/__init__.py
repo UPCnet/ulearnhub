@@ -99,6 +99,8 @@ def main(global_config, **settings):
     config.add_static_view('angular-translate-static', 'components/angular-translate-loader-static-files', cache_max_age=3600)
     config.add_static_view('angular-elastic-input', 'components/angular-elastic-input/dist', cache_max_age=3600)
     config.add_static_view('angular-slimscroll', 'components/angular-slimscroll', cache_max_age=3600)
+    config.add_static_view('angular-markdown', 'components/angular-markdown-directive', cache_max_age=3600)
+    config.add_static_view('showdown', 'components/showdown/compressed', cache_max_age=3600)
     config.add_static_view('datatables', 'components/datatables/media', cache_max_age=3600)
     config.add_static_view('underscore', 'components/underscore', cache_max_age=3600)
     config.add_static_view('slimscroll', 'components/slimScroll', cache_max_age=3600)

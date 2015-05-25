@@ -28,7 +28,8 @@
     "underscore": "~1.8.3",
     "angular-elastic-input": "~2.0.2",
     "angular-slimscroll": "~1.1.3",
-    "ng-json-explorer": "*"
+    "ng-json-explorer": "*",
+    "angular-markdown-directive": "~0.3.1"
   },
   "devDependencies": {
     "angular-translate": "~2.6.1",

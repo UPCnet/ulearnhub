@@ -15,7 +15,8 @@ var ulearnhub = angular.module('uLearnHUBDomainManagement', [
     'ngCookies',
     'pascalprecht.translate',
     'puElasticInput',
-    'ngJsonExplorer'
+    'ngJsonExplorer',
+    'btford.markdown'
 ]);
 
 
