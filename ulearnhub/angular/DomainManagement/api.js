@@ -58,9 +58,6 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
     };
 
     self.isActiveMethod = function(method) {
-      /*
-          Determine if the
-      */
       return method === self.active_method ? 'active': '';
     };
 
@@ -213,10 +210,11 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
       placeholder: 'No response yet, <br/>launch a request first.'
     };
 
-    // Controls the initial state of the toggable sections
+    // Controls the current and initialstate of the toggable sections
     self.visibility = {
       modifiers: false,
-      headers: false
+      headers: false,
+      documentation: false
     };
 
     // Default values and state of the elements on Modifiers section
