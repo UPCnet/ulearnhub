@@ -226,12 +226,44 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
     // Default values and state of the elements on Modifiers section
 
     self.modifiers = {
-        limit: {enabled:false, value:10, available:true},
-        sort: {enabled:false, value: 'published', available:true},
-        priority: {enabled:false, value: 'activity', available:true},
-        before: {enabled:false, value:'', available:true},
-        after: {enabled:false, value:'', available:true},
-        notifications: {enabled:false, value:0, available:true}
+        limit: {
+            enabled:false,
+            value:10,
+            available:true,
+            type: 'text'
+        },
+        sort: {
+            enabled:false,
+            value: 'published',
+            options: ['published', 'likes', 'flagged'],
+            available:true,
+            type: 'select'
+        },
+        priority: {
+            enabled:false,
+            value: 'activity',
+            options: ['activity', 'comments'],
+            available:true,
+            type: 'select'
+        },
+        before: {
+            enabled:false,
+            value:'',
+            available:true,
+            type: 'text'
+        },
+        after: {
+            enabled:false,
+            value:'',
+            available:true,
+            type: 'text'
+        },
+        notifications: {
+            enabled:false,
+            value:0,
+            available:true,
+            type: 'text'
+        }
     };
 
 
