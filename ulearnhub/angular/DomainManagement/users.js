@@ -166,7 +166,7 @@ ulearn_users.controller('UsersManageController', ['$modal','getUrl', '$log', 'Us
 // Default datatable options
 
     self.dtOptions = DTOptionsBuilder
-        .newOptions().withPaginationType('full_numbers')
+        .newOptions().withPaginationType('simple').withDisplayLength(2)
         .withBootstrap()
         .withLanguage(DTTranslations[lang]);
 

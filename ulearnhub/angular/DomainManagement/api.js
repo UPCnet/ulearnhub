@@ -260,10 +260,11 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
         },
         notifications: {
             enabled:false,
-            value:0,
+            value:'0',
             available:true,
             type: 'text'
         }
+
     };
 
 
