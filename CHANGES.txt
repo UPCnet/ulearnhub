@@ -1,11 +1,32 @@
 CHANGELOG
 =========
 
-1.1 (unreleased)
+1.1 (2015-05-28)
 ----------------
 
-- Nothing changed yet.
-
+* Change ldap connection params [Carles Bruguera]
+* Disable full pagination [Carles Bruguera]
+* Parametrize modifiers [Carles Bruguera]
+* Fix notifications field [Carles Bruguera]
+* Use new modifiers attribute of endpoint [Carles Bruguera]
+* Improve documentation section, with rendered markdown [Carles Bruguera]
+* Enable toggable documentation [Carles Bruguera]
+* Fix login form for edge cases [Carles Bruguera]
+* Add an pyramid-side global domain-error message [Carles Bruguera]
+* Reorganize angular assets [Carles Bruguera]
+* Css [Carles Bruguera]
+* Enable data input for POST and PUT [Carles Bruguera]
+* Include modifiers section to endpoint view [Carles Bruguera]
+* Make big sections toggable [Carles Bruguera]
+* Show real-time url changes [Carles Bruguera]
+* Initial revam of user profile view [Carles Bruguera]
+* Add non-ui impersonation views [Carles Bruguera]
+* Show domain name on navbar when on domain view [Carles Bruguera]
+* Add css for ngcloak [Carles Bruguera]
+* Fix authentication injection [Carles Bruguera]
+* Remove unused template [Carles Bruguera]
+* Unifined login template for login views [Carles Bruguera]
+* Delete unused injections [Carles Bruguera]
 
 1.0 (2015-05-19)
 ----------------
