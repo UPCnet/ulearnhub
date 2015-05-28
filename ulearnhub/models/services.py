@@ -144,7 +144,7 @@ class SyncACL(Service):
             if not acl_groups:
                 raise StopIteration()
 
-            ldapserver.server.connect(userdn=True)
+            ldapserver.server.connect()
             for group in acl_groups:
                 users = ldapserver.server.get_branch_group_users(None, group['id'])
                 for username in users:
