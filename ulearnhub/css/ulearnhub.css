@@ -91,10 +91,17 @@
 }
 #api-view.panel .form-group #resource-documentation {
   margin-top: 15px;
+  max-width: 725px;
 }
 #api-view.panel .form-group #resource-documentation code {
   color: #4F86CF;
   background-color: #EAEDFF;
+}
+#api-view.panel .form-group #resource-documentation blockquote {
+  font-size: inherit;
+  border: 1px solid #e5e5e5;
+  background-color: #eee;
+  border-radius: 5px;
 }
 #api-view.panel .form-group#resource-description .col-sm-10 {
   padding-top: 9px;
@@ -128,6 +135,7 @@
   font-size: 12px;
 }
 #api-view.panel .form-group#request-data textarea {
+  max-width: 725px;
   min-height: 100px;
   font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
 }

@@ -22,6 +22,11 @@
             <strong>Error!</strong> ${api.error}
             <span class="close" data-dismiss="alert">×</span>
         </div>
+
+        <div class="alert alert-danger fade in" ng-if="mainCtrl.error">
+            <strong>Error!</strong> <span ng-bind-html="mainCtrl.error"></span>
+            <span class="close" data-dismiss="alert">×</span>
+        </div>
         <div ui-view></div>
 
   </metal:main>

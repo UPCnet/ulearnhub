@@ -348,7 +348,14 @@ ulearnhub.controller('MainAppController', ['sidebarSections', '$stateParams','$m
     var self = this;
     var domainName = hubSession.domain;
     $cookies.currentDomain = $stateParams.domain;
-    self.domainObj = Domain.get({id:domainName});
+    self.domainObj = Domain.get(
+        {id:domainName},
+        function(response) {},
+        function(response) {
+            self.error = 'Request to ' + response.config.url + ' failed with code ' + response.status + '.<br/> Server responded: "' + response.data.error_description+ '"'
+
+        }
+    );
     self.sidebar_status = '';
     self.maxuisettings = {
         generatorName: "uLearn HUB",
