@@ -132,7 +132,6 @@ max_endpoints.controller('EndpointController', ['$http', '$state', '$stateParams
         self.response.json = json_data;
         self.response.status = status + ' '+ statuses[status];
         self.response.type = status >= 200 && status < 400 ? 'success' : 'failure';
-
         var time = finishTime - self.requestStartTime;
         self.response.time = "(" + time + " ms)";
 
@@ -185,10 +184,7 @@ max_endpoints.controller('EndpointController', ['$http', '$state', '$stateParams
         var request = {
           url: endpoint_url,
           method: self.active_method,
-          headers: MAXInfo.headers,
-          transformResponse: function(data, headers) {
-            return data;
-          }
+          headers: MAXInfo.headers
         };
 
         if (self.active_method === 'POST' | self.active_method === 'PUT') {
