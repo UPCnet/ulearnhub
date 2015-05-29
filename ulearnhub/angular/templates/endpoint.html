@@ -17,7 +17,7 @@
                 <label for="resource-method" class="col-sm-2 col-xs-5 control-label">Req. Method</label>
                 <div class="col-sm-10 col-xs-12">
                     <div class="btn-group" id="methods-list" data-toggle="buttons">
-                        <label class="btn btn-primary {{endpointCtrl.isActiveMethod(method.name)}}" ng-repeat="method in endpointCtrl.methods" ng-disabled="!method.implemented" ng-click="endpointCtrl.setActiveMethod(method.name)">
+                        <label class="btn btn-primary {{endpointCtrl.isActiveMethod(method.name)}}" ng-repeat="method in endpointCtrl.methods" ng-disabled="!method.implemented" ng-click="endpointCtrl.gotoMethod(method.name)">
                             <input type="radio" name="methods-list" data-value="GET" id="method-get">{{method.name}}
                         </label>
                     </div>

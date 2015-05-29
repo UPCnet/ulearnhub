@@ -45,7 +45,7 @@ max_endpoints.controller('ApiController', ['$cookies', 'sidebarSections', 'MAXSe
 }]);
 
 
-max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cookies', 'sidebarSections', 'MAXInfo' ,'EndpointsService', function($http, $stateParams, $cookies, sidebarSections, MAXInfo, EndpointsService) {
+max_endpoints.controller('EndpointController', ['$http', '$state', '$stateParams', '$cookies', 'sidebarSections', 'MAXInfo' ,'EndpointsService', function($http, $state, $stateParams, $cookies, sidebarSections, MAXInfo, EndpointsService) {
     var self = this;
     var route = $stateParams.endpoint;
     var current = EndpointsService.getEndpoint(route);
@@ -59,6 +59,10 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
 
     self.isActiveMethod = function(method) {
       return method === self.active_method ? 'active': '';
+    };
+
+    self.gotoMethod = function(method) {
+          $state.go('api.method', {endpoint: $stateParams.endpoint, method: method.toLowerCase()})
     };
 
     self.setActiveMethod = function(method) {
@@ -285,7 +289,15 @@ max_endpoints.controller('EndpointController', ['$http', '$stateParams', '$cooki
        }
        this.push(method_state);
     }, self.methods);
-    self.setActiveMethod(self.available_methods[0]);
+
+    var first_available_method = self.available_methods[0];
+    var requested_method = $stateParams.method ? $stateParams.method.toUpperCase(): first_available_method;
+    var selected_method = _.contains(self.available_methods, requested_method) ? requested_method: first_available_method;
+
+    if (selected_method !== requested_method) {
+        self.gotoMethod(selected_method);
+    }
+        self.setActiveMethod(selected_method);
 
     // Object to control display of the endpoint view error message
     self.error = {
