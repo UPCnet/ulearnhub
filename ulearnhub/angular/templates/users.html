@@ -1,156 +1,73 @@
-
-    <h1 class="page-header">Users Management
-          <small></small>
+<h1 class="page-header">Users Management
+          <br/><small>Here you can add and manage users, and their related configuratins as subscriptions and roles</small>
       </h1>
-
-
-
-
-
-
-
-
-<div class="panel panel-inverse">
-    <div class="panel-heading">
-        <div class="panel-heading-btn">
-            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
-            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-repeat"></i></a>
-            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse" data-original-title="" title=""><i class="fa fa-minus"></i></a>
-            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
-        </div>
-        <h4 class="panel-title" translate="users_table">Users</h4>
-    </div>
-    <div class="panel-body" style="display: block;">
-        <div class="table-responsive">
-
-
-          <table datatable="ng" dt-options="usersCtrl.dtOptions" dt-column-defs="usersCtrl.dtColumnDefs" class="compact table table-striped">
-              <thead>
-                  <tr>
-                      <th translate="col_username">UserName</th>
-                      <th translate="col_displayname">DisplayName</th>
-                      <th translate="col_actions">Actions</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr ng-repeat="user in usersCtrl.users">
-                      <td><a ui-sref="user({id:user.username})">{{user.username}}</a></td>
-                      <td>{{user.displayName}}</td>
-                      <td>
-                          <a href="" ng-click="usersCtrl.confirmModal('sm',user.username)">
-                              <button class="delete fa fa-minus-square" alt="Eliminar usuari"></button>
-                          </a>
-                      </td>
-                  </tr>
-              </tbody>
-          </table>
-
-          <div class="view-actions pull-right">
-              <button class="btn btn-primary" ng-click="usersCtrl.open()" translate="btn_newuser">New User</button>
-          </div>
-
-
-        </div>
-    </div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-    <script type="text/ng-template" id="new-user.html">
-        <div class="modal-header">
-            <h3 class="modal-title" translate="label_add_user">Add new user</h3>
-        </div>
-        <div class="modal-body">
-            <form>
-                <div class="form-group">
-                    <label for="userName">UserName</label>
-                    <input ng-model="newuser.username" type="text" class="form-control" id="userName" placeholder="">
+<ul class="nav nav-pills">
+    <li ui-sref-active-eq="active"><a ui-sref="users">Users list</a></li>
+    <li ui-sref-active-eq="active"><a ui-sref="users.roles">MAX Roles</a></li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="nav-pills-tab-1">
+        <div ui-view>
+            <div class="table-responsive">
+                <table datatable="ng" dt-options="usersCtrl.dtOptions" dt-column-defs="usersCtrl.dtColumnDefs" class="compact table table-striped">
+                    <thead>
+                        <tr>
+                            <th translate="col_username">UserName</th>
+                            <th translate="col_displayname">DisplayName</th>
+                            <th translate="col_actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="user in usersCtrl.users">
+                            <td><a ui-sref="user({id:user.username})">{{user.username}}</a></td>
+                            <td>{{user.displayName}}</td>
+                            <td>
+                                <a href="" ng-click="usersCtrl.confirmModal('sm',user.username)">
+                                    <button class="delete fa fa-minus-square" alt="Eliminar usuari"></button>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="view-actions pull-right">
+                    <button class="btn btn-primary" ng-click="usersCtrl.open()" translate="btn_newuser">New User</button>
                 </div>
-                <div class="form-group">
-                    <label for="displayName">DisplayName</label>
-                    <input ng-model="newuser.displayName" type="text" class="form-control" id="displayName" placeholder="">
+            </div>
+            <script type="text/ng-template" id="new-user.html">
+                <div class="modal-header">
+                    <h3 class="modal-title" translate="label_add_user">Add new user</h3>
                 </div>
-            </form>
-            <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="ok()" translate="btn_ok">OK</button>
-            <button class="btn btn-warning" ng-click="cancel()" translate="btn_cancel">Cancel</button>
-        </div>
-    </script>
-
-    <script type="text/ng-template" id="remove-user.html">
-        <div class="modal-header">
-            <h3 class="modal-title" translate="title_remove_user">Confirm remove user</h3>
-        </div>
-        <div class="modal-body">
-            <div class="alert alert-warning" role="alert" translate="label_delete_user">Are you sure to delete this user?</div>
-            <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="ok()" translate="btn_ok">OK</button>
-            <button class="btn btn-warning" ng-click="cancel()" translate="btn_cancel">Cancel</button>
-        </div>
-    </script>
-
-
-
-
-
-
-<div id="roles" ng-controller="UsersRolesController as userRol">
-
-
-<div class="panel panel-inverse">
-    <div class="panel-heading">
-        <div class="panel-heading-btn">
-            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
-            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-repeat"></i></a>
-            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse" data-original-title="" title=""><i class="fa fa-minus"></i></a>
-            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
-        </div>
-        <h4 class="panel-title" translate="table_roles">Roles</h4>
-    </div>
-    <div class="panel-body" style="display: block;">
-        <div class="table-responsive">
-
-
-            <table datatable="ng" dt-options="userRol.dtOptions" dt-column-defs="userRol.dtColumnDefs" class="compact table table-striped">
-                <thead>
-                    <tr>
-                        <th translate="col_username">UserName</th>
-                        <th>Manager</th>
-                        <th>NonVisible</th>
-                        <th>HubManager</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="user in userRol.users">
-                        <td><a ui-sref="user({id:user.username})">{{user.username}}</a></td>
-                        <td ng-repeat="role in user.roles">
-                            <input type="checkbox" ng-change="userRol.changeRole(role.active, role.name,user.username)" ng-model="role.active">
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="userName">UserName</label>
+                            <input ng-model="newuser.username" type="text" class="form-control" id="userName" placeholder="">
+                        </div>
+                        <div class="form-group">
+                            <label for="displayName">DisplayName</label>
+                            <input ng-model="newuser.displayName" type="text" class="form-control" id="displayName" placeholder="">
+                        </div>
+                    </form>
+                    <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" ng-click="ok()" translate="btn_ok">OK</button>
+                    <button class="btn btn-warning" ng-click="cancel()" translate="btn_cancel">Cancel</button>
+                </div>
+            </script>
+            <script type="text/ng-template" id="remove-user.html">
+                <div class="modal-header">
+                    <h3 class="modal-title" translate="title_remove_user">Confirm remove user</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning" role="alert" translate="label_delete_user">Are you sure to delete this user?</div>
+                    <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" ng-click="ok()" translate="btn_ok">OK</button>
+                    <button class="btn btn-warning" ng-click="cancel()" translate="btn_cancel">Cancel</button>
+                </div>
+            </script>
         </div>
     </div>
 </div>
-
-
-
-
-
-
-</div>
-

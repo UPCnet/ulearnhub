@@ -60,6 +60,14 @@ ulearnhub.config(['sidebarSectionsProvider', '$stateProvider','$urlRouterProvide
             }
         })
 
+        .state('users.roles', {
+            url: '/roles',
+            templateUrl: 'templates/users.roles.html',
+            controller: 'UsersRolesController as userRol',
+            resolve: {
+            }
+        })
+
         .state('contexts', {
             url: '/contexts',
             templateUrl: 'templates/contexts.html',

@@ -1,0 +1,22 @@
+<div id="roles">
+    <div class="table-responsive">
+        <table datatable="ng" dt-options="userRol.dtOptions" dt-column-defs="userRol.dtColumnDefs" class="compact table table-striped">
+            <thead>
+                <tr>
+                    <th translate="col_username">UserName</th>
+                    <th>Manager</th>
+                    <th>NonVisible</th>
+                    <th>HubManager</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="user in userRol.users">
+                    <td><a ui-sref="user({id:user.username})">{{user.username}}</a></td>
+                    <td ng-repeat="role in user.roles">
+                        <input type="checkbox" ng-change="userRol.changeRole(role.active, role.name,user.username)" ng-model="role.active">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
