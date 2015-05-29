@@ -42,6 +42,19 @@ class TemplateAPI(object):
             return 'uLearnHUBManagement'
 
     @property
+    def logged_domains(self):
+        domains = []
+        if isinstance(self.context, Root):
+            for domainid in self.request.session.keys():
+                if domainid in self.context['domains']:
+                    domain = self.context['domains'][domainid]
+                    domains.append({
+                        "url": self.request.resource_url(domain),
+                        "title": domain.title
+                    })
+        return domains
+
+    @property
     def domain_session(self):
         return self.request.session.get(self.domain['name'], {})
 

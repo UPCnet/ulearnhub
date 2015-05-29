@@ -116,11 +116,33 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar" ></span>
                   </button>
+
+<button type="button" class="navbar-toggle p-0 m-r-5" data-toggle="collapse" data-target="#top-navbar">
+              <span class="fa-stack fa-lg text-inverse">
+                            <i class="fa fa-square-o fa-stack-2x m-t-2"></i>
+                            <i class="fa fa-cog fa-stack-1x"></i>
+                        </span>
+          </button>
                 </div>
                 <div class="navbar-domain" ng-if="mainCtrl.domainObj" ng-cloak>
                      <a href="${api.application_url}/${api.domain.name}">:<span>${api.domain.name}</span></a>
                 </div>
                 <!-- end mobile sidebar expand / collapse button -->
+
+
+
+<div class="navbar-collapse pull-left collapse" id="top-navbar" aria-expanded="false" style="height: 1px;">
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown" tal:condition="api.logged_domains">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-globe fa-fw"></i> Logged-in domains <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li tal:repeat="domain api.logged_domains"><a href="${domain.url}">${domain.title}</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
 
                 <!-- begin header navigation right -->
                 <ul class="nav navbar-nav navbar-right">
