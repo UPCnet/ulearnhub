@@ -103,9 +103,11 @@ ulearnhub.config(['sidebarSectionsProvider', '$stateProvider','$urlRouterProvide
             }
         })
 
+        // This state actually acts as a redirection to the first
+        // available method of the endpoint, using api.method state
         .state('api.endpoint', {
             url: '/:endpoint',
-            templateUrl: 'templates/endpoint.html',
+            templateUrl: 'templates/api.method.html',
             controller: 'EndpointController as endpointCtrl',
             resolve: {
                 expanded: function($stateParams, sidebarSections, endpoints, EndpointsService) {
@@ -120,7 +122,7 @@ ulearnhub.config(['sidebarSectionsProvider', '$stateProvider','$urlRouterProvide
 
         .state('api.method', {
             url: '/:endpoint/:method',
-            templateUrl: 'templates/endpoint.html',
+            templateUrl: 'templates/api.method.html',
             controller: 'EndpointController as endpointCtrl',
             resolve: {
                 expanded: function($stateParams, sidebarSections, endpoints, EndpointsService) {
