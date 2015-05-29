@@ -6,6 +6,32 @@
 .x-ng-cloak {
   display: none !important;
 }
+#search-users-box {
+  background-color: #348fe2;
+  position: relative;
+  padding: 20px;
+  border-radius: 3px;
+  height: 100px;
+  margin-bottom: 20px;
+}
+#search-users-box input {
+  border-radius: 17px;
+  font-size: 14px;
+}
+#search-users-box .btn-search {
+  position: absolute;
+  right: 18px;
+  top: 12px;
+  height: 30px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border: none;
+  background: 0 0;
+  -webkit-border-radius: 0 30px 30px 0;
+  -moz-border-radius: 0 30px 30px 0;
+  border-radius: 0 30px 30px 0;
+  font-size: 24px;
+}
 #api-view.panel h2 {
   margin-top: 0px;
 }

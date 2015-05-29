@@ -56,13 +56,6 @@ maxClient.factory('User', ['$resource', 'MAXInfo', function($resource, MAXInfo) 
     });
 }]);
 
-maxClient.factory('UserAll', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
-    return $resource(MAXInfo.max_server+'/people?limit=0', null, {
-        query: {method:'GET', isArray: true, headers:MAXInfo.headers}
-    });
-}]);
-
-
 maxClient.factory('UserFiltered', ['$resource', 'MAXInfo', function($resource, MAXInfo) {
     return $resource(MAXInfo.max_server+'/people?username=:username', {username:'username'}, {
         query: {method:'GET', isArray: true, headers:MAXInfo.headers}

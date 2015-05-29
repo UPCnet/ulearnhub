@@ -50,7 +50,6 @@ ulearn_users.controller('UserManageController', ['$scope','$stateParams','$modal
       DTColumnDefBuilder.newColumnDef(2)
   ];
 
-  self.application_url = getUrl;
   self.username = $stateParams.id;
 
   self.contextAvailable = Context.query();
@@ -159,14 +158,20 @@ ulearn_users.controller('UserManageController', ['$scope','$stateParams','$modal
 
 }]);
 
-
-ulearn_users.controller('UsersManageController', ['$modal','getUrl', '$log', 'User','DTOptionsBuilder', 'DTColumnDefBuilder','UserAll','$cookies','DTTranslations', function($modal,getUrl, $log, User, DTOptionsBuilder, DTColumnDefBuilder,UserAll,$cookies,DTTranslations) {
+/*
+  Controller for the main tab of Users Manage interface
+  correspondent to the search and user list panel
+*/
+ulearn_users.controller('UsersManageController', ['$modal','getUrl', '$log', 'User','DTOptionsBuilder', 'DTColumnDefBuilder','$cookies','DTTranslations', function($modal,getUrl, $log, User, DTOptionsBuilder, DTColumnDefBuilder,$cookies,DTTranslations) {
     var self = this;
     var lang = $cookies.currentLang;
+
+    self.search_text = '';
+
 // Default datatable options
 
     self.dtOptions = DTOptionsBuilder
-        .newOptions().withPaginationType('simple').withDisplayLength(2)
+        .newOptions().withPaginationType('simple').withDisplayLength(20)
         .withBootstrap()
         .withLanguage(DTTranslations[lang]);
 
@@ -176,13 +181,14 @@ ulearn_users.controller('UsersManageController', ['$modal','getUrl', '$log', 'Us
         DTColumnDefBuilder.newColumnDef(2)
     ];
 
-    self.application_url = getUrl;
-    self.users = UserAll.query();
+    self.users = [];
+
+  self.search = function() {
+      self.users = User.query({username: self.search_text, limit:0});
+  };
 
 
-// =============== ADD USER MODAL ================ //
-
-  self.open = function (size) {
+  self.open = function(size) {
 
     var modalInstance = $modal.open({
       templateUrl: 'new-user.html',
