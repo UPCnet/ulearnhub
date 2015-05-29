@@ -101,7 +101,7 @@ ulearnhub.config(['sidebarSectionsProvider', '$stateProvider','$urlRouterProvide
             controller: 'EndpointController as endpointCtrl',
             resolve: {
                 expanded: function($stateParams, sidebarSections, endpoints, EndpointsService) {
-                    var current_category = EndpointsService.getEndpoint($stateParams.endpoint).category
+                    var current_category = EndpointsService.getEndpoint($stateParams.endpoint).category;
                     sidebarSections.expand('api', 'section', true);
                     sidebarSections.expand('api.' + current_category, 'subsection', true);
                     return;
@@ -110,6 +110,20 @@ ulearnhub.config(['sidebarSectionsProvider', '$stateProvider','$urlRouterProvide
 
         })
 
+        .state('api.method', {
+            url: '/:endpoint/:method',
+            templateUrl: 'templates/endpoint.html',
+            controller: 'EndpointController as endpointCtrl',
+            resolve: {
+                expanded: function($stateParams, sidebarSections, endpoints, EndpointsService) {
+                    var current_category = EndpointsService.getEndpoint($stateParams.endpoint).category;
+                    sidebarSections.expand('api', 'section', true);
+                    sidebarSections.expand('api.' + current_category, 'subsection', true);
+                    return;
+                }
+            }
+
+        })
         .state('exceptions', {
             url: '/exceptions',
             templateUrl: 'templates/exceptions.html',

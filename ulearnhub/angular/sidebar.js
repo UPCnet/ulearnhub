@@ -24,10 +24,19 @@ sidebar.controller('SidebarController', ['$state', '$stateParams', 'sidebarSecti
       subsection: undefined
     };
 
-    self.active = function(section_sref) {
-        var is_child = $state.includes(section_sref);
-        var url = $state.href($state.current.name, $stateParams);
-        var is_active = (section_sref === url) | is_child;
+    self.active = function(section_sref_or_href, sref) {
+        var sidebar_url;
+        if (sref) {
+            sidebar_url = $state.href(section_sref_or_href);
+        } else {
+            sidebar_url = section_sref_or_href;
+        }
+        var current_url = $state.href($state.current.name, $stateParams);
+        var parent = new RegExp(sidebar_url + '/', "g");
+        var is_child = current_url ? current_url.match(parent)!==null: false;
+        is_child = is_child && sidebar_url !== '#';
+        var is_same = current_url === sidebar_url;
+        var is_active = is_child | is_same;
         return is_active ? 'active' : '';
     };
 

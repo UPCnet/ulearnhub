@@ -248,7 +248,7 @@
                 <!-- begin sidebar nav -->
                 <ul class="nav" ng-controller="SidebarController as ctrl">
                   <li class="nav-header">Navigation</li>
-                  <li class="{{ctrl.active(section.sref)}} {{ctrl.has_sub(section.subsections)}}" ng-repeat="section in ctrl.sections" >
+                  <li class="{{ctrl.active(section.sref, true)}} {{ctrl.has_sub(section.subsections)}}" ng-repeat="section in ctrl.sections" >
                       <a ui-sref="{{section.sref}}" ng-click="ctrl.expand(section.sref, 'section')">
                           <b class="caret pull-right" ng-if="ctrl.has_sub(section.subsections)"></b>
                           <i class="fa fa-{{section.icon}}"></i> <span>{{section.title}}</span>
@@ -257,7 +257,7 @@
                           <li ng-repeat="subsection in section.subsections">
                               <a href="" ng-click="ctrl.expand(subsection.sref, 'subsection')">{{subsection.title}}</a>
                               <ul class="sub-menu" ng-show="ctrl.expanded(subsection.sref, 'subsection')">
-                                  <li ng-repeat="subsubsection in subsection.subsections" class="{{ctrl.active(subsubsection.sref)}}">
+                                  <li ng-repeat="subsubsection in subsection.subsections" class="{{ctrl.active(subsubsection.sref, false)}}">
                                       <a href="{{subsubsection.sref}}">{{subsubsection.title}}</a>
                                   </li>
                               </ul>
