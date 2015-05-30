@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('uLearnHUBDomainManagement')
+        .module('hub.domain')
         .factory('EndpointsService', EndpointsService)
         .controller('ApiController', ApiController)
         .controller('EndpointController', EndpointController);

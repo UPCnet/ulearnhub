@@ -1,6 +1,6 @@
 'use strict';
 
-var ulearn_users = angular.module('uLearnHUBDomainManagement');
+var ulearn_users = angular.module('hub.domain');
 
 ulearn_users.controller('UsersRolesController', ['$modal', '$log','$scope', 'UsersRoles','UserRoleManage','DTOptionsBuilder', 'DTColumnDefBuilder','$cookies','DTTranslations', function($modal, $log, $scope, UsersRoles, UserRoleManage, DTOptionsBuilder, DTColumnDefBuilder,$cookies,DTTranslations) {
   var self = this;

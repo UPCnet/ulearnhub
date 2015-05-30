@@ -1,6 +1,6 @@
 'use strict';
 
-var max_exceptions = angular.module('uLearnHUBDomainManagement');
+var max_exceptions = angular.module('hub.domain');
 
 max_exceptions.controller('ExceptionsController', ['$cookies', 'Exception', 'MAXSession', function($cookies, Exception, MAXSession) {
     var self = this;

@@ -1,6 +1,6 @@
 'use strict';
 
-var ulearnhub = angular.module('uLearnHUBDomainManagement', [
+var ulearnhub = angular.module('hub.domain', [
     'hubClient',
     'sidebar',
     'maxClient',

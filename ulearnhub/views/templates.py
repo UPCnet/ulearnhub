@@ -37,7 +37,7 @@ class TemplateAPI(object):
     @property
     def angular_name(self):
         if isinstance(self.context, Domain):
-            return 'uLearnHUBDomainManagement'
+            return 'hub.domain'
         elif isinstance(self.context, Root):
             return 'uLearnHUBManagement'
 

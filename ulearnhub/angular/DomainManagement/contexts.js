@@ -1,6 +1,6 @@
 'use strict';
 
-var ulearn_contexts = angular.module('uLearnHUBDomainManagement');
+var ulearn_contexts = angular.module('hub.domain');
 
 
 ulearn_contexts.controller('ContextsManageController', ['$modal', '$log', 'Context','DTOptionsBuilder', 'DTColumnDefBuilder','getUrl','ContextAll','DTTranslations','$cookies', function($modal, $log, Context, DTOptionsBuilder, DTColumnDefBuilder,getUrl,ContextAll,DTTranslations,$cookies) {
