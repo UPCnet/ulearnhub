@@ -1,351 +1,106 @@
-<h1 class="page-header">Profile</h1>
-<div class="profile-container">
-    <!-- begin profile-section -->
-    <div class="profile-section">
-        <!-- begin profile-left -->
-        <div class="profile-left">
-            <!-- begin profile-image -->
-            <div class="profile-image">
-                <img src="{{userCtrl.user.large_avatar}}">
-                <i class="fa fa-user hide"></i>
-            </div>
-            <!-- end profile-image -->
-            <div class="m-b-10">
-                <a href="#" class="btn btn-warning btn-block btn-sm">Change Picture</a>
-            </div>
-            <!-- begin profile-highlight -->
-            <div class="profile-highlight">
-                <h4><i class="fa fa-cog"></i> Only My Contacts</h4>
-                <div class="checkbox m-b-5 m-t-0">
-                    <label>
-                        <input type="checkbox"> Show my timezone</label>
-                </div>
-                <div class="checkbox m-b-0">
-                    <label>
-                        <input type="checkbox"> Show i have 14 contacts</label>
-                </div>
-            </div>
-            <!-- end profile-highlight -->
-        </div>
-        <!-- end profile-left -->
-        <!-- begin profile-right -->
-        <div class="profile-right">
-            <!-- begin profile-info -->
-            <div class="profile-info">
-                <!-- begin table -->
-                <div class="table-responsive">
-                    <table class="table table-profile">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>
-                                    <h4>{{userCtrl.user.displayName}}<small>{{userCtrl.user.username}}</small></h4>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="highlight">
-                                <td class="field">Mood</td>
-                                <td><a href="#">Add Mood Message</a></td>
-                            </tr>
-                            <tr class="divider">
-                                <td colspan="2"></td>
-                            </tr>
-                            <tr>
-                                <td class="field">Mobile</td>
-                                <td><i class="fa fa-mobile fa-lg m-r-5"></i> +1-(847)- 367-8924 <a href="#" class="m-l-5">Edit</a></td>
-                            </tr>
-                            <tr>
-                                <td class="field">Home</td>
-                                <td><a href="#">Add Number</a></td>
-                            </tr>
-                            <tr>
-                                <td class="field">Office</td>
-                                <td><a href="#">Add Number</a></td>
-                            </tr>
-                            <tr class="divider">
-                                <td colspan="2"></td>
-                            </tr>
-                            <tr class="highlight">
-                                <td class="field">About Me</td>
-                                <td><a href="#">Add Description</a></td>
-                            </tr>
-                            <tr class="divider">
-                                <td colspan="2"></td>
-                            </tr>
-                            <tr>
-                                <td class="field">Country/Region</td>
-                                <td>
-                                    <select class="form-control input-inline input-xs" name="region">
-                                        <option value="US" selected="">United State</option>
-                                        <option value="AF">Afghanistan</option>
-                                        <option value="AL">Albania</option>
-                                        <option value="DZ">Algeria</option>
-                                        <option value="AS">American Samoa</option>
-                                        <option value="AD">Andorra</option>
-                                        <option value="AO">Angola</option>
-                                        <option value="AI">Anguilla</option>
-                                        <option value="AQ">Antarctica</option>
-                                        <option value="AG">Antigua and Barbuda</option>
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="field">City</td>
-                                <td>Los Angeles</td>
-                            </tr>
-                            <tr>
-                                <td class="field">State</td>
-                                <td><a href="#">Add State</a></td>
-                            </tr>
-                            <tr>
-                                <td class="field">Website</td>
-                                <td><a href="#">Add Webpage</a></td>
-                            </tr>
-                            <tr>
-                                <td class="field">Gender</td>
-                                <td>
-                                    <select class="form-control input-inline input-xs" name="gender">
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="field">Birthdate</td>
-                                <td>
-                                    <select class="form-control input-inline input-xs" name="day">
-                                        <option value="04" selected="">04</option>
-                                    </select>
-                                    -
-                                    <select class="form-control input-inline input-xs" name="month">
-                                        <option value="11" selected="">11</option>
-                                    </select>
-                                    -
-                                    <select class="form-control input-inline input-xs" name="year">
-                                        <option value="1989" selected="">1989</option>
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="field">Language</td>
-                                <td>
-                                    <select class="form-control input-inline input-xs" name="language">
-                                        <option value="" selected="">English</option>
-                                    </select>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <!-- end table -->
-            </div>
-            <!-- end profile-info -->
-        </div>
-        <!-- end profile-right -->
+<br/><br/><br/>
+<div>
+  <div class="panel panel-info">
+      <div class="panel-heading" translate="label_edit_user">Editar Usuario</div>
+      <div class="panel-body">
+        <form role="form">
+
+          <div class="form-group">
+            <label class="control-label" for="userName">UserName</label>
+            <input type="text" class="form-control" ng-model="userCtrl.user.username" readonly>
+            <p class="help-block"></p>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label" for="displayName">displayName</label>
+            <input type="text" class="form-control" ng-model="userCtrl.user.displayName">
+            <p class="help-block"></p>
+          </div>
+
+          <button type="submit" class="btn btn-default" ng-click="saveUser()" translate="btn_save">Save</button>
+        </form>
+        <br/>
+        <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+
+
     </div>
-    <!-- end profile-section -->
-    <!-- begin profile-section -->
-    <div class="profile-section">
-        <!-- begin row -->
-        <div class="row">
-            <!-- begin col-4 -->
-            <div class="col-md-4">
-                <h4 class="title">Message <small>56 messages</small></h4>
-                <!-- begin scrollbar -->
-                <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 280px;">
-                    <div data-scrollbar="true" data-height="280px" class="bg-silver" style="overflow: hidden; width: auto; height: 280px;">
-                        <!-- begin chats -->
-                        <ul class="chats">
-                            <li class="left">
-                                <span class="date-time">yesterday 11:23pm</span>
-                                <a href="javascript:;" class="name">Sowse Bawdy</a>
-                                <a href="javascript:;" class="image"><img alt="" src="assets/img/user-12.jpg"></a>
-                                <div class="message">
-                                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit volutpat. Praesent mattis interdum arcu eu feugiat.
-                                </div>
-                            </li>
-                            <li class="right">
-                                <span class="date-time">08:12am</span>
-                                <a href="#" class="name"><span class="label label-primary">ADMIN</span> Me</a>
-                                <a href="javascript:;" class="image"><img alt="" src="assets/img/user-13.jpg"></a>
-                                <div class="message">
-                                    Nullam posuere, nisl a varius rhoncus, risus tellus hendrerit neque.
-                                </div>
-                            </li>
-                            <li class="left">
-                                <span class="date-time">09:20am</span>
-                                <a href="#" class="name">Neck Jolly</a>
-                                <a href="javascript:;" class="image"><img alt="" src="assets/img/user-10.jpg"></a>
-                                <div class="message">
-                                    Euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-                                </div>
-                            </li>
-                            <li class="left">
-                                <span class="date-time">11:15am</span>
-                                <a href="#" class="name">Shag Strap</a>
-                                <a href="javascript:;" class="image"><img alt="" src="assets/img/user-14.jpg"></a>
-                                <div class="message">
-                                    Nullam iaculis pharetra pharetra. Proin sodales tristique sapien mattis placerat.
-                                </div>
-                            </li>
-                        </ul>
-                        <!-- end chats -->
-                    </div>
-                    <div class="slimScrollBar ui-draggable" style="width: 7px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px; height: 169.69696969697px; background: rgb(0, 0, 0);"></div>
-                    <div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; opacity: 0.2; z-index: 90; right: 1px; background: rgb(51, 51, 51);"></div>
-                </div>
-                <!-- end scrollbar -->
-            </div>
-            <!-- end col-4 -->
-            <!-- begin col-4 -->
-            <div class="col-md-4">
-                <h4 class="title">Sales <small>3 sales</small></h4>
-                <!-- begin scrollbar -->
-                <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 280px;">
-                    <div data-scrollbar="true" data-height="280px" class="bg-silver" style="overflow: hidden; width: auto; height: 280px;">
-                        <!-- begin table -->
-                        <table class="table table-condensed">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Product</th>
-                                    <th>Amount</th>
-                                    <th>Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="col-md-1 p-r-5">
-                                        <a href="javascript:;" class="pull-left">
-                                            <img src="assets/img/product/product-1.png" width="40px" alt="">
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <h5 class="m-t-0 m-b-5">iPad Air 3</h5>
-                                    </td>
-                                    <td>$349.00</td>
-                                    <td>13/02/2013</td>
-                                </tr>
-                                <tr>
-                                    <td class="col-md-1 p-r-5">
-                                        <a href="javascript:;" class="pull-left">
-                                            <img src="assets/img/product/product-2.png" width="40px" alt="">
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <h5 class="m-t-0 m-b-5">Iphone6</h5>
-                                    </td>
-                                    <td>$399.00</td>
-                                    <td>13/02/2013</td>
-                                </tr>
-                                <tr>
-                                    <td class="col-md-1 p-r-5">
-                                        <a href="javascript:;" class="pull-left">
-                                            <img src="assets/img/product/product-3.png" width="40px" alt="">
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <h5 class="m-t-0 m-b-5">Macbook Pro</h5>
-                                    </td>
-                                    <td>$499.00</td>
-                                    <td>13/02/2013</td>
-                                </tr>
-                                <tr>
-                                    <td class="col-md-1 p-r-5">
-                                        <a href="javascript:;">
-                                            <img src="assets/img/product/product-4.png" width="40px" alt="">
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <h5 class="m-t-0 m-b-5">Samsung Galaxy s4</h5>
-                                    </td>
-                                    <td>$230.00</td>
-                                    <td>13/02/2013</td>
-                                </tr>
-                                <tr>
-                                    <td class="col-md-1 p-r-5">
-                                        <a href="javascript:;" class="pull-left">
-                                            <img src="assets/img/product/product-5.png" width="40px" alt="">
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <h5 class="m-t-0 m-b-5">Samsung Note 4</h5>
-                                    </td>
-                                    <td>$500.00</td>
-                                    <td>13/02/2013</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <!-- end table -->
-                    </div>
-                    <div class="slimScrollBar ui-draggable" style="width: 7px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px; height: 232.640949554896px; background: rgb(0, 0, 0);"></div>
-                    <div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; opacity: 0.2; z-index: 90; right: 1px; background: rgb(51, 51, 51);"></div>
-                </div>
-                <!-- end scrollbar -->
-            </div>
-            <!-- end col-4 -->
-            <!-- begin col-4 -->
-            <div class="col-md-4">
-                <h4 class="title">Task <small>24 pending</small></h4>
-                <!-- begin scrollbar -->
-                <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 280px;">
-                    <div data-scrollbar="true" data-height="280px" class="bg-silver" style="overflow: hidden; width: auto; height: 280px;">
-                        <!-- begin todolist -->
-                        <ul class="todolist">
-                            <li class="active">
-                                <a href="javascript:;" class="todolist-container active" data-click="todolist">
-                                    <div class="todolist-input"><i class="fa fa-square-o"></i></div>
-                                    <div class="todolist-title">Donec vehicula pretium nisl, id lacinia nisl tincidunt id.</div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="javascript:;" class="todolist-container" data-click="todolist">
-                                    <div class="todolist-input"><i class="fa fa-square-o"></i></div>
-                                    <div class="todolist-title">Duis a ullamcorper massa.</div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="javascript:;" class="todolist-container" data-click="todolist">
-                                    <div class="todolist-input"><i class="fa fa-square-o"></i></div>
-                                    <div class="todolist-title">Phasellus bibendum, odio nec vestibulum ullamcorper.</div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="javascript:;" class="todolist-container" data-click="todolist">
-                                    <div class="todolist-input"><i class="fa fa-square-o"></i></div>
-                                    <div class="todolist-title">Duis pharetra mi sit amet dictum congue.</div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="javascript:;" class="todolist-container" data-click="todolist">
-                                    <div class="todolist-input"><i class="fa fa-square-o"></i></div>
-                                    <div class="todolist-title">Duis pharetra mi sit amet dictum congue.</div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="javascript:;" class="todolist-container" data-click="todolist">
-                                    <div class="todolist-input"><i class="fa fa-square-o"></i></div>
-                                    <div class="todolist-title">Phasellus bibendum, odio nec vestibulum ullamcorper.</div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="javascript:;" class="todolist-container active" data-click="todolist">
-                                    <div class="todolist-input"><i class="fa fa-square-o"></i></div>
-                                    <div class="todolist-title">Donec vehicula pretium nisl, id lacinia nisl tincidunt id.</div>
-                                </a>
-                            </li>
-                        </ul>
-                        <!-- end todolist -->
-                    </div>
-                    <div class="slimScrollBar ui-draggable" style="width: 7px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px; height: 234.730538922156px; background: rgb(0, 0, 0);"></div>
-                    <div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; opacity: 0.2; z-index: 90; right: 1px; background: rgb(51, 51, 51);"></div>
-                </div>
-                <!-- end scrollbar -->
-            </div>
-            <!-- end col-4 -->
-        </div>
-        <!-- end row -->
+  </div>
+  <br/><br/><br/>
+  <div id="tabla_context">
+    <table datatable="ng" dt-options="userCtrl.dtOptions" dt-column-defs="userCtrl.dtColumnDefs" class="compact table table-striped">
+        <thead>
+          <tr>
+            <th translate="col_context">DisplayName</th>
+            <th>Url</th>
+            <th>Read</th>
+            <th>Write</th>
+            <th>Delete</th>
+            <th>Unsubscribe</th>
+            <th translate="col_actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="subscribe in userCtrl.contextsList">
+            <td><a ui-sref="domain.context({id:subscribe.hash})">{{subscribe.displayName}}</a></td>
+            <td>{{subscribe.url}}</td>
+
+            <td><input type="checkbox"
+                        ng-change="userCtrl.changePermission(subscribe.hash,userCtrl.user.username,'read',subscribe.permissionRead)"
+                        ng-model="subscribe.permissionRead"></td>
+
+            <td><input type="checkbox"
+                        ng-change="userCtrl.changePermission(subscribe.hash,userCtrl.user.username,'write',subscribe.permissionWrite)"
+                        ng-model="subscribe.permissionWrite"></td>
+
+            <td><input type="checkbox"
+                        ng-change="userCtrl.changePermission(subscribe.hash,userCtrl.user.username,'unsubscribe',subscribe.permissionWrite)"
+                        ng-model="subscribe.permissionUnsubscribe"></td>
+
+            <td><input type="checkbox"
+                        ng-change="userCtrl.changePermission(subscribe.hash,userCtrl.user.username,'delete',subscribe.permissionDelete)"
+                        ng-model="subscribe.permissionDelete"></td>
+
+            <td>
+              <a href="" ng-click="userCtrl.unsubscribeContext('sm',userCtrl.user.username,subscribe.hash)"><img ng-src="{{userCtrl.application_url}}/static/borrar.jpg" alt="Remove subscribe" height="21" width="21"></a>
+
+            </td>
+
+          </tr>
+        </tbody>
+   </table>
+
+    <div id="search">
+	  <ui-select multiple ng-model="userCtrl.contextsSelected" theme="bootstrap" ng-disabled="disabled" style="width: 300px;">
+	    <ui-select-match placeholder="{{'placeholder_add_context' | translate}}">{{$item.displayName}}</ui-select-match>
+	    <ui-select-choices repeat="context in userCtrl.contextAvailable | filter:$select.search" refresh="contEdit.refreshContextList($select.search)" refresh-delay="0">
+	      <div ng-bind-html="context.displayName | highlight: $select.search"></div>
+	    </ui-select-choices>
+	  </ui-select>
     </div>
-    <!-- end profile-section -->
+    <br/>
+
+    <div class="view-actions pull-left">
+		<button class="btn btn-primary" ng-click="userCtrl.addContextToUser()" translate="btn_add_context">Add context</button>
+	</div>
+
+
+  </div>
+
+  <script type="text/ng-template" id="unsubscribe-context.html">
+      <div class="modal-header">
+          <h3 class="modal-title" translate="label_unsubscribe_title">Confirm unsubscribe user</h3>
+      </div>
+      <div class="modal-body">
+
+        <div class="alert alert-warning" role="alert" translate="label_confirm_unsubscribe">Are you sure to unsubscribe this context?</div>
+
+      <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+
+      </div>
+      <div class="modal-footer">
+          <button class="btn btn-primary" ng-click="ok()" translate="btn_ok">OK</button>
+          <button class="btn btn-warning" ng-click="cancel()" translate="btn_cancel">Cancel</button>
+      </div>
+  </script>
+
 </div>

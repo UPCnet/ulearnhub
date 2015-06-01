@@ -5,6 +5,7 @@ from pyramid.response import Response
 from pyramid.renderers import render
 from ulearnhub.resources import Domains
 
+
 @view_config(route_name='domain', renderer='ulearnhub:templates/domain.pt', permission="homepage")
 def domain_view(context, request):
     return {

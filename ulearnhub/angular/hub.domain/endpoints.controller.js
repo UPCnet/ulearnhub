@@ -3,50 +3,8 @@
 
     angular
         .module('hub.domain')
-        .factory('EndpointsService', EndpointsService)
         .controller('ApiController', ApiController)
         .controller('EndpointController', EndpointController);
-
-    /**
-     * @desc
-     */
-    /* @nInject */
-    function EndpointsService($state, $q, Endpoints, sidebarSections) {
-        var endpoints_by_category = {};
-        var endpoints = {};
-
-        return {
-          loadEndpoints: function() {
-              var deferred = $q.defer();
-              endpoints_by_category = Endpoints.query();
-              endpoints_by_category.$promise.then(function(data) {
-                  endpoints_by_category = data;
-                  var categories = [];
-                  angular.forEach(data, function(category, key) {
-                      var subsection = {title: category.name};
-                      var thirdlevel = [];
-                      angular.forEach(category.resources, function(resource, key) {
-                         endpoints[resource.route_id] = resource;
-                         endpoints[resource.route_id].category = category.name;
-                         var url = $state.href('api.endpoint', {endpoint: resource.route_id});
-                         this.push({title: resource.route_name, sref: url});
-                      }, thirdlevel);
-
-                      subsection.subsections = thirdlevel;
-                      subsection.sref = 'api.' + subsection.title;
-                      this.push(subsection);
-                  }, categories);
-                  sidebarSections.subsection('api', categories);
-                deferred.resolve(data);
-              });
-              return deferred.promise;
-          },
-          getEndpoint: function(endpoint) {
-            return endpoints[endpoint];
-          }
-        };
-
-    }
 
     /**
      * @desc
@@ -382,10 +340,6 @@
         }
 
     }
-
-    EndpointsService.$inject = ['$state', '$q', 'Endpoints', 'sidebarSections'];
-    ApiController.$inject = [];
-    EndpointController.$inject = ['$http', '$state', '$stateParams', 'MAXInfo', 'EndpointsService'];
 
 })();
 
