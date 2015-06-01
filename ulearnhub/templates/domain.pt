@@ -33,47 +33,9 @@
 
 
 <metal:main fill-slot="view_scripts">
-
-    <script src="${api.application_url}/angular-elastic-input/angular-elastic-input.min.js"></script>
-
-    <script src="${api.application_url}/maxui/maxui.js"></script>
-
-    <script src="${api.application_url}/angular/hub.domain/hub.domain.module.js"></script>
-    <script src="${api.application_url}/angular/hub.domain/hub.domain.config.js"></script>
-    <script src="${api.application_url}/angular/hub.domain/hub.domain.constants.js"></script>
-    <script src="${api.application_url}/angular/hub.domain/hub.domain.controller.js"></script>
-    <script src="${api.application_url}/angular/hub.domain/endpoints.service.js"></script>
-    <script src="${api.application_url}/angular/hub.domain/endpoints.controller.js"></script>
-    <script src="${api.application_url}/angular/hub.domain/exceptions.controller.js"></script>
-    <script src="${api.application_url}/angular/hub.domain/exception.controller.js"></script>
-
-    <script src="${api.application_url}/angular/hub.domain/users/users.module.js"></script>
-    <script src="${api.application_url}/angular/hub.domain/users/users.controller.js"></script>
-    <script src="${api.application_url}/angular/hub.domain/users/roles.controller.js"></script>
-    <script src="${api.application_url}/angular/hub.domain/users/modals.controller.js"></script>
-    <script src="${api.application_url}/angular/hub.domain/users/profile.controller.js"></script>
-
-    <script src="${api.application_url}/angular/hub.domain/contexts/contexts.module.js"></script>
-    <script src="${api.application_url}/angular/hub.domain/contexts/contexts.controller.js"></script>
-    <script src="${api.application_url}/angular/hub.domain/contexts/context.controller.js"></script>
-    <script src="${api.application_url}/angular/hub.domain/contexts/permissions.factory.js"></script>
-    <script src="${api.application_url}/angular/hub.domain/contexts/modals.controller.js"></script>
-
-    <script src="${api.application_url}/angular/max.client/max.client.module.js"></script>
-    <script src="${api.application_url}/angular/max.client/max.info.js"></script>
-    <script src="${api.application_url}/angular/max.client/max.client.service.js"></script>
-
-    <script src="${api.application_url}/angular/hub.client/hub.client.module.js"></script>
-    <script src="${api.application_url}/angular/hub.client/hub.client.info.js"></script>
-    <script src="${api.application_url}/angular/hub.client/hub.client.service.js"></script>
-
-    <script src="${api.application_url}/angular/hub.sidebar/hub.sidebar.module.js"></script>
-    <script src="${api.application_url}/angular/hub.sidebar/hub.sidebar.provider.js"></script>
-    <script src="${api.application_url}/angular/hub.sidebar/hub.sidebar.controller.js"></script>
-
-<!--     <script src="${api.application_url}/angular/DomainManagement/users.js"></script>
-    <script src="${api.application_url}/angular/DomainManagement/contexts.js"></script>
-  -->
+    <!-- View Scripts -->
+    <script tal:repeat="script api.scripts" src="${api.application_url}/${script}"></script>
+    <!--     End View Scripts -->
 </metal:main>
 
 

@@ -107,6 +107,7 @@ def main(global_config, **settings):
     config.add_static_view('json-explorer', 'components/ng-json-explorer/dist', cache_max_age=3600)
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.add_static_view('css', 'css', cache_max_age=3600)
+    config.add_static_view('js', 'js', cache_max_age=3600)
     config.add_static_view('fonts', 'fonts', cache_max_age=3600)
     config.add_static_view('angular', 'angular', cache_max_age=3600)
     config.add_static_view('locales', 'locales', cache_max_age=3600)

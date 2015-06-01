@@ -4,7 +4,48 @@ from ulearnhub.security import ROLES
 from ulearnhub.models.domains import Domain
 from ulearnhub.resources import Root
 from collections import namedtuple
+from pyramid.settings import asbool
 import re
+
+
+SCRIPTS = {
+    'production': [
+        'angular-elastic-input/angular-elastic-input.min.js',
+        'maxui/maxui.js',
+        'js/hub.domain.min.js'
+    ],
+    'development': [
+        'angular-elastic-input/angular-elastic-input.min.js',
+        'maxui/maxui.js',
+        'angular/hub.domain/hub.domain.module.js',
+        'angular/hub.domain/hub.domain.config.js',
+        'angular/hub.domain/hub.domain.constants.js',
+        'angular/hub.domain/hub.domain.controller.js',
+        'angular/hub.domain/endpoints.service.js',
+        'angular/hub.domain/endpoints.controller.js',
+        'angular/hub.domain/exceptions.controller.js',
+        'angular/hub.domain/exception.controller.js',
+        'angular/hub.domain/users/users.module.js',
+        'angular/hub.domain/users/users.controller.js',
+        'angular/hub.domain/users/roles.controller.js',
+        'angular/hub.domain/users/modals.controller.js',
+        'angular/hub.domain/users/profile.controller.js',
+        'angular/hub.domain/contexts/contexts.module.js',
+        'angular/hub.domain/contexts/contexts.controller.js',
+        'angular/hub.domain/contexts/context.controller.js',
+        'angular/hub.domain/contexts/permissions.factory.js',
+        'angular/hub.domain/contexts/modals.controller.js',
+        'angular/max.client/max.client.module.js',
+        'angular/max.client/max.info.js',
+        'angular/max.client/max.client.service.js',
+        'angular/hub.client/hub.client.module.js',
+        'angular/hub.client/hub.client.info.js',
+        'angular/hub.client/hub.client.service.js',
+        'angular/hub.sidebar/hub.sidebar.module.js',
+        'angular/hub.sidebar/hub.sidebar.provider.js',
+        'angular/hub.sidebar/hub.sidebar.controller.js'
+    ]
+}
 
 
 def normalize_userdn(dn):
@@ -24,6 +65,12 @@ class TemplateAPI(object):
         self.context = context
         self.request = request
         self.error = self.domain_session.pop('error', None)
+
+    @property
+    def scripts(self):
+        debug_js = asbool(self.request.registry.settings['pyramid.debug_js'])
+        mode = 'development' if debug_js else 'production'
+        return SCRIPTS[mode]
 
     @property
     def view(self):
