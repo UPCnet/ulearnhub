@@ -34,16 +34,15 @@
         ],
         "production": [
             "ulearnhub/maxui/maxui.min.js",
-            "ulearnhub/js/hub.domain.min.js"
+            "ulearnhub/js/hub.domain.js"
         ]
     },
     "main": {
         "development": [
             "ulearnhub/components/jquery/dist/jquery.js",
-            "ulearnhub/components/showdown/compressed/Showdown.min.js",
+            "ulearnhub/components/showdown/compressed/Showdown.js",
             "ulearnhub/components/bootstrap/dist/js/bootstrap.js",
             "ulearnhub/components/datatables/media/js/jquery.dataTables.js",
-            "ulearnhub/components/slimScroll/jquery.slimscroll.js",
             "ulearnhub/components/underscore/underscore.js",
             "ulearnhub/components/prism/prism.js",
             "ulearnhub/components/prism/components/prism-python.js",
@@ -67,7 +66,8 @@
             "ulearnhub/components/ng-json-explorer/dist/angular-json-explorer.js"
         ],
         "production": [
-            "ulearnhub/js/main.js"
+            "ulearnhub/js/main.min.js",
+            "ulearnhub/components/slimScroll/jquery.slimscroll.min.js"
         ]
     },
     "hub": {

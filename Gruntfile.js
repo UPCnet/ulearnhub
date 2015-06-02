@@ -40,10 +40,22 @@ module.exports = function(grunt) {
 
         uglify: {
             pkg: grunt.file.readJSON('package.json'),
-            hubdomain: {
+            main: {
+               options: uglify_options,
+               files: {
+                   'ulearnhub/js/main.min.js': js_config.main.development
+              }
+            },
+            domain: {
                options: uglify_options,
                files: {
                    'ulearnhub/js/hub.domain.min.js': js_config.domain.development
+              }
+            },
+            hub: {
+               options: uglify_options,
+               files: {
+                   'ulearnhub/js/hub.min.js': js_config.hub.development
               }
             }
 
@@ -60,6 +72,7 @@ module.exports = function(grunt) {
     });
 
     // Load tasks
+    grunt.registerTask('dist', ['ngAnnotate', 'uglify']);
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-ng-annotate');
