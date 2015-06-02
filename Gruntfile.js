@@ -1,5 +1,12 @@
+'use strict';
 module.exports = function(grunt) {
     // Configure
+    var js_config = grunt.file.readJSON('ulearnhub/js/config.json');
+    var uglify_options = {
+        sourceMap: true,
+        banner: '/*! <%= uglify.pkg.name %> - v<%= uglify.pkg.version %> - ' +
+        '<%= grunt.template.today("yyyy-mm-dd") %> */'
+    };
     grunt.initConfig({
         // The less task.
         less: {
@@ -34,14 +41,9 @@ module.exports = function(grunt) {
         uglify: {
             pkg: grunt.file.readJSON('package.json'),
             hubdomain: {
-               options: {
-                sourceMap: true,
-                banner: '/*! <%= uglify.pkg.name %> - v<%= uglify.pkg.version %> - ' +
-                  '<%= grunt.template.today("yyyy-mm-dd") %> */'
-              },
-
-              files: {
-                'ulearnhub/js/hub.domain.min.js': ['ulearnhub/js/hub.domain.js']
+               options: uglify_options,
+               files: {
+                   'ulearnhub/js/hub.domain.min.js': js_config.domain.development
               }
             }
 
@@ -49,31 +51,12 @@ module.exports = function(grunt) {
 
         ngAnnotate: {
             options: {
-                ngAnnotateOptions: {
-
-                }
+                ngAnnotateOptions: {}
             },
-            hubdomain: {
-                files: {
-                  'ulearnhub/js/hub.domain.js': [
-                      'ulearnhub/angular/hub.domain/hub.domain.module.js',
-                      'ulearnhub/angular/hub.domain/*.js',
-                      'ulearnhub/angular/hub.domain/users/users.module.js',
-                      'ulearnhub/angular/hub.domain/users/*.js',
-                      'ulearnhub/angular/hub.domain/contexts/contexts.module.js',
-                      'ulearnhub/angular/hub.domain/contexts/*.js',
-                      'ulearnhub/angular/hub.domain/*.js',
-                      'ulearnhub/angular/hub.sidebar/hub.sidebar.module.js',
-                      'ulearnhub/angular/hub.sidebar/*.js',
-                      'ulearnhub/angular/hub.client/hub.client.module.js',
-                      'ulearnhub/angular/hub.client/*.js',
-                      'ulearnhub/angular/max.client/max.client.module.js',
-                      'ulearnhub/angular/max.client/*.js'
-                      ]
-                }
-            }
+            domain: { files: {'ulearnhub/js/hub.domain.js': js_config.domain.development }},
+            hub: { files: {'ulearnhub/js/hub.js': js_config.hub.development }},
+            main: { files: {'ulearnhub/js/main.js': js_config.main.development }}
         }
-
     });
 
     // Load tasks

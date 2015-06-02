@@ -1,51 +1,22 @@
-from pyramid.security import authenticated_userid
-from pyramid.renderers import get_renderer
-from ulearnhub.security import ROLES
+# -*- coding: utf-8 -*-
 from ulearnhub.models.domains import Domain
 from ulearnhub.resources import Root
-from collections import namedtuple
+from ulearnhub.security import ROLES
+
+from pyramid.renderers import get_renderer
 from pyramid.settings import asbool
+
+import json
+import pkg_resources
 import re
 
+SCRIPTS = json.loads(open(pkg_resources.resource_filename('ulearnhub', 'js/config.json')).read())
 
-SCRIPTS = {
-    'production': [
-        'angular-elastic-input/angular-elastic-input.min.js',
-        'maxui/maxui.js',
-        'js/hub.domain.min.js'
-    ],
-    'development': [
-        'angular-elastic-input/angular-elastic-input.min.js',
-        'maxui/maxui.js',
-        'angular/hub.domain/hub.domain.module.js',
-        'angular/hub.domain/hub.domain.config.js',
-        'angular/hub.domain/hub.domain.constants.js',
-        'angular/hub.domain/hub.domain.controller.js',
-        'angular/hub.domain/endpoints.service.js',
-        'angular/hub.domain/endpoints.controller.js',
-        'angular/hub.domain/exceptions.controller.js',
-        'angular/hub.domain/exception.controller.js',
-        'angular/hub.domain/users/users.module.js',
-        'angular/hub.domain/users/users.controller.js',
-        'angular/hub.domain/users/roles.controller.js',
-        'angular/hub.domain/users/modals.controller.js',
-        'angular/hub.domain/users/profile.controller.js',
-        'angular/hub.domain/contexts/contexts.module.js',
-        'angular/hub.domain/contexts/contexts.controller.js',
-        'angular/hub.domain/contexts/context.controller.js',
-        'angular/hub.domain/contexts/permissions.factory.js',
-        'angular/hub.domain/contexts/modals.controller.js',
-        'angular/max.client/max.client.module.js',
-        'angular/max.client/max.info.js',
-        'angular/max.client/max.client.service.js',
-        'angular/hub.client/hub.client.module.js',
-        'angular/hub.client/hub.client.info.js',
-        'angular/hub.client/hub.client.service.js',
-        'angular/hub.sidebar/hub.sidebar.module.js',
-        'angular/hub.sidebar/hub.sidebar.provider.js',
-        'angular/hub.sidebar/hub.sidebar.controller.js'
-    ]
-}
+for name in SCRIPTS:
+    for mode in SCRIPTS[name]:
+        SCRIPTS[name][mode] = [re.sub(r'ulearnhub/', r'', item) for item in SCRIPTS[name][mode]]
+
+    SCRIPTS[name]['development'] = SCRIPTS[name].get('development-no-minify', []) + SCRIPTS[name]['development']
 
 
 def normalize_userdn(dn):
@@ -67,10 +38,16 @@ class TemplateAPI(object):
         self.error = self.domain_session.pop('error', None)
 
     @property
-    def scripts(self):
-        debug_js = asbool(self.request.registry.settings['pyramid.debug_js'])
-        mode = 'development' if debug_js else 'production'
-        return SCRIPTS[mode]
+    def script_mode(self):
+        development = asbool(self.request.registry.settings['ulearnhub.development'])
+        return 'development' if development else 'production'
+
+    @property
+    def main_scripts(self):
+        return SCRIPTS['main'][self.script_mode]
+
+    def view_scripts(self, view):
+        return SCRIPTS[view][self.script_mode]
 
     @property
     def view(self):

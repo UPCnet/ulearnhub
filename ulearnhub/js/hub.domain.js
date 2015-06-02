@@ -30,6 +30,346 @@
 
     angular
         .module('hub.domain')
+        .config(config);
+
+    /**
+     * @desc
+     */
+    /* @nInject */
+    function config(sidebarSectionsProvider, $stateProvider, $urlRouterProvider, $translateProvider, uiSelectConfig) {
+        sidebarSectionsProvider.setSections([{
+            title: 'Dashboard',
+            sref: 'domain',
+            icon: 'tachometer'
+        }, {
+            title: 'Users',
+            sref: 'users',
+            icon: 'user'
+        }, {
+            title: 'Contexts',
+            sref: 'contexts',
+            icon: 'map-marker'
+        }, {
+            title: 'Api',
+            sref: 'api',
+            icon: 'paperclip'
+        }, {
+            title: 'Exceptions',
+            sref: 'exceptions',
+            icon: 'exclamation-triangle'
+        }]);
+
+        uiSelectConfig.theme = 'bootstrap';
+
+        $translateProvider.useStaticFilesLoader({
+            prefix: 'locales/locale-',
+            suffix: '.json'
+        });
+
+        $urlRouterProvider.otherwise('/');
+        $translateProvider.preferredLanguage('ca');
+
+        // Route definitions
+        $stateProvider
+            .state('domain', {
+            url: '/',
+            templateUrl: 'templates/domain.html',
+            resolve: {}
+        })
+
+        .state('users', {
+            url: '/users',
+            templateUrl: 'templates/users.html',
+            controller: 'UserListController as usersCtrl',
+            resolve: {}
+        })
+
+        .state('users.roles', {
+            url: '/roles',
+            templateUrl: 'templates/users.roles.html',
+            controller: 'UsersRolesController as userRol',
+            resolve: {}
+        })
+
+        .state('contexts', {
+            url: '/contexts',
+            templateUrl: 'templates/contexts.html',
+            controller: 'ContextListController as contextsCtrl',
+            resolve: {}
+        })
+
+        .state('user', {
+            url: '/users/:id',
+            templateUrl: 'templates/user.html',
+            controller: 'UserProfileController as userCtrl',
+            resolve: {}
+        })
+
+        .state('context', {
+            url: '/contexts/:id',
+            templateUrl: 'templates/context.html',
+            controller: 'ContextDetailsController as contextCtrl',
+            resolve: {}
+        })
+
+        .state('api', {
+            url: '/api',
+            templateUrl: 'templates/api.html',
+            controller: 'ApiController as apiCtrl',
+            resolve: {
+                endpoints: ["EndpointsService", function(EndpointsService) {
+                    return EndpointsService.loadEndpoints();
+                }]
+            }
+        })
+
+        // This state actually acts as a redirection to the first
+        // available method of the endpoint, using api.method state
+        .state('api.endpoint', {
+            url: '/:endpoint',
+            templateUrl: 'templates/api.method.html',
+            controller: 'EndpointController as endpointCtrl',
+            resolve: {
+                expanded: ["$stateParams", "sidebarSections", "endpoints", "EndpointsService", function($stateParams, sidebarSections, endpoints, EndpointsService) {
+                    var current_category = EndpointsService.getEndpoint($stateParams.endpoint).category;
+                    sidebarSections.expand('api', 'section', true);
+                    sidebarSections.expand('api.' + current_category, 'subsection', true);
+                    return;
+                }]
+            }
+
+        })
+
+        .state('api.method', {
+                url: '/:endpoint/:method',
+                templateUrl: 'templates/api.method.html',
+                controller: 'EndpointController as endpointCtrl',
+                resolve: {
+                    expanded: ["$stateParams", "sidebarSections", "endpoints", "EndpointsService", function($stateParams, sidebarSections, endpoints, EndpointsService) {
+                        var current_category = EndpointsService.getEndpoint($stateParams.endpoint).category;
+                        sidebarSections.expand('api', 'section', true);
+                        sidebarSections.expand('api.' + current_category, 'subsection', true);
+                        return;
+                    }]
+                }
+
+            })
+            .state('exceptions', {
+                url: '/exceptions',
+                templateUrl: 'templates/exceptions.html',
+                controller: 'ExceptionsController as excsCtrl',
+                resolve: {}
+            })
+
+        .state('exception', {
+            url: '/exceptions/:id',
+            templateUrl: 'templates/exception.html',
+            controller: 'ExceptionController as excCtrl',
+            resolve: {}
+        });
+    }
+    config.$inject = ["sidebarSectionsProvider", "$stateProvider", "$urlRouterProvider", "$translateProvider", "uiSelectConfig"];
+})();
+
+(function() {
+    'use strict';
+
+    angular
+        .module('hub.domain')
+        .constant('DTTranslations', {
+            es: {
+                'sProcessing': 'Procesando...',
+                'sLengthMenu': 'Mostrar _MENU_ registros',
+                'sZeroRecords': 'No se encontraron resultados',
+                'sEmptyTable': 'Ningún dato disponible en esta tabla',
+                'sInfo': 'Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros',
+                'sInfoEmpty': 'Mostrando registros del 0 al 0 de un total de 0 registros',
+                'sInfoFiltered': '(filtrado de un total de _MAX_ registros)',
+                'sInfoPostFix': '',
+                'sSearch': 'Buscar:',
+                'sUrl': '',
+                'sInfoThousands': '.',
+                'sLoadingRecords': 'Cargando...',
+                'oPaginate': {
+                    'sFirst': 'Primero',
+                    'sLast': 'Último',
+                    'sNext': 'Siguiente',
+                    'sPrevious': 'Anterior'
+                },
+                'oAria': {
+                    'sSortAscending': ': Activar para ordenar la columna de manera ascendente',
+                    'sSortDescending': ': Activar para ordenar la columna de manera descendente'
+                }
+            },
+            ca: {
+                'sProcessing': 'Processant...',
+                'sLengthMenu': 'Mostra _MENU_ registres',
+                'sZeroRecords': 'No s\'han trobat registres.',
+                'sEmptyTable': 'No hi ha cap dada disponible en aquesta taula',
+                'sInfo': 'Mostrant de _START_ a _END_ de _TOTAL_ registres',
+                'sInfoEmpty': 'Mostrant de 0 a 0 de 0 registres',
+                'sInfoFiltered': '(filtrat de _MAX_ total registres)',
+                'sInfoPostFix': '',
+                'sSearch': 'Filtrar:',
+                'sUrl': '',
+                'sInfoThousands': '.',
+                'sLoadingRecords': 'Carregant...',
+                'oPaginate': {
+                    'sFirst': 'Primer',
+                    'sPrevious': 'Anterior',
+                    'sNext': 'Següent',
+                    'sLast': 'Últim'
+                },
+                'oAria': {
+                    'sSortAscending': ': Activa per ordenar la columna de manera ascendente',
+                    'sSortDescending': ': Activa per ordenar la columna de manera descendente'
+                }
+            },
+            en: {
+                'sEmptyTable': 'No data available in table',
+                'sInfo': 'Showing _START_ to _END_ of _TOTAL_ entries',
+                'sInfoEmpty': 'Showing 0 to 0 of 0 entries',
+                'sInfoFiltered': '(filtered from _MAX_ total entries)',
+                'sInfoPostFix': '',
+                'sInfoThousands': ',',
+                'sLengthMenu': 'Show _MENU_ entries',
+                'sLoadingRecords': 'Loading...',
+                'sProcessing': 'Processing...',
+                'sSearch': 'Search:',
+                'sZeroRecords': 'No matching records found',
+                'oPaginate': {
+                    'sFirst': 'First',
+                    'sLast': 'Last',
+                    'sNext': 'Next',
+                    'sPrevious': 'Previous'
+                },
+                'oAria': {
+                    'sSortAscending': ': activate to sort column ascending',
+                    'sSortDescending': ': activate to sort column descending'
+                }
+            }
+        });
+})();
+
+(function() {
+    'use strict';
+
+    angular
+        .module('hub.domain')
+        .controller('MainAppController', MainAppController);
+
+
+    /**
+     * @desc
+     */
+    /* @nInject */
+    function MainAppController($stateParams, $cookies, $translate, sidebarSections, hubSession, MAXSession, HUBClientService) {
+        var self = this;
+        var domainName = hubSession.domain;
+        $cookies.currentDomain = $stateParams.domain;
+        self.domainObj = HUBClientService.Domain.get({
+                id: domainName
+            },
+            function(response) {},
+            function(response) {
+                self.error = 'Request to ' + response.config.url + ' failed with code ' + response.status + '.<br/> Server responded: "' + response.data.error_description + '"'
+
+            }
+        );
+        self.sidebar_status = '';
+        self.maxuisettings = {
+            generatorName: "uLearn HUB",
+            language: "ca",
+            oAuthGrantType: "password",
+            avatarURLpattern: MAXSession.max_server + "/people/{0}/avatar",
+            profileURLpattern: "#",
+            username: MAXSession.username,
+            oAuthToken: MAXSession.oauth_token,
+            maxServerURL: MAXSession.max_server,
+            maxServerURLAlias: MAXSession.max_server,
+            maxTalkURL: MAXSession.max_server + "/stomp"
+        };
+
+        self.toggleSidebar = toggleSidebar;
+        self.changeLanguage = changeLanguage;
+
+        ///////////////////////////
+
+
+        function toggleSidebar(){
+            var collapsed = sidebarSections.toggle();
+            self.sidebar_status = collapsed ? '' : 'page-sidebar-toggled';
+        }
+
+        function changeLanguage(key) {
+            $translate.use(key);
+        }
+    }
+    MainAppController.$inject = ["$stateParams", "$cookies", "$translate", "sidebarSections", "hubSession", "MAXSession", "HUBClientService"];
+})();
+
+(function() {
+    'use strict';
+
+    angular
+        .module('hub.domain')
+        .factory('EndpointsService', EndpointsService);
+
+    /**
+     * @desc
+     */
+    /* @nInject */
+    function EndpointsService($state, $q, sidebarSections, MAXClientService) {
+        var endpoints_by_category = {};
+        var endpoints = {};
+
+        return {
+            loadEndpoints: loadEndpoints,
+            getEndpoint: getEndpoint
+        };
+
+
+        function loadEndpoints() {
+              var deferred = $q.defer();
+              endpoints_by_category = MAXClientService.ApiInfo.by_category();
+              endpoints_by_category.$promise.then(function(data) {
+                  endpoints_by_category = data;
+                  var categories = [];
+                  angular.forEach(data, function(category, key) {
+                      var subsection = {title: category.name};
+                      var thirdlevel = [];
+                      angular.forEach(category.resources, function(resource, key) {
+                         endpoints[resource.route_id] = resource;
+                         endpoints[resource.route_id].category = category.name;
+                         var url = $state.href('api.endpoint', {endpoint: resource.route_id});
+                         this.push({title: resource.route_name, sref: url});
+                      }, thirdlevel);
+
+                      subsection.subsections = thirdlevel;
+                      subsection.sref = 'api.' + subsection.title;
+                      this.push(subsection);
+                  }, categories);
+
+                  sidebarSections.subsection('api', categories);
+                  deferred.resolve(data);
+              });
+              return deferred.promise;
+        }
+
+        function getEndpoint(endpoint) {
+            return endpoints[endpoint];
+        }
+    }
+    EndpointsService.$inject = ["$state", "$q", "sidebarSections", "MAXClientService"];
+
+
+})();
+
+(function() {
+    'use strict';
+
+    angular
+        .module('hub.domain')
         .controller('ApiController', ApiController)
         .controller('EndpointController', EndpointController);
 
@@ -377,56 +717,17 @@
 
     angular
         .module('hub.domain')
-        .factory('EndpointsService', EndpointsService);
+        .controller('ExceptionsController', ExceptionsController);
 
     /**
      * @desc
      */
     /* @nInject */
-    function EndpointsService($state, $q, sidebarSections, MAXClientService) {
-        var endpoints_by_category = {};
-        var endpoints = {};
-
-        return {
-            loadEndpoints: loadEndpoints,
-            getEndpoint: getEndpoint
-        };
-
-
-        function loadEndpoints() {
-              var deferred = $q.defer();
-              endpoints_by_category = MAXClientService.ApiInfo.by_category();
-              endpoints_by_category.$promise.then(function(data) {
-                  endpoints_by_category = data;
-                  var categories = [];
-                  angular.forEach(data, function(category, key) {
-                      var subsection = {title: category.name};
-                      var thirdlevel = [];
-                      angular.forEach(category.resources, function(resource, key) {
-                         endpoints[resource.route_id] = resource;
-                         endpoints[resource.route_id].category = category.name;
-                         var url = $state.href('api.endpoint', {endpoint: resource.route_id});
-                         this.push({title: resource.route_name, sref: url});
-                      }, thirdlevel);
-
-                      subsection.subsections = thirdlevel;
-                      subsection.sref = 'api.' + subsection.title;
-                      this.push(subsection);
-                  }, categories);
-
-                  sidebarSections.subsection('api', categories);
-                  deferred.resolve(data);
-              });
-              return deferred.promise;
-        }
-
-        function getEndpoint(endpoint) {
-            return endpoints[endpoint];
-        }
+    function ExceptionsController(MAXClientService) {
+        var self = this;
+        self.exceptions = MAXClientService.Exception.query();
     }
-    EndpointsService.$inject = ["$state", "$q", "sidebarSections", "MAXClientService"];
-
-
+    ExceptionsController.$inject = ["MAXClientService"];
 })();
 
 /* global Prism */
@@ -459,352 +760,159 @@
     'use strict';
 
     angular
-        .module('hub.domain')
-        .controller('ExceptionsController', ExceptionsController);
-
-    /**
-     * @desc
-     */
-    /* @nInject */
-    function ExceptionsController(MAXClientService) {
-        var self = this;
-        self.exceptions = MAXClientService.Exception.query();
-    }
-    ExceptionsController.$inject = ["MAXClientService"];
-})();
-
-(function() {
-    'use strict';
-
-    angular
-        .module('hub.domain')
-        .config(config);
-
-    /**
-     * @desc
-     */
-    /* @nInject */
-    function config(sidebarSectionsProvider, $stateProvider, $urlRouterProvider, $translateProvider, uiSelectConfig) {
-        sidebarSectionsProvider.setSections([{
-            title: 'Dashboard',
-            sref: 'domain',
-            icon: 'tachometer'
-        }, {
-            title: 'Users',
-            sref: 'users',
-            icon: 'user'
-        }, {
-            title: 'Contexts',
-            sref: 'contexts',
-            icon: 'map-marker'
-        }, {
-            title: 'Api',
-            sref: 'api',
-            icon: 'paperclip'
-        }, {
-            title: 'Exceptions',
-            sref: 'exceptions',
-            icon: 'exclamation-triangle'
-        }]);
-
-        uiSelectConfig.theme = 'bootstrap';
-
-        $translateProvider.useStaticFilesLoader({
-            prefix: 'locales/locale-',
-            suffix: '.json'
-        });
-
-        $urlRouterProvider.otherwise('/');
-        $translateProvider.preferredLanguage('ca');
-
-        // Route definitions
-        $stateProvider
-            .state('domain', {
-            url: '/',
-            templateUrl: 'templates/domain.html',
-            resolve: {}
-        })
-
-        .state('users', {
-            url: '/users',
-            templateUrl: 'templates/users.html',
-            controller: 'UserListController as usersCtrl',
-            resolve: {}
-        })
-
-        .state('users.roles', {
-            url: '/roles',
-            templateUrl: 'templates/users.roles.html',
-            controller: 'UsersRolesController as userRol',
-            resolve: {}
-        })
-
-        .state('contexts', {
-            url: '/contexts',
-            templateUrl: 'templates/contexts.html',
-            controller: 'ContextListController as contextsCtrl',
-            resolve: {}
-        })
-
-        .state('user', {
-            url: '/users/:id',
-            templateUrl: 'templates/user.html',
-            controller: 'UserProfileController as userCtrl',
-            resolve: {}
-        })
-
-        .state('context', {
-            url: '/contexts/:id',
-            templateUrl: 'templates/context.html',
-            controller: 'ContextDetailsController as contextCtrl',
-            resolve: {}
-        })
-
-        .state('api', {
-            url: '/api',
-            templateUrl: 'templates/api.html',
-            controller: 'ApiController as apiCtrl',
-            resolve: {
-                endpoints: ["EndpointsService", function(EndpointsService) {
-                    return EndpointsService.loadEndpoints();
-                }]
-            }
-        })
-
-        // This state actually acts as a redirection to the first
-        // available method of the endpoint, using api.method state
-        .state('api.endpoint', {
-            url: '/:endpoint',
-            templateUrl: 'templates/api.method.html',
-            controller: 'EndpointController as endpointCtrl',
-            resolve: {
-                expanded: ["$stateParams", "sidebarSections", "endpoints", "EndpointsService", function($stateParams, sidebarSections, endpoints, EndpointsService) {
-                    var current_category = EndpointsService.getEndpoint($stateParams.endpoint).category;
-                    sidebarSections.expand('api', 'section', true);
-                    sidebarSections.expand('api.' + current_category, 'subsection', true);
-                    return;
-                }]
-            }
-
-        })
-
-        .state('api.method', {
-                url: '/:endpoint/:method',
-                templateUrl: 'templates/api.method.html',
-                controller: 'EndpointController as endpointCtrl',
-                resolve: {
-                    expanded: ["$stateParams", "sidebarSections", "endpoints", "EndpointsService", function($stateParams, sidebarSections, endpoints, EndpointsService) {
-                        var current_category = EndpointsService.getEndpoint($stateParams.endpoint).category;
-                        sidebarSections.expand('api', 'section', true);
-                        sidebarSections.expand('api.' + current_category, 'subsection', true);
-                        return;
-                    }]
-                }
-
-            })
-            .state('exceptions', {
-                url: '/exceptions',
-                templateUrl: 'templates/exceptions.html',
-                controller: 'ExceptionsController as excsCtrl',
-                resolve: {}
-            })
-
-        .state('exception', {
-            url: '/exceptions/:id',
-            templateUrl: 'templates/exception.html',
-            controller: 'ExceptionController as excCtrl',
-            resolve: {}
-        });
-    }
-    config.$inject = ["sidebarSectionsProvider", "$stateProvider", "$urlRouterProvider", "$translateProvider", "uiSelectConfig"];
-})();
-
-(function() {
-    'use strict';
-
-    angular
-        .module('hub.domain')
-        .constant('DTTranslations', {
-            es: {
-                'sProcessing': 'Procesando...',
-                'sLengthMenu': 'Mostrar _MENU_ registros',
-                'sZeroRecords': 'No se encontraron resultados',
-                'sEmptyTable': 'Ningún dato disponible en esta tabla',
-                'sInfo': 'Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros',
-                'sInfoEmpty': 'Mostrando registros del 0 al 0 de un total de 0 registros',
-                'sInfoFiltered': '(filtrado de un total de _MAX_ registros)',
-                'sInfoPostFix': '',
-                'sSearch': 'Buscar:',
-                'sUrl': '',
-                'sInfoThousands': '.',
-                'sLoadingRecords': 'Cargando...',
-                'oPaginate': {
-                    'sFirst': 'Primero',
-                    'sLast': 'Último',
-                    'sNext': 'Siguiente',
-                    'sPrevious': 'Anterior'
-                },
-                'oAria': {
-                    'sSortAscending': ': Activar para ordenar la columna de manera ascendente',
-                    'sSortDescending': ': Activar para ordenar la columna de manera descendente'
-                }
-            },
-            ca: {
-                'sProcessing': 'Processant...',
-                'sLengthMenu': 'Mostra _MENU_ registres',
-                'sZeroRecords': 'No s\'han trobat registres.',
-                'sEmptyTable': 'No hi ha cap dada disponible en aquesta taula',
-                'sInfo': 'Mostrant de _START_ a _END_ de _TOTAL_ registres',
-                'sInfoEmpty': 'Mostrant de 0 a 0 de 0 registres',
-                'sInfoFiltered': '(filtrat de _MAX_ total registres)',
-                'sInfoPostFix': '',
-                'sSearch': 'Filtrar:',
-                'sUrl': '',
-                'sInfoThousands': '.',
-                'sLoadingRecords': 'Carregant...',
-                'oPaginate': {
-                    'sFirst': 'Primer',
-                    'sPrevious': 'Anterior',
-                    'sNext': 'Següent',
-                    'sLast': 'Últim'
-                },
-                'oAria': {
-                    'sSortAscending': ': Activa per ordenar la columna de manera ascendente',
-                    'sSortDescending': ': Activa per ordenar la columna de manera descendente'
-                }
-            },
-            en: {
-                'sEmptyTable': 'No data available in table',
-                'sInfo': 'Showing _START_ to _END_ of _TOTAL_ entries',
-                'sInfoEmpty': 'Showing 0 to 0 of 0 entries',
-                'sInfoFiltered': '(filtered from _MAX_ total entries)',
-                'sInfoPostFix': '',
-                'sInfoThousands': ',',
-                'sLengthMenu': 'Show _MENU_ entries',
-                'sLoadingRecords': 'Loading...',
-                'sProcessing': 'Processing...',
-                'sSearch': 'Search:',
-                'sZeroRecords': 'No matching records found',
-                'oPaginate': {
-                    'sFirst': 'First',
-                    'sLast': 'Last',
-                    'sNext': 'Next',
-                    'sPrevious': 'Previous'
-                },
-                'oAria': {
-                    'sSortAscending': ': activate to sort column ascending',
-                    'sSortDescending': ': activate to sort column descending'
-                }
-            }
-        });
-})();
-
-(function() {
-    'use strict';
-
-    angular
-        .module('hub.domain')
-        .controller('MainAppController', MainAppController);
-
-
-    /**
-     * @desc
-     */
-    /* @nInject */
-    function MainAppController($stateParams, $cookies, $translate, sidebarSections, hubSession, MAXSession, HUBClientService) {
-        var self = this;
-        var domainName = hubSession.domain;
-        $cookies.currentDomain = $stateParams.domain;
-        self.domainObj = HUBClientService.Domain.get({
-                id: domainName
-            },
-            function(response) {},
-            function(response) {
-                self.error = 'Request to ' + response.config.url + ' failed with code ' + response.status + '.<br/> Server responded: "' + response.data.error_description + '"'
-
-            }
-        );
-        self.sidebar_status = '';
-        self.maxuisettings = {
-            generatorName: "uLearn HUB",
-            language: "ca",
-            oAuthGrantType: "password",
-            avatarURLpattern: MAXSession.max_server + "/people/{0}/avatar",
-            profileURLpattern: "#",
-            username: MAXSession.username,
-            oAuthToken: MAXSession.oauth_token,
-            maxServerURL: MAXSession.max_server,
-            maxServerURLAlias: MAXSession.max_server,
-            maxTalkURL: MAXSession.max_server + "/stomp"
-        };
-
-        self.toggleSidebar = toggleSidebar;
-        self.changeLanguage = changeLanguage;
-
-        ///////////////////////////
-
-
-        function toggleSidebar(){
-            var collapsed = sidebarSections.toggle();
-            self.sidebar_status = collapsed ? '' : 'page-sidebar-toggled';
-        }
-
-        function changeLanguage(key) {
-            $translate.use(key);
-        }
-    }
-    MainAppController.$inject = ["$stateParams", "$cookies", "$translate", "sidebarSections", "hubSession", "MAXSession", "HUBClientService"];
-})();
-
-(function() {
-    'use strict';
-
-    angular
-        .module('hub.domain')
-        .controller('LanguageSelectorController', LanguageSelectorController);
-
-    /**
-     * @desc
-     */
-    /* @nInject */
-    function LanguageSelectorController($cookies, $translate, $state) {
-        var self = this;
-        var valid_cookie_language = $cookies.currentLang === 'ca';
-        self.currentLang = {
-            code: $cookies.currentLang === undefined ? 'ca' : $cookies.currentLang
-        };
-        self.languages = [{
-            code: 'ca',
-            name: 'Català'
-        }, {
-            code: 'es',
-            name: 'Castellano'
-        }, {
-            code: 'en',
-            name: 'English'
-        }];
-
-        self.changeLanguage = changeLanguage;
-
-        /////////////////////////////
-
-        function changeLanguage (){
-            $translate.use(self.currentLang.code);
-            $cookies.currentLang = self.currentLang.code;
-            $state.go('domain', {
-                domain: $cookies.currentDomain
-            });
-        }
-    }
-    LanguageSelectorController.$inject = ["$cookies", "$translate", "$state"];
-})();
-
-(function() {
-    'use strict';
-
-    angular
         .module('hub.users', [
     ]);
+
+})();
+
+(function() {
+    'use strict';
+
+    angular
+        .module('hub.users')
+        .controller('UserListController', UserListController);
+
+    /**
+     * @desc
+     */
+    /* @nInject */
+    function UserListController($cookies, $modal, $log, DTOptionsBuilder, DTTranslations, DTColumnDefBuilder, MAXClientService) {
+        var self = this;
+        var lang = $cookies.currentLang;
+
+        self.search_text = '';
+
+        // Default datatable options
+
+        self.dtOptions = DTOptionsBuilder
+            .newOptions().withPaginationType('simple').withDisplayLength(20)
+            .withBootstrap()
+            .withLanguage(DTTranslations[lang]);
+
+        self.dtColumnDefs = [
+            DTColumnDefBuilder.newColumnDef(0),
+            DTColumnDefBuilder.newColumnDef(1),
+            DTColumnDefBuilder.newColumnDef(2)
+        ];
+
+        self.users = [];
+
+        self.search = search;
+        self.openModal = openModal;
+        self.confirmModal = confirmModal;
+
+        //////////////////////////////////////////////
+
+        /**
+         * @desc
+         */
+        function search() {
+            self.users = MAXClientService.User.query({
+                username: self.search_text,
+                limit: 0
+            });
+        }
+
+        /**
+         * @desc
+         */
+        function openModal(size) {
+            var modalInstance = $modal.open({
+                templateUrl: 'new-user.html',
+                controller: 'ModalInstanceCtrl',
+                size: size,
+                resolve: {
+                    items: function() {
+                        return [];
+                    }
+                }
+            });
+            modalInstance.result.then(function(newuser) {
+                self.users.push(newuser);
+            }, function() {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        }
+
+        /**
+         * @desc
+         */
+        function confirmModal(size, username) {
+            var modalDeleteInstance = $modal.open({
+                templateUrl: 'remove-user.html',
+                controller: 'ModalDeleteUser',
+                size: size,
+                resolve: {
+                    items: function() {
+                        return username;
+                    }
+                }
+            });
+            modalDeleteInstance.result.then(function(username) {
+                //aqui va el quitar del listado
+                for (var i = 0; i < self.users.length; i += 1) {
+                    if (self.users[i].username === username) {
+                        self.users.slice(i);
+                    }
+                }
+            }, function() {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        }
+
+    }
+    UserListController.$inject = ["$cookies", "$modal", "$log", "DTOptionsBuilder", "DTTranslations", "DTColumnDefBuilder", "MAXClientService"];
+})();
+
+(function() {
+    'use strict';
+
+    angular
+        .module('hub.users')
+        .controller('UsersRolesController', UsersRolesController);
+
+    /**
+     * @desc
+     */
+    /* @nInject */
+    function UsersRolesController($cookies, DTOptionsBuilder, DTTranslations, DTColumnDefBuilder, MAXClientService) {
+        var self = this;
+        var lang = $cookies.currentLang;
+        // Default datatable options
+        self.dtOptions = DTOptionsBuilder
+            .newOptions().withPaginationType('full_numbers')
+            .withBootstrap()
+            .withLanguage(DTTranslations[lang]);
+        self.dtColumnDefs = [
+            DTColumnDefBuilder.newColumnDef(0),
+            DTColumnDefBuilder.newColumnDef(1),
+            DTColumnDefBuilder.newColumnDef(2)
+        ];
+        self.users = MAXClientService.SecurityUsers.query();
+
+        self.changeRole = changeRole;
+
+        //////////////////////////////
+
+        /**
+         * @desc
+         */
+        function changeRole(state, rolename, username) {
+            if (state === true) {
+                MAXClientService.SecurityUserRole.save({
+                    idrol: rolename,
+                    iduser: username
+                });
+            }
+            if (state === false) {
+                MAXClientService.SecurityUserRole.remove({
+                    idrol: rolename,
+                    iduser: username
+                });
+            }
+        }
+    }
+    UsersRolesController.$inject = ["$cookies", "DTOptionsBuilder", "DTTranslations", "DTColumnDefBuilder", "MAXClientService"];
 
 })();
 
@@ -1090,14 +1198,23 @@
     'use strict';
 
     angular
-        .module('hub.users')
-        .controller('UsersRolesController', UsersRolesController);
+        .module('hub.contexts', [
+    ]);
+
+})();
+
+(function() {
+    'use strict';
+
+    angular
+        .module('hub.contexts')
+        .controller('ContextListController', ContextListController);
 
     /**
      * @desc
      */
     /* @nInject */
-    function UsersRolesController($cookies, DTOptionsBuilder, DTTranslations, DTColumnDefBuilder, MAXClientService) {
+    function ContextListController($cookies, $modal, $log, DTOptionsBuilder, DTTranslations, DTColumnDefBuilder, MAXClientService) {
         var self = this;
         var lang = $cookies.currentLang;
         // Default datatable options
@@ -1105,62 +1222,6 @@
             .newOptions().withPaginationType('full_numbers')
             .withBootstrap()
             .withLanguage(DTTranslations[lang]);
-        self.dtColumnDefs = [
-            DTColumnDefBuilder.newColumnDef(0),
-            DTColumnDefBuilder.newColumnDef(1),
-            DTColumnDefBuilder.newColumnDef(2)
-        ];
-        self.users = MAXClientService.SecurityUsers.query();
-
-        self.changeRole = changeRole;
-
-        //////////////////////////////
-
-        /**
-         * @desc
-         */
-        function changeRole(state, rolename, username) {
-            if (state === true) {
-                MAXClientService.SecurityUserRole.save({
-                    idrol: rolename,
-                    iduser: username
-                });
-            }
-            if (state === false) {
-                MAXClientService.SecurityUserRole.remove({
-                    idrol: rolename,
-                    iduser: username
-                });
-            }
-        }
-    }
-    UsersRolesController.$inject = ["$cookies", "DTOptionsBuilder", "DTTranslations", "DTColumnDefBuilder", "MAXClientService"];
-
-})();
-
-(function() {
-    'use strict';
-
-    angular
-        .module('hub.users')
-        .controller('UserListController', UserListController);
-
-    /**
-     * @desc
-     */
-    /* @nInject */
-    function UserListController($cookies, $modal, $log, DTOptionsBuilder, DTTranslations, DTColumnDefBuilder, MAXClientService) {
-        var self = this;
-        var lang = $cookies.currentLang;
-
-        self.search_text = '';
-
-        // Default datatable options
-
-        self.dtOptions = DTOptionsBuilder
-            .newOptions().withPaginationType('simple').withDisplayLength(20)
-            .withBootstrap()
-            .withLanguage(DTTranslations[lang]);
 
         self.dtColumnDefs = [
             DTColumnDefBuilder.newColumnDef(0),
@@ -1168,31 +1229,25 @@
             DTColumnDefBuilder.newColumnDef(2)
         ];
 
-        self.users = [];
+        self.application_url = '';
+        self.contexts = MAXClientService.Context.query({
+            limit: 0
+        });
 
-        self.search = search;
+
         self.openModal = openModal;
         self.confirmModal = confirmModal;
 
-        //////////////////////////////////////////////
-
-        /**
-         * @desc
-         */
-        function search() {
-            self.users = MAXClientService.User.query({
-                username: self.search_text,
-                limit: 0
-            });
-        }
+        //////////////////////////////////////
 
         /**
          * @desc
          */
         function openModal(size) {
+
             var modalInstance = $modal.open({
-                templateUrl: 'new-user.html',
-                controller: 'ModalInstanceCtrl',
+                templateUrl: 'new-context.html',
+                controller: 'ModalAddContext',
                 size: size,
                 resolve: {
                     items: function() {
@@ -1200,8 +1255,10 @@
                     }
                 }
             });
-            modalInstance.result.then(function(newuser) {
-                self.users.push(newuser);
+
+            modalInstance.result.then(function(newcontext) {
+                self.contexts.push(newcontext);
+
             }, function() {
                 $log.info('Modal dismissed at: ' + new Date());
             });
@@ -1210,39 +1267,27 @@
         /**
          * @desc
          */
-        function confirmModal(size, username) {
+        function confirmModal(size, hash) {
             var modalDeleteInstance = $modal.open({
-                templateUrl: 'remove-user.html',
-                controller: 'ModalDeleteUser',
+                templateUrl: 'remove-context.html',
+                controller: 'ModalDeleteContext',
                 size: size,
                 resolve: {
                     items: function() {
-                        return username;
+                        return hash;
                     }
                 }
             });
-            modalDeleteInstance.result.then(function(username) {
+
+            modalDeleteInstance.result.then(function(newcontext) {
                 //aqui va el quitar del listado
-                for (var i = 0; i < self.users.length; i += 1) {
-                    if (self.users[i].username === username) {
-                        self.users.slice(i);
-                    }
-                }
+
             }, function() {
                 $log.info('Modal dismissed at: ' + new Date());
             });
         }
-
     }
-    UserListController.$inject = ["$cookies", "$modal", "$log", "DTOptionsBuilder", "DTTranslations", "DTColumnDefBuilder", "MAXClientService"];
-})();
-
-(function() {
-    'use strict';
-
-    angular
-        .module('hub.contexts', [
-    ]);
+    ContextListController.$inject = ["$cookies", "$modal", "$log", "DTOptionsBuilder", "DTTranslations", "DTColumnDefBuilder", "MAXClientService"];
 
 })();
 
@@ -1461,87 +1506,104 @@
 
     angular
         .module('hub.contexts')
-        .controller('ContextListController', ContextListController);
+        .factory('ContextPermissionsFactory', ContextPermissionsFactory);
 
     /**
      * @desc
      */
     /* @nInject */
-    function ContextListController($cookies, $modal, $log, DTOptionsBuilder, DTTranslations, DTColumnDefBuilder, MAXClientService) {
-        var self = this;
-        var lang = $cookies.currentLang;
-        // Default datatable options
-        self.dtOptions = DTOptionsBuilder
-            .newOptions().withPaginationType('full_numbers')
-            .withBootstrap()
-            .withLanguage(DTTranslations[lang]);
+    function ContextPermissionsFactory() {
+        return {
+            getToContextList: getToContextList,
+            getToUsersList: getToUsersList
+        };
 
-        self.dtColumnDefs = [
-            DTColumnDefBuilder.newColumnDef(0),
-            DTColumnDefBuilder.newColumnDef(1),
-            DTColumnDefBuilder.newColumnDef(2)
-        ];
-
-        self.application_url = '';
-        self.contexts = MAXClientService.Context.query({
-            limit: 0
-        });
-
-
-        self.openModal = openModal;
-        self.confirmModal = confirmModal;
-
-        //////////////////////////////////////
+        //////////////////
 
         /**
          * @desc
          */
-        function openModal(size) {
+        function getToContextList(userObj) {
+            var read = false;
+            var write = false;
+            var delet = false;
+            var unsubscribe = false;
+            var stringPermis = [];
+            var contextsList = [];
+            var urlList = [];
 
-            var modalInstance = $modal.open({
-                templateUrl: 'new-context.html',
-                controller: 'ModalAddContext',
-                size: size,
-                resolve: {
-                    items: function() {
-                        return [];
+            if (userObj.subscribedTo) {
+                for (var i = 0; i < userObj.subscribedTo.length; i++) {
+
+                    for (var j = 0; j < userObj.subscribedTo[i].permissions.length; j++) {
+                        stringPermis = userObj.subscribedTo[i].permissions[j];
+                        if (stringPermis === 'read') {
+                            read = true;
+                        } else if (stringPermis === 'write') {
+                            write = true;
+                        } else if (stringPermis === 'unsubscribe') {
+                            unsubscribe = true;
+                        } else if (stringPermis === 'delete') {
+                            delet = true;
+                        }
                     }
+
+                    contextsList.push({
+                        displayName: userObj.subscribedTo[i].displayName,
+                        url: userObj.subscribedTo[i].url,
+                        hash: userObj.subscribedTo[i].hash,
+                        permissionRead: read,
+                        permissionWrite: write,
+                        permissionUnsubscribe: unsubscribe,
+                        permissionDelete: delet
+                    });
+                    urlList.push(userObj.subscribedTo[i].url);
                 }
-            });
 
-            modalInstance.result.then(function(newcontext) {
-                self.contexts.push(newcontext);
-
-            }, function() {
-                $log.info('Modal dismissed at: ' + new Date());
-            });
+            }
+        return [contextsList, urlList];
         }
 
         /**
-         * @desc
-         */
-        function confirmModal(size, hash) {
-            var modalDeleteInstance = $modal.open({
-                templateUrl: 'remove-context.html',
-                controller: 'ModalDeleteContext',
-                size: size,
-                resolve: {
-                    items: function() {
-                        return hash;
+        * @desc
+        */
+        function getToUsersList(userObj, contextHash) {
+
+            var resuList = [];
+            var usernameList = [];
+            for (var i = 0; i < userObj.length; i++) {
+                var read = false;
+                var write = false;
+                var delet = false;
+                var unsubscribe = false;
+                var stringPermis = [];
+
+
+                for (var j = 0; j < userObj[i].permissions.length; j++) {
+                    stringPermis = userObj[i].permissions[j];
+                    if (stringPermis === 'read') {
+                        read = true;
+                    } else if (stringPermis === 'write') {
+                        write = true;
+                    } else if (stringPermis === 'unsubscribe') {
+                        unsubscribe = true;
+                    } else if (stringPermis === 'delete') {
+                        delet = true;
                     }
                 }
-            });
-
-            modalDeleteInstance.result.then(function(newcontext) {
-                //aqui va el quitar del listado
-
-            }, function() {
-                $log.info('Modal dismissed at: ' + new Date());
-            });
+                resuList.push({
+                    username: userObj[i].username,
+                    permissionRead: read,
+                    permissionWrite: write,
+                    permissionUnsubscribe: unsubscribe,
+                    permissionDelete: delet,
+                    hash: contextHash
+                });
+                usernameList.push(userObj[i].username);
+            }
+            return [resuList, usernameList];
         }
     }
-    ContextListController.$inject = ["$cookies", "$modal", "$log", "DTOptionsBuilder", "DTTranslations", "DTColumnDefBuilder", "MAXClientService"];
-
 })();
 
 (function() {
@@ -1660,293 +1722,7 @@
     'use strict';
 
     angular
-        .module('hub.contexts')
-        .factory('ContextPermissionsFactory', ContextPermissionsFactory);
-
-    /**
-     * @desc
-     */
-    /* @nInject */
-    function ContextPermissionsFactory() {
-        return {
-            getToContextList: getToContextList,
-            getToUsersList: getToUsersList
-        };
-
-        //////////////////
-
-        /**
-         * @desc
-         */
-        function getToContextList(userObj) {
-            var read = false;
-            var write = false;
-            var delet = false;
-            var unsubscribe = false;
-            var stringPermis = [];
-            var contextsList = [];
-            var urlList = [];
-
-            if (userObj.subscribedTo) {
-                for (var i = 0; i < userObj.subscribedTo.length; i++) {
-
-                    for (var j = 0; j < userObj.subscribedTo[i].permissions.length; j++) {
-                        stringPermis = userObj.subscribedTo[i].permissions[j];
-                        if (stringPermis === 'read') {
-                            read = true;
-                        } else if (stringPermis === 'write') {
-                            write = true;
-                        } else if (stringPermis === 'unsubscribe') {
-                            unsubscribe = true;
-                        } else if (stringPermis === 'delete') {
-                            delet = true;
-                        }
-                    }
-
-                    contextsList.push({
-                        displayName: userObj.subscribedTo[i].displayName,
-                        url: userObj.subscribedTo[i].url,
-                        hash: userObj.subscribedTo[i].hash,
-                        permissionRead: read,
-                        permissionWrite: write,
-                        permissionUnsubscribe: unsubscribe,
-                        permissionDelete: delet
-                    });
-                    urlList.push(userObj.subscribedTo[i].url);
-                }
-
-            }
-        return [contextsList, urlList];
-        }
-
-        /**
-        * @desc
-        */
-        function getToUsersList(userObj, contextHash) {
-
-            var resuList = [];
-            var usernameList = [];
-            for (var i = 0; i < userObj.length; i++) {
-                var read = false;
-                var write = false;
-                var delet = false;
-                var unsubscribe = false;
-                var stringPermis = [];
-
-
-                for (var j = 0; j < userObj[i].permissions.length; j++) {
-                    stringPermis = userObj[i].permissions[j];
-                    if (stringPermis === 'read') {
-                        read = true;
-                    } else if (stringPermis === 'write') {
-                        write = true;
-                    } else if (stringPermis === 'unsubscribe') {
-                        unsubscribe = true;
-                    } else if (stringPermis === 'delete') {
-                        delet = true;
-                    }
-                }
-                resuList.push({
-                    username: userObj[i].username,
-                    permissionRead: read,
-                    permissionWrite: write,
-                    permissionUnsubscribe: unsubscribe,
-                    permissionDelete: delet,
-                    hash: contextHash
-                });
-                usernameList.push(userObj[i].username);
-            }
-            return [resuList, usernameList];
-        }
-    }
-})();
-
-(function() {
-    'use strict';
-
-    angular
-        .module('hub.sidebar', [
-            'ui.router'
-    ]);
-
-})();
-
-(function() {
-    'use strict';
-
-    angular
-        .module('hub.sidebar')
-        .controller('SidebarController', SidebarController);
-
-    /**
-     * @desc
-     */
-    /* @nInject */
-    function SidebarController($state, $stateParams, sidebarSections) {
-        var self = this;
-
-        self.sections = sidebarSections.get();
-        self.expands = {
-            section: undefined,
-            subsection: undefined
-        };
-
-        self.active = active;
-        self.has_sub = has_sub;
-        self.expanded = expanded;
-        self.expand = expand;
-
-        ////////////////////////
-
-        /**
-         * @desc
-         */
-        function active(section_sref_or_href, sref) {
-            var sidebar_url;
-            if (sref) {
-                sidebar_url = $state.href(section_sref_or_href);
-            } else {
-                sidebar_url = section_sref_or_href;
-            }
-            var current_url = $state.href($state.current.name, $stateParams);
-            var parent = new RegExp(sidebar_url + '/', "g");
-            var is_child = current_url ? current_url.match(parent) !== null : false;
-            is_child = is_child && sidebar_url !== '#';
-            var is_same = current_url === sidebar_url;
-            var is_active = is_child | is_same;
-            return is_active ? 'active' : '';
-        }
-
-        /**
-         * @desc
-         */
-        function has_sub(subsection) {
-            var effective_subsections = subsection === undefined ? [] : subsection;
-            return effective_subsections.length > 0 ? 'has-sub' : '';
-        }
-
-        /**
-         * @desc
-         */
-        function expanded(section, which) {
-            return sidebarSections.expanded(section, which);
-        }
-
-        /**
-         * @desc
-         */
-        function expand(section, which) {
-            return sidebarSections.expand(section, which);
-        }
-
-    }
-    SidebarController.$inject = ["$state", "$stateParams", "sidebarSections"];
-})();
-
-(function() {
-    'use strict';
-
-    angular
-        .module('hub.sidebar')
-        .provider('sidebarSections', sidebarSectionsProvider);
-
-    /**
-     * @desc
-     */
-    /* @nInject */
-    function sidebarSectionsProvider() {
-        var sections = [];
-        var collapsed = true;
-        var expands = {
-            section: undefined,
-            subsection: undefined
-        };
-
-        this.$get = SidebarSections;
-        this.setSections = setSections;
-
-        ///////////////////////////
-
-        function setSections(value) {
-            sections = value;
-        }
-
-        function SidebarSections() {
-
-            var service = {
-                toggle: toggle,
-                get: get,
-                add: add,
-                subsection: subsection,
-                expanded: expanded,
-                expand: expand
-            };
-
-            return service;
-
-            /////////////////
-
-            /**
-             * @desc
-             */
-            function toggle() {
-                collapsed = !collapsed;
-                return collapsed;
-            }
-
-            /**
-             * @desc
-             */
-            function get() {
-                return sections;
-            }
-
-            /**
-             * @desc
-             */
-            function add(newsection) {
-                sections.push(newsection);
-            }
-
-            /**
-             * @desc
-             */
-            function subsection(section_sref, items) {
-                var section = sections.filter(function(el) {
-                    return el.sref === section_sref;
-                })[0];
-                sections[sections.indexOf(section)].subsections = items;
-                return section;
-            }
-
-            /**
-             * @desc
-             */
-            function expanded(section, which) {
-                var value = expands[which] === section;
-                return value;
-            }
-
-            /**
-             * @desc
-             */
-            function expand(section, which, force) {
-                if (expands[which] !== section | force === true) {
-                    expands[which] = section;
-                } else {
-                    expands[which] = undefined;
-                }
-            }
-
-        }
-    }
-})();
-
-(function() {
-    'use strict';
-
-    angular
-        .module('hub.client', [
+        .module('max.client', [
             'ngResource'
     ]);
 
@@ -1955,84 +1731,77 @@
 (function() {
     'use strict';
 
+/**
+ * @ngdoc function
+ * @name maxClient dependencies
+ * @description
+ * # Factories, values and directives used by the MAXClientService.
+ */
+
     angular
-        .module('hub.client')
-        .directive('ngHubInfo', ngHubInfo)
-        .factory('hubInfo', hubInfo)
-        .value('hubSession', {
+        .module('max.client')
+        .directive('ngMaxInfo', ngMAXInfo)
+        .factory('MAXInfo', MAXInfo)
+        .factory('_MAXUI', MAXUI)
+        .value('MAXSession', {
             username: '',
-            token: '',
-            server: ''
+            oauth_token: '',
+            max_server: '',
+            scope: 'widgetcli'
         });
 
-    function hubInfo(hubSession) {
-        var hubinfo = {};
-        hubinfo.headers = {
-            'X-Oauth-Username': hubSession.username,
-            'X-Oauth-Token': hubSession.token,
-            'X-Oauth-Domain': hubSession.domain,
-            'X-Oauth-Scope': 'widgetcli'
-        };
-        hubinfo.server = hubSession.server;
-        return hubinfo;
-    }
-    hubInfo.$inject = ["hubSession"];
-
-
-    function ngHubInfo() {
+    /**
+     * @desc
+     */
+    /* @nInject */
+    function ngMAXInfo() {
         return {
             restrict: 'E',
-            controller: ["$scope", "$element", "$attrs", "hubSession", function($scope, $element, $attrs, hubSession) {
-                hubSession.username = $attrs.username;
-                hubSession.token = $attrs.token;
-                hubSession.server = $attrs.server;
-                hubSession.domain = $attrs.domain;
+            controller: ["$scope", "$element", "$attrs", "MAXSession", function($scope, $element, $attrs, MAXSession) {
+                MAXSession.username = $attrs.username;
+                MAXSession.oauth_token = $attrs.oauthtoken;
+                MAXSession.max_server = $attrs.maxserver;
             }]
         };
     }
 
-})();
-
-(function() {
-
- /**
- * @ngdoc function
- * @name HUBClientService
- * @description
- * # Service to access HUB Endpoints
- */
-    'use strict';
-
-    angular
-        .module('hub.client')
-        .service('HUBClientService', HUBClientService);
+    /**
+     * @desc
+     */
+    /* @nInject */
+    function MAXInfo(MAXSession, _MAXUI) {
+        var maxinfo = {};
+        if (_MAXUI) {
+            maxinfo.headers = {
+                'X-Oauth-Username': _MAXUI.username,
+                'X-Oauth-Token': _MAXUI.oauth_token,
+                'X-Oauth-Scope': 'widgetcli'
+            };
+            maxinfo.max_server = _MAXUI.max_server;
+        } else {
+            maxinfo.headers = {
+                'X-Oauth-Username': MAXSession.username,
+                'X-Oauth-Token': MAXSession.oauth_token,
+                'X-Oauth-Scope': 'widgetcli'
+            };
+            maxinfo.max_server = MAXSession.max_server;
+        }
+        return maxinfo;
+    }
+    MAXInfo.$inject = ["MAXSession", "_MAXUI"];
 
     /**
      * @desc
      */
     /* @nInject */
-    function HUBClientService($resource, hubInfo) {
-
-        this.Domain = $resource(
-            hubInfo.server + '/api/domains/:id',
-            null,
-            {
-                query: {method:'GET', isArray: true, headers:hubInfo.headers},
-                save: {method:'POST', headers:hubInfo.headers},
-                get: {method:'GET', headers:hubInfo.headers}
-            }
-        );
+    function MAXUI() {
+        if (window._MAXUI !== undefined) {
+            return window._MAXUI;
+        } else {
+            return false;
+        }
     }
-    HUBClientService.$inject = ["$resource", "hubInfo"];
-})();
 
-(function() {
-    'use strict';
-
-    angular
-        .module('max.client', [
-            'ngResource'
-    ]);
 
 })();
 
@@ -2146,76 +1915,264 @@
 (function() {
     'use strict';
 
-/**
- * @ngdoc function
- * @name maxClient dependencies
- * @description
- * # Factories, values and directives used by the MAXClientService.
- */
+    angular
+        .module('hub.client', [
+            'ngResource'
+    ]);
+
+})();
+
+(function() {
+    'use strict';
 
     angular
-        .module('max.client')
-        .directive('ngMaxInfo', ngMAXInfo)
-        .factory('MAXInfo', MAXInfo)
-        .factory('_MAXUI', MAXUI)
-        .value('MAXSession', {
+        .module('hub.client')
+        .directive('ngHubInfo', ngHubInfo)
+        .factory('hubInfo', hubInfo)
+        .value('hubSession', {
             username: '',
-            oauth_token: '',
-            max_server: '',
-            scope: 'widgetcli'
+            token: '',
+            server: ''
         });
 
-    /**
-     * @desc
-     */
-    /* @nInject */
-    function ngMAXInfo() {
+    function hubInfo(hubSession) {
+        var hubinfo = {};
+        hubinfo.headers = {
+            'X-Oauth-Username': hubSession.username,
+            'X-Oauth-Token': hubSession.token,
+            'X-Oauth-Domain': hubSession.domain,
+            'X-Oauth-Scope': 'widgetcli'
+        };
+        hubinfo.server = hubSession.server;
+        return hubinfo;
+    }
+    hubInfo.$inject = ["hubSession"];
+
+
+    function ngHubInfo() {
         return {
             restrict: 'E',
-            controller: ["$scope", "$element", "$attrs", "MAXSession", function($scope, $element, $attrs, MAXSession) {
-                MAXSession.username = $attrs.username;
-                MAXSession.oauth_token = $attrs.oauthtoken;
-                MAXSession.max_server = $attrs.maxserver;
+            controller: ["$scope", "$element", "$attrs", "hubSession", function($scope, $element, $attrs, hubSession) {
+                hubSession.username = $attrs.username;
+                hubSession.token = $attrs.token;
+                hubSession.server = $attrs.server;
+                hubSession.domain = $attrs.domain;
             }]
         };
     }
 
-    /**
-     * @desc
-     */
-    /* @nInject */
-    function MAXInfo(MAXSession, _MAXUI) {
-        var maxinfo = {};
-        if (_MAXUI) {
-            maxinfo.headers = {
-                'X-Oauth-Username': _MAXUI.username,
-                'X-Oauth-Token': _MAXUI.oauth_token,
-                'X-Oauth-Scope': 'widgetcli'
-            };
-            maxinfo.max_server = _MAXUI.max_server;
-        } else {
-            maxinfo.headers = {
-                'X-Oauth-Username': MAXSession.username,
-                'X-Oauth-Token': MAXSession.oauth_token,
-                'X-Oauth-Scope': 'widgetcli'
-            };
-            maxinfo.max_server = MAXSession.max_server;
-        }
-        return maxinfo;
-    }
-    MAXInfo.$inject = ["MAXSession", "_MAXUI"];
+})();
+
+(function() {
+
+ /**
+ * @ngdoc function
+ * @name HUBClientService
+ * @description
+ * # Service to access HUB Endpoints
+ */
+    'use strict';
+
+    angular
+        .module('hub.client')
+        .service('HUBClientService', HUBClientService);
 
     /**
      * @desc
      */
     /* @nInject */
-    function MAXUI() {
-        if (window._MAXUI !== undefined) {
-            return window._MAXUI;
-        } else {
-            return false;
+    function HUBClientService($resource, hubInfo) {
+
+        this.Domain = $resource(
+            hubInfo.server + '/api/domains/:id',
+            null,
+            {
+                query: {method:'GET', isArray: true, headers:hubInfo.headers},
+                save: {method:'POST', headers:hubInfo.headers},
+                get: {method:'GET', headers:hubInfo.headers}
+            }
+        );
+    }
+    HUBClientService.$inject = ["$resource", "hubInfo"];
+})();
+
+(function() {
+    'use strict';
+
+    angular
+        .module('hub.sidebar', [
+            'ui.router'
+    ]);
+
+})();
+
+(function() {
+    'use strict';
+
+    angular
+        .module('hub.sidebar')
+        .provider('sidebarSections', sidebarSectionsProvider);
+
+    /**
+     * @desc
+     */
+    /* @nInject */
+    function sidebarSectionsProvider() {
+        var sections = [];
+        var collapsed = true;
+        var expands = {
+            section: undefined,
+            subsection: undefined
+        };
+
+        this.$get = SidebarSections;
+        this.setSections = setSections;
+
+        ///////////////////////////
+
+        function setSections(value) {
+            sections = value;
+        }
+
+        function SidebarSections() {
+
+            var service = {
+                toggle: toggle,
+                get: get,
+                add: add,
+                subsection: subsection,
+                expanded: expanded,
+                expand: expand
+            };
+
+            return service;
+
+            /////////////////
+
+            /**
+             * @desc
+             */
+            function toggle() {
+                collapsed = !collapsed;
+                return collapsed;
+            }
+
+            /**
+             * @desc
+             */
+            function get() {
+                return sections;
+            }
+
+            /**
+             * @desc
+             */
+            function add(newsection) {
+                sections.push(newsection);
+            }
+
+            /**
+             * @desc
+             */
+            function subsection(section_sref, items) {
+                var section = sections.filter(function(el) {
+                    return el.sref === section_sref;
+                })[0];
+                sections[sections.indexOf(section)].subsections = items;
+                return section;
+            }
+
+            /**
+             * @desc
+             */
+            function expanded(section, which) {
+                var value = expands[which] === section;
+                return value;
+            }
+
+            /**
+             * @desc
+             */
+            function expand(section, which, force) {
+                if (expands[which] !== section | force === true) {
+                    expands[which] = section;
+                } else {
+                    expands[which] = undefined;
+                }
+            }
+
         }
     }
+})();
 
+(function() {
+    'use strict';
 
+    angular
+        .module('hub.sidebar')
+        .controller('SidebarController', SidebarController);
+
+    /**
+     * @desc
+     */
+    /* @nInject */
+    function SidebarController($state, $stateParams, sidebarSections) {
+        var self = this;
+
+        self.sections = sidebarSections.get();
+        self.expands = {
+            section: undefined,
+            subsection: undefined
+        };
+
+        self.active = active;
+        self.has_sub = has_sub;
+        self.expanded = expanded;
+        self.expand = expand;
+
+        ////////////////////////
+
+        /**
+         * @desc
+         */
+        function active(section_sref_or_href, sref) {
+            var sidebar_url;
+            if (sref) {
+                sidebar_url = $state.href(section_sref_or_href);
+            } else {
+                sidebar_url = section_sref_or_href;
+            }
+            var current_url = $state.href($state.current.name, $stateParams);
+            var parent = new RegExp(sidebar_url + '/', "g");
+            var is_child = current_url ? current_url.match(parent) !== null : false;
+            is_child = is_child && sidebar_url !== '#';
+            var is_same = current_url === sidebar_url;
+            var is_active = is_child | is_same;
+            return is_active ? 'active' : '';
+        }
+
+        /**
+         * @desc
+         */
+        function has_sub(subsection) {
+            var effective_subsections = subsection === undefined ? [] : subsection;
+            return effective_subsections.length > 0 ? 'has-sub' : '';
+        }
+
+        /**
+         * @desc
+         */
+        function expanded(section, which) {
+            return sidebarSections.expanded(section, which);
+        }
+
+        /**
+         * @desc
+         */
+        function expand(section, which) {
+            return sidebarSections.expand(section, which);
+        }
+
+    }
+    SidebarController.$inject = ["$state", "$stateParams", "sidebarSections"];
 })();

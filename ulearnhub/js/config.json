@@ -1,0 +1,79 @@
+{
+    "domain": {
+        "development": [
+            "ulearnhub/angular/hub.domain/hub.domain.module.js",
+            "ulearnhub/angular/hub.domain/hub.domain.config.js",
+            "ulearnhub/angular/hub.domain/hub.domain.constants.js",
+            "ulearnhub/angular/hub.domain/hub.domain.controller.js",
+            "ulearnhub/angular/hub.domain/endpoints.service.js",
+            "ulearnhub/angular/hub.domain/endpoints.controller.js",
+            "ulearnhub/angular/hub.domain/exceptions.controller.js",
+            "ulearnhub/angular/hub.domain/exception.controller.js",
+            "ulearnhub/angular/hub.domain/users/users.module.js",
+            "ulearnhub/angular/hub.domain/users/users.controller.js",
+            "ulearnhub/angular/hub.domain/users/roles.controller.js",
+            "ulearnhub/angular/hub.domain/users/modals.controller.js",
+            "ulearnhub/angular/hub.domain/users/profile.controller.js",
+            "ulearnhub/angular/hub.domain/contexts/contexts.module.js",
+            "ulearnhub/angular/hub.domain/contexts/contexts.controller.js",
+            "ulearnhub/angular/hub.domain/contexts/context.controller.js",
+            "ulearnhub/angular/hub.domain/contexts/permissions.factory.js",
+            "ulearnhub/angular/hub.domain/contexts/modals.controller.js",
+            "ulearnhub/angular/max.client/max.client.module.js",
+            "ulearnhub/angular/max.client/max.info.js",
+            "ulearnhub/angular/max.client/max.client.service.js",
+            "ulearnhub/angular/hub.client/hub.client.module.js",
+            "ulearnhub/angular/hub.client/hub.client.info.js",
+            "ulearnhub/angular/hub.client/hub.client.service.js",
+            "ulearnhub/angular/hub.sidebar/hub.sidebar.module.js",
+            "ulearnhub/angular/hub.sidebar/hub.sidebar.provider.js",
+            "ulearnhub/angular/hub.sidebar/hub.sidebar.controller.js"
+        ],
+        "development-no-minify": [
+            "ulearnhub/maxui/maxui.js"
+        ],
+        "production": [
+            "ulearnhub/maxui/maxui.min.js",
+            "ulearnhub/js/hub.domain.min.js"
+        ]
+    },
+    "main": {
+        "development": [
+            "ulearnhub/components/jquery/dist/jquery.js",
+            "ulearnhub/components/showdown/compressed/Showdown.min.js",
+            "ulearnhub/components/bootstrap/dist/js/bootstrap.js",
+            "ulearnhub/components/datatables/media/js/jquery.dataTables.js",
+            "ulearnhub/components/slimScroll/jquery.slimscroll.js",
+            "ulearnhub/components/underscore/underscore.js",
+            "ulearnhub/components/prism/prism.js",
+            "ulearnhub/components/prism/components/prism-python.js",
+            "ulearnhub/components/prism/components/prism-http.js",
+            "ulearnhub/components/prism/components/prism-javascript.js",
+            "ulearnhub/components/angular/angular.js",
+            "ulearnhub/components/ui-utils/ui-utils.js",
+            "ulearnhub/components/angular-ui-router/release/angular-ui-router.js",
+            "ulearnhub/components/angular-bootstrap/ui-bootstrap.js",
+            "ulearnhub/components/angular-datatables/dist/plugins/bootstrap/angular-datatables.bootstrap.js",
+            "ulearnhub/components/angular-datatables/dist/angular-datatables.js",
+            "ulearnhub/components/angular-resource/angular-resource.js",
+            "ulearnhub/components/angular-ui-select/dist/select.js",
+            "ulearnhub/components/angular-sanitize/angular-sanitize.js",
+            "ulearnhub/components/angular-translate/angular-translate.js",
+            "ulearnhub/components/angular-cookies/angular-cookies.js",
+            "ulearnhub/components/angular-translate-loader-static-files/angular-translate-loader-static-files.js",
+            "ulearnhub/components/angular-markdown-directive/markdown.js",
+            "ulearnhub/components/angular-slimscroll/angular-slimscroll.js",
+            "ulearnhub/components/angular-elastic-input/dist/angular-elastic-input.js",
+            "ulearnhub/components/ng-json-explorer/dist/angular-json-explorer.js"
+        ],
+        "production": [
+            "ulearnhub/js/main.js"
+        ]
+    },
+    "hub": {
+        "development": [],
+        "production": [
+            "ulearnhub/js/hub.min.js"
+        ]
+    }
+}

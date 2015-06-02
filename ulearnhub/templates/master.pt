@@ -15,14 +15,14 @@
   <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
 
   <link href="${api.application_url}/css/font-awesome.min.css" rel="stylesheet" />
-  <link href="${api.application_url}/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="${api.application_url}/components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="${api.application_url}/css/animate.min.css" rel="stylesheet">
   <link href="${api.application_url}/css/style.min.css" rel="stylesheet">
   <link href="${api.application_url}/css/style-responsive.min.css" rel="stylesheet">
   <link href="${api.application_url}/css/default.css" rel="stylesheet">
   <link href="${api.application_url}/maxui/maxui.css" rel="stylesheet" />
-  <link href="${api.application_url}/prism/themes/prism-okaidia.css" rel="stylesheet" />
-  <link href="${api.application_url}/json-explorer/angular-json-explorer.css" rel="stylesheet">
+  <link href="${api.application_url}/components/prism/themes/prism-okaidia.css" rel="stylesheet" />
+  <link href="${api.application_url}/components/ng-json-explorer/dist/angular-json-explorer.css" rel="stylesheet">
       <link href="${api.application_url}/css/ulearnhub.css" rel="stylesheet">
 
 
@@ -32,7 +32,6 @@
 <body class="pace-top view-${api.view} ${api.impersonated_class}">
     <!-- begin #page-container -->
 
-    <div metal:define-slot="body">
       <div ng-app="${api.angular_name}" ng-cloak>
 
 
@@ -59,34 +58,9 @@
       <!-- End ng-app
     </div>
 
-    <!-- jQuery and non-angular plugins -->
-    <script src="${api.application_url}/jquery/jquery.min.js"></script>
-    <script src="${api.application_url}/bootstrap/js/bootstrap.min.js"></script>
-    <script src="${api.application_url}/datatables/js/jquery.dataTables.min.js"></script>
-    <script src="${api.application_url}/slimscroll/jquery.slimscroll.min.js"></script>
-
-    <!-- Angular and extension modules -->
-    <script src="${api.application_url}/angularjs/angular.min.js"></script>
-    <script src="${api.application_url}/ui-utils/ui-utils.min.js"></script>
-    <script src="${api.application_url}/angular-ui-router/angular-ui-router.min.js"></script>
-    <script src="${api.application_url}/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-    <script src="${api.application_url}/angular-datatables/plugins/bootstrap/angular-datatables.bootstrap.min.js"></script>
-    <script src="${api.application_url}/angular-resource/angular-resource.min.js"></script>
-    <script src="${api.application_url}/angular-datatables/angular-datatables.min.js"></script>
-    <script src="${api.application_url}/angular-ui-select/select.js"></script>
-    <script src="${api.application_url}/angular-sanitize/angular-sanitize.min.js"></script>
-    <script src="${api.application_url}/angular-translate/angular-translate.min.js"></script>
-    <script src="${api.application_url}/angular-cookies/angular-cookies.min.js"></script>
-    <script src="${api.application_url}/angular-translate-static/angular-translate-loader-static-files.min.js"></script>
-    <script src="${api.application_url}/angular-markdown/markdown.js"></script>
-    <script src="${api.application_url}/showdown/Showdown.min.js"></script>
-    <script src="${api.application_url}/angular-slimscroll/angular-slimscroll.js"></script>
-    <script src="${api.application_url}/json-explorer/angular-json-explorer.min.js"></script>
-    <script src="${api.application_url}/underscore/underscore-min.js"></script>
-    <script src="${api.application_url}/prism/prism.js"></script>
-    <script src="${api.application_url}/prism/components/prism-python.min.js"></script>
-    <script src="${api.application_url}/prism/components/prism-http.min.js"></script>
-    <script src="${api.application_url}/prism/components/prism-javascript.min.js"></script>
+    <!-- View Scripts -->
+    <script tal:repeat="script api.main_scripts" src="${api.application_url}/${script}"></script>
+    <!--     End View Scripts -->
 
 
     <div metal:define-slot="view_scripts"></div>

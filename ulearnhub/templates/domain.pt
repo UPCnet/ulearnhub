@@ -34,7 +34,7 @@
 
 <metal:main fill-slot="view_scripts">
     <!-- View Scripts -->
-    <script tal:repeat="script api.scripts" src="${api.application_url}/${script}"></script>
+    <script tal:repeat="script api.view_scripts('domain')" src="${api.application_url}/${script}"></script>
     <!--     End View Scripts -->
 </metal:main>
 
