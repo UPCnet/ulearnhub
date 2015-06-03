@@ -1,11 +1,27 @@
 CHANGELOG
 =========
 
-1.2 (unreleased)
+1.2 (2015-06-03)
 ----------------
 
-- Nothing changed yet.
-
+* Fix manifest [Carles Bruguera]
+* Migrated hub angular app to follow style guide [Carles Bruguera]
+* Make unified task to annotate and uglify all bundles [Carles Bruguera]
+* Link dev. and prod. js files between pyramid and grunt [Carles Bruguera]
+* Add grunt script to annotate, concatenate and uglify [Carles Bruguera]
+* Pyramid setting to render script raw or minified [Carles Bruguera]
+* Adapt code to angular style guide [Carles Bruguera]
+* Search interface for users [Carles Bruguera]
+* Don't search users on page load [Carles Bruguera]
+* Fix innecessary UsersAll resource [Carles Bruguera]
+* Rename templates to match state id [Carles Bruguera]
+* Split user management in tabs [Carles Bruguera]
+* Add a logged in domains menu on hub root [Carles Bruguera]
+* Remove unused transform [Carles Bruguera]
+* Extend endpoint route to method level [Carles Bruguera]
+* Improve sidebar active detection [Carles Bruguera]
+* Set a maximum width for documentation and data [Carles Bruguera]
+* Set an angular-side global error message [Carles Bruguera]
 
 1.1 (2015-05-28)
 ----------------
