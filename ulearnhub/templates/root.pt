@@ -16,10 +16,6 @@
   </metal:sidebar>
 
   <metal:main fill-slot="main">
-  </metal:main>
-
-
-  <metal:main fill-slot="main">
 
         <ng-hub-info username="${api.authenticated_user.username}"
                      server="${api.application_url}"
@@ -31,14 +27,11 @@
 
   </metal:main>
 
-<metal:main fill-slot="view_scripts">
-    <script src="${api.application_url}/angular/hubClient.js"></script>
-    <script src="${api.application_url}/angular/MAXClient.js"></script>
-    <script src="${api.application_url}/angular/sidebar.js"></script>
-    <script src="${api.application_url}/angular/HubManagement/app.js"></script>
-    <script src="${api.application_url}/angular/HubManagement/deployments.js"></script>
-    <script src="${api.application_url}/angular/HubManagement/domains.js"></script>
-</metal:main>
+  <metal:main fill-slot="view_scripts">
+      <!-- View Scripts -->
+      <script tal:repeat="script api.view_scripts('hub')" src="${api.application_url}/${script}"></script>
+      <!--     End View Scripts -->
+  </metal:main>
 
 
 </body>

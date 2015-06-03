@@ -3,7 +3,6 @@
         "development": [
             "ulearnhub/angular/hub.domain/hub.domain.module.js",
             "ulearnhub/angular/hub.domain/hub.domain.config.js",
-            "ulearnhub/angular/hub.domain/hub.domain.constants.js",
             "ulearnhub/angular/hub.domain/hub.domain.controller.js",
             "ulearnhub/angular/hub.domain/endpoints.service.js",
             "ulearnhub/angular/hub.domain/endpoints.controller.js",
@@ -27,19 +26,23 @@
             "ulearnhub/angular/hub.client/hub.client.service.js",
             "ulearnhub/angular/hub.sidebar/hub.sidebar.module.js",
             "ulearnhub/angular/hub.sidebar/hub.sidebar.provider.js",
-            "ulearnhub/angular/hub.sidebar/hub.sidebar.controller.js"
+            "ulearnhub/angular/hub.sidebar/hub.sidebar.controller.js",
+            "ulearnhub/angular/hub.translations/translations.module.js",
+            "ulearnhub/angular/hub.translations/translations.constants.js"
+
         ],
         "development-no-minify": [
             "ulearnhub/maxui/maxui.js"
         ],
         "production": [
             "ulearnhub/maxui/maxui.min.js",
-            "ulearnhub/js/hub.domain.js"
+            "ulearnhub/js/hub.domain.min.js"
         ]
     },
     "main": {
         "development": [
             "ulearnhub/components/jquery/dist/jquery.js",
+            "ulearnhub/components/slimScroll/jquery.slimscroll.min.js",
             "ulearnhub/components/showdown/compressed/Showdown.js",
             "ulearnhub/components/bootstrap/dist/js/bootstrap.js",
             "ulearnhub/components/datatables/media/js/jquery.dataTables.js",
@@ -71,7 +74,21 @@
         ]
     },
     "hub": {
-        "development": [],
+        "development": [
+            "ulearnhub/angular/hub/hub.module.js",
+            "ulearnhub/angular/hub/hub.config.js",
+            "ulearnhub/angular/hub/hub.controller.js",
+            "ulearnhub/angular/hub/domains.controller.js",
+            "ulearnhub/angular/hub/deployments.controller.js",
+            "ulearnhub/angular/hub.client/hub.client.module.js",
+            "ulearnhub/angular/hub.client/hub.client.info.js",
+            "ulearnhub/angular/hub.client/hub.client.service.js",
+            "ulearnhub/angular/hub.sidebar/hub.sidebar.module.js",
+            "ulearnhub/angular/hub.sidebar/hub.sidebar.provider.js",
+            "ulearnhub/angular/hub.sidebar/hub.sidebar.controller.js",
+            "ulearnhub/angular/hub.translations/translations.module.js",
+            "ulearnhub/angular/hub.translations/translations.constants.js"
+        ],
         "production": [
             "ulearnhub/js/hub.min.js"
         ]

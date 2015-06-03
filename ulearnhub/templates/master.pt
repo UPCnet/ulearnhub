@@ -12,7 +12,7 @@
   <meta content="" name="author" />
 
   <!-- ================== BEGIN BASE CSS STYLE ================== -->
-  <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
 
   <link href="${api.application_url}/css/font-awesome.min.css" rel="stylesheet" />
   <link href="${api.application_url}/components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -31,8 +31,8 @@
 </head>
 <body class="pace-top view-${api.view} ${api.impersonated_class}">
     <!-- begin #page-container -->
-
-      <div ng-app="${api.angular_name}" ng-cloak>
+  <metal:body define-slot="body">
+      <div ng-app="${api.angular_name}" >
 
 
         <div metal:define-slot="authentication-data"></div>
@@ -64,7 +64,7 @@
 
 
     <div metal:define-slot="view_scripts"></div>
-
+  </metal:body>
 </body>
 </html>
 </metal:page>

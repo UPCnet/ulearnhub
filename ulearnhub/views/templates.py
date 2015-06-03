@@ -63,7 +63,7 @@ class TemplateAPI(object):
         if isinstance(self.context, Domain):
             return 'hub.domain'
         elif isinstance(self.context, Root):
-            return 'uLearnHUBManagement'
+            return 'hub'
 
     @property
     def logged_domains(self):

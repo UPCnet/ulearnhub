@@ -43,19 +43,19 @@ module.exports = function(grunt) {
             main: {
                options: uglify_options,
                files: {
-                   'ulearnhub/js/main.min.js': js_config.main.development
+                   'ulearnhub/js/main.min.js': 'ulearnhub/js/main.js'
               }
             },
             domain: {
                options: uglify_options,
                files: {
-                   'ulearnhub/js/hub.domain.min.js': js_config.domain.development
+                   'ulearnhub/js/hub.domain.min.js': 'ulearnhub/js/hub.domain.js'
               }
             },
             hub: {
                options: uglify_options,
                files: {
-                   'ulearnhub/js/hub.min.js': js_config.hub.development
+                   'ulearnhub/js/hub.min.js': 'ulearnhub/js/hub.js'
               }
             }
 

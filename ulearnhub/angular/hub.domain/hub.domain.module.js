@@ -20,7 +20,8 @@
         'hub.client',
         'max.client',
         'hub.users',
-        'hub.contexts'
+        'hub.contexts',
+        'hub.translations'
     ]);
 
 })();

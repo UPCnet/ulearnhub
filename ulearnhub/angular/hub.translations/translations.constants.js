@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('hub.domain')
+        .module('hub.translations')
         .constant('DTTranslations', {
             es: {
                 'sProcessing': 'Procesando...',
