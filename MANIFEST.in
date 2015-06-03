@@ -1,2 +1,3 @@
-include *.txt *.ini *.cfg *.rst
-recursive-include ulearnhub *.ico *.png *.css *.gif *.jpg *.pt *.txt *.mak *.mako *.js *.html *.xml
+include *.txt *.rst
+recursive-include ulearnhub *
+global-exclude *.pyc
