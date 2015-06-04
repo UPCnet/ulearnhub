@@ -32,7 +32,7 @@
 <body class="pace-top view-${api.view} ${api.impersonated_class}">
     <!-- begin #page-container -->
   <metal:body define-slot="body">
-      <div ng-app="${api.angular_name}" >
+      <div ng-app="${api.angular_name}" ng-cloak>
 
 
         <div metal:define-slot="authentication-data"></div>
