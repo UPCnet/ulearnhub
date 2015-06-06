@@ -1,0 +1,42 @@
+<h1 class="page-header">HUB Users Management
+          <br/><small>Here you can manage which users can manage this hub</small>
+      </h1>
+
+<div id="roles">
+    <div class="table-responsive">
+        <table datatable="ng" dt-options="usersCtrl.dtOptions" dt-column-defs="usersCtrl.dtColumnDefs" class="compact table table-striped">
+            <thead>
+                <tr>
+                    <th translate="col_username">UserName</th>
+                    <th translate="col_domain">Domain</th>
+                    <th>Manager</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="user in usersCtrl.users">
+                    <td>{{user.username}}</td>
+                    <td>{{user.domain}}</td>
+                    <td ng-repeat="role in user.roles">
+                        <input type="checkbox" ng-change="usersCtrl.changeRole(user, role)" ng-model="role.active">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+
+        <form class="form-inline">
+          <div class="form-group">
+            <label for="newUserUsername">Name</label>
+            <input type="text" class="form-control" id="newUserUsername" placeholder="Username" ng-model="usersCtrl.newuser.username">
+          </div>
+          <div class="form-group">
+            <label for="newUserDomain">domain</label>
+            <select id="newUserDomain" class="form-control" ng-model="usersCtrl.newuser.domain" ng-options="option.name for option in usersCtrl.domains track by option.name"/>
+          </div>
+          <button type="submit" class="btn btn-default" ng-click="usersCtrl.add()">Add user</button>
+        </form>
+
+    </div>
+</div>

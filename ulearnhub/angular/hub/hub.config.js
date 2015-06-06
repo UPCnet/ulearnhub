@@ -18,6 +18,10 @@
             title: 'Domains',
             sref: 'domains',
             icon: 'globe'
+        }, {
+            title: 'Users',
+            sref: 'users',
+            icon: 'user'
         }]);
         uiSelectConfig.theme = 'bootstrap';
         $urlRouterProvider.otherwise('/');
@@ -49,6 +53,13 @@
             url: '/domains',
             templateUrl: 'templates/domains.html',
             controller: 'DomainListController as domainsCtrl',
+            resolve: {}
+        })
+
+        .state('users', {
+            url: '/users',
+            templateUrl: 'templates/hubusers.html',
+            controller: 'HubUsersController as usersCtrl',
             resolve: {}
         });
 

@@ -39,7 +39,7 @@ class TemplateAPI(object):
 
     @property
     def script_mode(self):
-        development = asbool(self.request.registry.settings['ulearnhub.development'])
+        development = asbool(self.request.registry.settings.get('ulearnhub.development', False))
         return 'development' if development else 'production'
 
     @property

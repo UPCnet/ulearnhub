@@ -9,7 +9,7 @@ import re
 @view_config(route_name='api_domains', request_method='GET', permission=permissions.list_domains)
 def domains_list(domains, request):
     domains = domains.get_all(as_dict=True)
-    response = JSONResourceRoot(domains)
+    response = JSONResourceRoot(request, domains)
     return response()
 
 

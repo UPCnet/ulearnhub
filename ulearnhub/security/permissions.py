@@ -1,5 +1,6 @@
+list_users = 'Get a list of hub authorized users'
 set_role = 'Authorize a user under a certain role'
-impersonate = 'Act as authenticated as another user'
+impersonate = 'Act impersonated as another user'
 
 list_domains = 'List registered domains'
 add_domain = 'Add a domain'

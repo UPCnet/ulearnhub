@@ -43,6 +43,7 @@ ROUTES['api_domain_components'] = dict(route='/api/domains/{domain}/components',
 # USER ENDPOINTS
 
 ROUTES['api_users'] = dict(route='/api/users', traverse='/users')
+ROUTES['api_user_role'] = dict(route='/api/users/{domain}/{username}/roles/{role}', traverse='/users/{domain}/{username}')
 
 # SERVICES ENDPOINTS
 ROUTES['api_domain_services'] = dict(route='/api/domains/{domain}/services', traverse='/domains/{domain}')
