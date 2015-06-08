@@ -1913,6 +1913,22 @@
                 get: {method:'GET', headers:hubInfo.headers}
             }
         );
+        this.User = $resource(
+            hubInfo.server + '/api/users/:username',
+            null,
+            {
+                query: {method:'GET', isArray: true, headers:hubInfo.headers},
+                save: {method:'POST', headers:hubInfo.headers}
+            }
+        );
+        this.UserRole = $resource(
+            hubInfo.server + '/api/users/:domain/:username/roles/:role',
+            null,
+            {
+                remove: {method:'DELETE', headers:hubInfo.headers},
+                update: {method:'PUT', headers:hubInfo.headers}
+            }
+        );
     }
     HUBClientService.$inject = ["$resource", "hubInfo"];
 })();

@@ -39,6 +39,10 @@
             title: 'Domains',
             sref: 'domains',
             icon: 'globe'
+        }, {
+            title: 'Users',
+            sref: 'users',
+            icon: 'user'
         }]);
         uiSelectConfig.theme = 'bootstrap';
         $urlRouterProvider.otherwise('/');
@@ -70,6 +74,13 @@
             url: '/domains',
             templateUrl: 'templates/domains.html',
             controller: 'DomainListController as domainsCtrl',
+            resolve: {}
+        })
+
+        .state('users', {
+            url: '/users',
+            templateUrl: 'templates/hubusers.html',
+            controller: 'HubUsersController as usersCtrl',
             resolve: {}
         });
 
@@ -109,6 +120,78 @@
         }
     }
     MainAppController.$inject = ["sidebarSections", "$translate"];
+})();
+
+(function() {
+    'use strict';
+
+    angular
+        .module('hub')
+        .controller('HubUsersController', HubUsersController);
+
+    /**
+     * @desc
+     */
+    /* @nInject */
+    function HubUsersController($cookies, DTOptionsBuilder, DTTranslations, DTColumnDefBuilder, HUBClientService) {
+        var self = this;
+        var lang = $cookies.currentLang;
+        // Default datatable options
+        self.dtOptions = DTOptionsBuilder
+            .newOptions().withPaginationType('full_numbers')
+            .withBootstrap()
+            .withLanguage(DTTranslations[lang]);
+        self.dtColumnDefs = [
+            DTColumnDefBuilder.newColumnDef(0),
+            DTColumnDefBuilder.newColumnDef(1),
+            DTColumnDefBuilder.newColumnDef(2)
+        ];
+        self.users = HUBClientService.User.query();
+        self.domains = HUBClientService.Domain.query();
+        self.newuser = {};
+
+
+        self.changeRole = changeRole;
+        self.add = add;
+        //////////////////////////////
+
+        /**
+         * @desc
+         */
+        function changeRole(user, role) {
+            if (role.active === true) {
+                HUBClientService.UserRole.update({
+                    role: role.role,
+                    domain: user.domain,
+                    username: user.username
+                }, {});
+            } else {
+                HUBClientService.UserRole.remove({
+                    domain: user.domain,
+                    role: role.role,
+                    username: user.username
+                });
+            }
+        }
+
+        /**
+         * @desc
+         */
+
+         function add() {
+
+            HUBClientService.User.save(
+                {username:self.newuser.username, domain: self.newuser.domain.name},
+                function() {
+                //success
+                },
+                function() {
+                //fail
+            });
+         }
+
+    }
+    HubUsersController.$inject = ["$cookies", "DTOptionsBuilder", "DTTranslations", "DTColumnDefBuilder", "HUBClientService"];
 })();
 
 (function() {
@@ -347,6 +430,22 @@
                 query: {method:'GET', isArray: true, headers:hubInfo.headers},
                 save: {method:'POST', headers:hubInfo.headers},
                 get: {method:'GET', headers:hubInfo.headers}
+            }
+        );
+        this.User = $resource(
+            hubInfo.server + '/api/users/:username',
+            null,
+            {
+                query: {method:'GET', isArray: true, headers:hubInfo.headers},
+                save: {method:'POST', headers:hubInfo.headers}
+            }
+        );
+        this.UserRole = $resource(
+            hubInfo.server + '/api/users/:domain/:username/roles/:role',
+            null,
+            {
+                remove: {method:'DELETE', headers:hubInfo.headers},
+                update: {method:'PUT', headers:hubInfo.headers}
             }
         );
     }
