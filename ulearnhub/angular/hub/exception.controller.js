@@ -3,17 +3,17 @@
     'use strict';
 
     angular
-        .module('hub.domain')
+        .module('hub')
         .controller('ExceptionController', ExceptionController);
 
     /**
      * @desc
      */
     /* @nInject */
-    function ExceptionController($stateParams, MAXClientService) {
+    function ExceptionController($stateParams, HUBClientService) {
         var self = this;
         self.hash = $stateParams.hash;
-        self.exception = MAXClientService.Exception.get({hash: self.hash});
+        self.exception = HUBClientService.Exception.get({hash: self.hash});
         self.request = '';
         self.exception.$promise.then(function(data) {
           self.request = Prism.highlight(data.request, Prism.languages.http);

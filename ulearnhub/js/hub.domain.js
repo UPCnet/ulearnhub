@@ -154,16 +154,16 @@
                     }]
                 }
 
-            })
-            .state('exceptions', {
-                url: '/exceptions',
-                templateUrl: 'templates/exceptions.html',
-                controller: 'ExceptionsController as excsCtrl',
-                resolve: {}
-            })
+        })
+        .state('exceptions', {
+            url: '/exceptions',
+            templateUrl: 'templates/exceptions.html',
+            controller: 'ExceptionsController as excsCtrl',
+            resolve: {}
+        })
 
         .state('exception', {
-            url: '/exceptions/:id',
+            url: '/exceptions/:hash',
             templateUrl: 'templates/exception.html',
             controller: 'ExceptionController as excCtrl',
             resolve: {}
@@ -647,6 +647,18 @@
     function ExceptionsController(MAXClientService) {
         var self = this;
         self.exceptions = MAXClientService.Exception.query();
+
+        self.remove = remove;
+
+        /////////////////////
+
+        function remove(exception) {
+            HUBClientService.Exception.remove({hash: exception.id}, function () {
+                self.exceptions = HUBClientService.Exception.query();
+            }, function () {
+                //
+            });
+        }
     }
     ExceptionsController.$inject = ["MAXClientService"];
 })();
@@ -665,8 +677,8 @@
     /* @nInject */
     function ExceptionController($stateParams, MAXClientService) {
         var self = this;
-        self.hash = $stateParams.id;
-        self.exception = MAXClientService.Exception.get({id: self.hash});
+        self.hash = $stateParams.hash;
+        self.exception = MAXClientService.Exception.get({hash: self.hash});
         self.request = '';
         self.exception.$promise.then(function(data) {
           self.request = Prism.highlight(data.request, Prism.languages.http);
@@ -1747,7 +1759,7 @@
     function MAXClientService($resource, MAXInfo) {
 
         this.Exception = $resource(
-            MAXInfo.max_server+'/admin/maintenance/exceptions/:id',
+            MAXInfo.max_server+'/admin/maintenance/exceptions/:hash',
             null,
             {
                 query:  {method:'GET', isArray: true, headers:MAXInfo.headers},
@@ -1929,6 +1941,16 @@
                 update: {method:'PUT', headers:hubInfo.headers}
             }
         );
+        this.Exception = $resource(
+            hubInfo.server+'/api/exceptions/:hash',
+            null,
+            {
+                query:  {method:'GET', isArray: true, headers:hubInfo.headers},
+                get:    {method:'GET', headers:hubInfo.headers},
+                remove: {method:'DELETE', headers:hubInfo.headers}
+            }
+        );
+
     }
     HUBClientService.$inject = ["$resource", "hubInfo"];
 })();

@@ -43,5 +43,15 @@
                 update: {method:'PUT', headers:hubInfo.headers}
             }
         );
+        this.Exception = $resource(
+            hubInfo.server+'/api/exceptions/:hash',
+            null,
+            {
+                query:  {method:'GET', isArray: true, headers:hubInfo.headers},
+                get:    {method:'GET', headers:hubInfo.headers},
+                remove: {method:'DELETE', headers:hubInfo.headers}
+            }
+        );
+
     }
 })();

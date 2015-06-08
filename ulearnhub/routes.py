@@ -29,6 +29,10 @@ from collections import OrderedDict
 
 ROUTES = OrderedDict()
 
+# ROOT ENDPOINTS
+ROUTES['api_exceptions'] = dict(route='/api/exceptions')
+ROUTES['api_exception'] = dict(route='/api/exceptions/{hash}')
+
 # DEPLOYMENT ENDPOINTS
 ROUTES['api_deployments'] = dict(route='/api/deployments', traverse='/deployments')
 ROUTES['api_deployment'] = dict(route='/api/deployments/{deployment}', traverse='/deployments/{deployment}')
@@ -41,7 +45,6 @@ ROUTES['api_domain'] = dict(route='/api/domains/{domain}', traverse='/domains/{d
 ROUTES['api_domain_components'] = dict(route='/api/domains/{domain}/components', traverse='/domains/{domain}')
 
 # USER ENDPOINTS
-
 ROUTES['api_users'] = dict(route='/api/users', traverse='/users')
 ROUTES['api_user_role'] = dict(route='/api/users/{domain}/{username}/roles/{role}', traverse='/users/{domain}/{username}')
 

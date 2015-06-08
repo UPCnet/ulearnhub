@@ -12,4 +12,6 @@ add_deployment = 'Add a deployment'
 view_deployment = 'View a deployment info'
 add_component = 'Add a component to a deployment'
 
+manage_exceptions = 'View and manage hub code exceptions'
+
 execute_service = 'Execute a service'

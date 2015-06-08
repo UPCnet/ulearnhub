@@ -22,7 +22,12 @@
             title: 'Users',
             sref: 'users',
             icon: 'user'
+        }, {
+            title: 'Exceptions',
+            sref: 'exceptions',
+            icon: 'exclamation-triangle'
         }]);
+
         uiSelectConfig.theme = 'bootstrap';
         $urlRouterProvider.otherwise('/');
 
@@ -61,8 +66,19 @@
             templateUrl: 'templates/hubusers.html',
             controller: 'HubUsersController as usersCtrl',
             resolve: {}
+        })
+        .state('exceptions', {
+            url: '/exceptions',
+            templateUrl: 'templates/exceptions.html',
+            controller: 'ExceptionsController as excsCtrl',
+            resolve: {}
+        })
+        .state('exception', {
+            url: '/exceptions/:hash',
+            templateUrl: 'templates/exception.html',
+            controller: 'ExceptionController as excCtrl',
+            resolve: {}
         });
-
 
     }
 })();

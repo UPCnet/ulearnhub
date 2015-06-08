@@ -2,16 +2,16 @@
     'use strict';
 
     angular
-        .module('hub.domain')
+        .module('hub')
         .controller('ExceptionsController', ExceptionsController);
 
     /**
      * @desc
      */
     /* @nInject */
-    function ExceptionsController(MAXClientService) {
+    function ExceptionsController(HUBClientService) {
         var self = this;
-        self.exceptions = MAXClientService.Exception.query();
+        self.exceptions = HUBClientService.Exception.query();
 
         self.remove = remove;
 
@@ -25,4 +25,5 @@
             });
         }
     }
+
 })();

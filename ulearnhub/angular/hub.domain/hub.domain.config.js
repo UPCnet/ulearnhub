@@ -126,16 +126,16 @@
                     }
                 }
 
-            })
-            .state('exceptions', {
-                url: '/exceptions',
-                templateUrl: 'templates/exceptions.html',
-                controller: 'ExceptionsController as excsCtrl',
-                resolve: {}
-            })
+        })
+        .state('exceptions', {
+            url: '/exceptions',
+            templateUrl: 'templates/exceptions.html',
+            controller: 'ExceptionsController as excsCtrl',
+            resolve: {}
+        })
 
         .state('exception', {
-            url: '/exceptions/:id',
+            url: '/exceptions/:hash',
             templateUrl: 'templates/exception.html',
             controller: 'ExceptionController as excCtrl',
             resolve: {}

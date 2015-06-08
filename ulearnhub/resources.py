@@ -9,7 +9,7 @@ from pyramid.security import Authenticated
 from pyramid_zodbconn import get_connection
 
 from persistent.mapping import PersistentMapping
-
+from ulearnhub.security import permissions, Manager
 import transaction
 
 
@@ -19,7 +19,8 @@ class Root(PersistentMapping):
     name = 'root'
     __name__ = 'ROOT'
     __acl__ = [
-        (Allow, Authenticated, 'homepage')
+        (Allow, Authenticated, 'homepage'),
+        (Allow, Manager, permissions.manage_exceptions)
     ]
 
 

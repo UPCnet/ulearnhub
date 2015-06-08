@@ -4,7 +4,7 @@
 
 <div class="alert alert-success fade in m-b-15" ng-if="!excsCtrl.exceptions.length">
     <strong>Hurray!</strong>
-    No exceptions logged on this max.
+    No exceptions logged.
     <span class="close" data-dismiss="alert">×</span>
 </div>
 
@@ -16,12 +16,18 @@
                 <tr>
                     <th>Date</th>
                     <th>Hash</th>
+                    <td></td>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="exception in excsCtrl.exceptions">
                     <td>{{exception.date}}</td>
-                    <td><a ui-sref="exception({id:exception.id})">{{exception.id}}</a></td>
+                    <td><a ui-sref="exception({hash:exception.id})">{{exception.id}}</a></td>
+                    <td>
+                        <a href="" ng-click="excsCtrl.remove(exception)">
+                            <button class="delete fa fa-minus-square" alt="Remove exception"></button>
+                        </a>
+                    </td>
                 </tr>
             </tbody>
         </table>

@@ -43,7 +43,12 @@
             title: 'Users',
             sref: 'users',
             icon: 'user'
+        }, {
+            title: 'Exceptions',
+            sref: 'exceptions',
+            icon: 'exclamation-triangle'
         }]);
+
         uiSelectConfig.theme = 'bootstrap';
         $urlRouterProvider.otherwise('/');
 
@@ -82,8 +87,19 @@
             templateUrl: 'templates/hubusers.html',
             controller: 'HubUsersController as usersCtrl',
             resolve: {}
+        })
+        .state('exceptions', {
+            url: '/exceptions',
+            templateUrl: 'templates/exceptions.html',
+            controller: 'ExceptionsController as excsCtrl',
+            resolve: {}
+        })
+        .state('exception', {
+            url: '/exceptions/:hash',
+            templateUrl: 'templates/exception.html',
+            controller: 'ExceptionController as excCtrl',
+            resolve: {}
         });
-
 
     }
     config.$inject = ["sidebarSectionsProvider", "uiSelectConfig", "$urlRouterProvider", "$translateProvider", "$stateProvider"];
@@ -120,6 +136,63 @@
         }
     }
     MainAppController.$inject = ["sidebarSections", "$translate"];
+})();
+
+(function() {
+    'use strict';
+
+    angular
+        .module('hub')
+        .controller('ExceptionsController', ExceptionsController);
+
+    /**
+     * @desc
+     */
+    /* @nInject */
+    function ExceptionsController(HUBClientService) {
+        var self = this;
+        self.exceptions = HUBClientService.Exception.query();
+
+        self.remove = remove;
+
+        /////////////////////
+
+        function remove(exception) {
+            HUBClientService.Exception.remove({hash: exception.id}, function () {
+                self.exceptions = HUBClientService.Exception.query();
+            }, function () {
+                //
+            });
+        }
+    }
+    ExceptionsController.$inject = ["HUBClientService"];
+
+})();
+
+/* global Prism */
+(function() {
+    'use strict';
+
+    angular
+        .module('hub')
+        .controller('ExceptionController', ExceptionController);
+
+    /**
+     * @desc
+     */
+    /* @nInject */
+    function ExceptionController($stateParams, HUBClientService) {
+        var self = this;
+        self.hash = $stateParams.hash;
+        self.exception = HUBClientService.Exception.get({hash: self.hash});
+        self.request = '';
+        self.exception.$promise.then(function(data) {
+          self.request = Prism.highlight(data.request, Prism.languages.http);
+          self.traceback = Prism.highlight(data.traceback, Prism.languages.python);
+        });
+    }
+    ExceptionController.$inject = ["$stateParams", "HUBClientService"];
+
 })();
 
 (function() {
@@ -448,6 +521,16 @@
                 update: {method:'PUT', headers:hubInfo.headers}
             }
         );
+        this.Exception = $resource(
+            hubInfo.server+'/api/exceptions/:hash',
+            null,
+            {
+                query:  {method:'GET', isArray: true, headers:hubInfo.headers},
+                get:    {method:'GET', headers:hubInfo.headers},
+                remove: {method:'DELETE', headers:hubInfo.headers}
+            }
+        );
+
     }
     HUBClientService.$inject = ["$resource", "hubInfo"];
 })();

@@ -19,7 +19,7 @@
     function MAXClientService($resource, MAXInfo) {
 
         this.Exception = $resource(
-            MAXInfo.max_server+'/admin/maintenance/exceptions/:id',
+            MAXInfo.max_server+'/admin/maintenance/exceptions/:hash',
             null,
             {
                 query:  {method:'GET', isArray: true, headers:MAXInfo.headers},
