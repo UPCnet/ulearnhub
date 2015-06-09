@@ -27,6 +27,15 @@
                 get: {method:'GET', headers:hubInfo.headers}
             }
         );
+        this.Deployment = $resource(
+            hubInfo.server + '/api/deployments/:name',
+            null,
+            {
+                query: {method:'GET', isArray: true, headers:hubInfo.headers},
+                save: {method:'POST', headers:hubInfo.headers},
+                get: {method:'GET', headers:hubInfo.headers}
+            }
+        );
         this.User = $resource(
             hubInfo.server + '/api/users/:username',
             null,

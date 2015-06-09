@@ -36,6 +36,12 @@ class Deployments(PersistentMapping):
 
         return self[name]
 
+    def as_list(self):
+        entries = []
+        for name, deployment in self.items():
+            entries.append(deployment.as_dict())
+        return entries
+
 
 class Deployment(PersistentMapping):
 

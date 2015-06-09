@@ -54,6 +54,13 @@
             resolve: {}
         })
 
+        .state('deployments.deployment', {
+            url: '/:name',
+            templateUrl: 'templates/deployment.html',
+            controller: 'DeploymentDetailController as deploymentCtrl',
+            resolve: {}
+        })
+
         .state('domains', {
             url: '/domains',
             templateUrl: 'templates/domains.html',

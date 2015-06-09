@@ -25,7 +25,7 @@
             DTColumnDefBuilder.newColumnDef(2)
         ];
 
-        self.domains = HUBClientService.Domain.query();
+        self.deployments = HUBClientService.Deployment.query();
 
 
         self.open = function(size) {
