@@ -334,38 +334,109 @@ span.prop {
     &.active {
         width: 100%;
     }
-    .component {
-        display: inline-block;
-        height: 30px;
-        width: 30px;
-        border-radius: 5px;
-        margin-right: 2px;
-        margin-bottom: 2px;
-        &.mongodb {
-            background-image: url('../static/icons/mongodb30x30.png')
+    .components {
+        ul {
+            padding:0px;
         }
-        &.nginx {
-            background-image: url('../static/icons/nginx30x30.png')
-        }
-        &.rabbitmq {
-            background-image: url('../static/icons/rabbitmq30x30.png')
-        }
-        &.oauth {
-            background-image: url('../static/icons/oauth30x30.png')
-        }
-        &.openldap {
-            background-image: url('../static/icons/openldap30x30.png')
-        }
-        &.hub {
-            background-image: url('../static/hub30x30.png')
-        }
-        &.max {
-            background-image: url('../static/icons/max30x30.png')
+        li {
+            list-style: none;
+
         }
     }
 
 }
 
+
+i.component-icon {
+            display: inline-block;
+            height: 30px;
+            width: 30px;
+            border-radius: 5px;
+            margin-right: 2px;
+            margin-bottom: 2px;
+
+    }
+    i.component-icon{
+
+        &.mongodbcluster {
+            background-image: url('../static/icons/mongodb30x30.png')
+        }
+        &.nginx {
+            background-image: url('../static/icons/nginx30x30.png')
+        }
+        &.rabbitserver {
+            background-image: url('../static/icons/rabbitmq30x30.png')
+        }
+        &.oauth {
+            background-image: url('../static/icons/oauth30x30.png')
+        }
+        &.ldapserver {
+            background-image: url('../static/icons/openldap30x30.png')
+        }
+        &.hub {
+            background-image: url('../static/hub30x30.png')
+        }
+        &.maxcluster {
+            background-image: url('../static/icons/max30x30.png')
+        }
+    }
+
+
+// Formly
+
+.display-flex {
+  display: flex;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.flex-2 {
+  flex: 2;
+}
+
+.flex-3 {
+  flex: 3;
+}
+
+.flex-4 {
+  flex: 4;
+}
+
+.flex-5 {
+  flex: 5;
+}
+
+.flex-6 {
+  flex: 6;
+}
+
+[class*="flex-"] {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+[class*="flex-"]:first-child {
+  padding-left: 0;
+}
+
+[class*="flex-"]:nth-last-child(2) {
+  padding-right: 0;
+}
+
+.fieldgroup-title {
+    font-size: 12px;
+    margin-bottom:5px;
+}
+
+.formly-field.input-small {
+    input {width: 200px;}
+}
+
+
+
+// Media queries
 
 @media (min-width: 500px) {
 

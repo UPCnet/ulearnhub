@@ -287,7 +287,13 @@ span.prop {
 .deployment.panel.active {
   width: 100%;
 }
-.deployment.panel .component {
+.deployment.panel .components ul {
+  padding: 0px;
+}
+.deployment.panel .components li {
+  list-style: none;
+}
+i.component-icon {
   display: inline-block;
   height: 30px;
   width: 30px;
@@ -295,26 +301,64 @@ span.prop {
   margin-right: 2px;
   margin-bottom: 2px;
 }
-.deployment.panel .component.mongodb {
+i.component-icon.mongodbcluster {
   background-image: url('../static/icons/mongodb30x30.png');
 }
-.deployment.panel .component.nginx {
+i.component-icon.nginx {
   background-image: url('../static/icons/nginx30x30.png');
 }
-.deployment.panel .component.rabbitmq {
+i.component-icon.rabbitserver {
   background-image: url('../static/icons/rabbitmq30x30.png');
 }
-.deployment.panel .component.oauth {
+i.component-icon.oauth {
   background-image: url('../static/icons/oauth30x30.png');
 }
-.deployment.panel .component.openldap {
+i.component-icon.ldapserver {
   background-image: url('../static/icons/openldap30x30.png');
 }
-.deployment.panel .component.hub {
+i.component-icon.hub {
   background-image: url('../static/hub30x30.png');
 }
-.deployment.panel .component.max {
+i.component-icon.maxcluster {
   background-image: url('../static/icons/max30x30.png');
+}
+.display-flex {
+  display: flex;
+}
+.flex-1 {
+  flex: 1;
+}
+.flex-2 {
+  flex: 2;
+}
+.flex-3 {
+  flex: 3;
+}
+.flex-4 {
+  flex: 4;
+}
+.flex-5 {
+  flex: 5;
+}
+.flex-6 {
+  flex: 6;
+}
+[class*="flex-"] {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+[class*="flex-"]:first-child {
+  padding-left: 0;
+}
+[class*="flex-"]:nth-last-child(2) {
+  padding-right: 0;
+}
+.fieldgroup-title {
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+.formly-field.input-small input {
+  width: 200px;
 }
 @media (min-width: 500px) {
   #request-results #response-content pre br {

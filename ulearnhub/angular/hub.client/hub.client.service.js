@@ -27,6 +27,14 @@
                 get: {method:'GET', headers:hubInfo.headers}
             }
         );
+        this.Component = $resource(
+            hubInfo.server + '/api/components/:name',
+            null,
+            {
+                query: {method:'GET', isArray: true, headers:hubInfo.headers},
+            }
+        );
+
         this.Deployment = $resource(
             hubInfo.server + '/api/deployments/:name',
             null,
@@ -36,6 +44,15 @@
                 get: {method:'GET', headers:hubInfo.headers}
             }
         );
+
+        this.DeploymentComponent = $resource(
+            hubInfo.server + '/api/deployments/:name/components',
+            null,
+            {
+                save: {method:'POST', headers:hubInfo.headers}
+            }
+        );
+
         this.User = $resource(
             hubInfo.server + '/api/users/:username',
             null,

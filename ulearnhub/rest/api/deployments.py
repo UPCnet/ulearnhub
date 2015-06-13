@@ -3,9 +3,6 @@ from max.rest import JSONResourceEntity
 from ulearnhub.security import permissions
 
 
-
-
-
 @view_config(route_name='api_deployments', request_method='POST', permission=permissions.add_deployment)
 def add_deployment(deployments, request):
     """
@@ -36,7 +33,9 @@ def get_deployment(deployment, request):
     """
         Gets an existing deployment.
     """
-    response = JSONResourceEntity(request, deployment.as_dict(), status_code=200)
+    deployment = deployment.as_dict()
+    response = JSONResourceEntity(request, deployment, status_code=200)
+    deployment
     return response()
 
 

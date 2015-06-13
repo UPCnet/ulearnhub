@@ -5,7 +5,7 @@
         .module('hub')
         .config(config);
 
-    function config(sidebarSectionsProvider, uiSelectConfig, $urlRouterProvider, $translateProvider, $stateProvider) {
+    function config(sidebarSectionsProvider, uiSelectConfig, $urlRouterProvider, $translateProvider, $stateProvider, formlyConfigProvider) {
         sidebarSectionsProvider.setSections([{
             title: 'Dashboard',
             sref: 'domain',
@@ -27,6 +27,7 @@
             sref: 'exceptions',
             icon: 'exclamation-triangle'
         }]);
+
 
         uiSelectConfig.theme = 'bootstrap';
         $urlRouterProvider.otherwise('/');

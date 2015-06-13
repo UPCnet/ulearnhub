@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from ulearnhub.models.components import get_component_by_name
+from ulearnhub.models.components import get_component
 from ulearnhub.security import Manager
 from ulearnhub.security import permissions
 
@@ -63,11 +63,11 @@ class Deployment(PersistentMapping):
         super(Deployment, self).__init__(*args, **kwargs)
 
     def add_component(self, component_type, name, title, params):
-        Component = get_component_by_name(component_type)
+        Component = get_component(component_type)
         new_component = Component(name, title, params)
 
         if Component.constrain:
-            multicomponent = self.get_component(Component.constrain.name)
+            multicomponent = self.get_component(Component.constrain)
             multicomponent[name] = new_component
             multicomponent[name].__parent__ = multicomponent
         else:
@@ -76,13 +76,14 @@ class Deployment(PersistentMapping):
         return new_component
 
     def get_component(self, component_type, name=None):
+        ComponentClass = get_component(component_type)
         for component_name, component in self.items():
-            matches_component = component_type == component.__class__.name
+            matches_component = ComponentClass == component.__class__
             matches_name = True if name is None else component_name == name
             if matches_component and matches_name:
                 return component
             else:
-                subcomponent = component.get_component(component_type, name=name)
+                subcomponent = component.get_component(ComponentClass, name=name)
                 if subcomponent is not None:
                     return subcomponent
 
@@ -90,5 +91,5 @@ class Deployment(PersistentMapping):
         return {
             'name': self.name,
             'title': self.title,
-            'components': {component_name: component.as_dict() for component_name, component in self.items()}
+            'components': [component.as_dict() for component_name, component in self.items()]
         }

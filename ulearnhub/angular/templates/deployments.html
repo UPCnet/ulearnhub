@@ -15,15 +15,10 @@
         <div class="panel-body">
             <h5 class="title">{{deployment.title}}</h5>
             <div class="components">
-                <span class="component mongodb"></span>
-                <span class="component nginx"></span>
-                <span class="component rabbitmq"></span>
-                <span class="component oauth"></span>
-                <span class="component openldap"></span>
-                <span class="component hub"></span>
-                <span class="component max"></span>
+                <i ng-repeat="component in deployment.components" class="component-icon {{component.type}}"></i>
+
             </div>
-            <div class="servers">
+            <div>
                 <p>faiada.upcnet.es, oauth.upcnet.es, finestrelles.upcnet.es</p>
             </div>
         </div>

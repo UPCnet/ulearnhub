@@ -10,7 +10,7 @@
      * @desc
      */
     /* @nInject */
-    function DeploymentsListController($cookies, DTOptionsBuilder, DTTranslations, DTColumnDefBuilder, HUBClientService) {
+    function DeploymentsListController($cookies, $modal, DTOptionsBuilder, DTTranslations, DTColumnDefBuilder, HUBClientService) {
         var self = this;
         var lang = $cookies.currentLang;
         // Default datatable options
@@ -27,20 +27,6 @@
 
         self.deployments = HUBClientService.Deployment.query();
 
-
-        self.open = function(size) {
-
-            var modalInstance = $modal.open({
-                templateUrl: 'new-domain.html',
-                controller: 'ModalInstanceCtrl',
-                size: size
-            });
-
-            modalInstance.result
-                .then(function(newdomain) {
-                    self.domains.push(newdomain);
-                });
-        };
     }
 
     /**

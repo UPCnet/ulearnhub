@@ -11,6 +11,8 @@
             'ngSanitize',
             'ngCookies',
             'pascalprecht.translate',
+            'formly',
+            'formlyBootstrap',
 
             'hub.sidebar',
             'hub.client',

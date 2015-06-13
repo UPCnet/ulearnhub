@@ -7,6 +7,8 @@ add_domain = 'Add a domain'
 view_domain = 'View domain info'
 assign_component = 'Assign a deployment component to a domain'
 
+list_components = 'List available components'
+
 list_deployments = 'List registered deployments'
 add_deployment = 'Add a deployment'
 view_deployment = 'View a deployment info'

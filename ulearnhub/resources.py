@@ -20,7 +20,8 @@ class Root(PersistentMapping):
     __name__ = 'ROOT'
     __acl__ = [
         (Allow, Authenticated, 'homepage'),
-        (Allow, Manager, permissions.manage_exceptions)
+        (Allow, Manager, permissions.manage_exceptions),
+        (Allow, Manager, permissions.list_components)
     ]
 
 
@@ -84,8 +85,10 @@ def create_defaults(registry, defaults, quiet=False):
         deployment = deployments.add(name=name, title=deploy_data['title'])
         for component_data in deploy_data['components']:
             if deployment.get_component(component_data['type'], name=component_data['name']) is None:
-                log('   + Added new "{type}" component named "{name}"'.format(**component_data))
+                # if component_data['type'] == 'maxserver':
+                #     import ipdb;ipdb.set_trace()
                 deployment.add_component(component_data['type'], component_data['name'], component_data['title'], component_data['config'])
+                log('   + Added new "{type}" component named "{name}"'.format(**component_data))
 
     for name, domain_data in defaults.get('domains', {}).items():
         if name in domains:
@@ -98,10 +101,12 @@ def create_defaults(registry, defaults, quiet=False):
             if component_data['name'] not in domain:
                 component = deployments[component_data['deployment']].get_component(component_data['type'], name=component_data['name'])
                 if component is None:
+                    component = deployments[component_data['deployment']].get_component(component_data['type'], name=component_data['name'])
+
                     log('   x Missing {type} component named "{name}" on deployment "{deployment}"'.format(**component_data))
                 else:
-                    log('   √ Assigned "{type}" component named "{name}"'.format(**component_data))
                     domain.assign(component)
+                    log('   √ Assigned "{type}" component named "{name}"'.format(**component_data))
 
     for user_data in defaults.get('users', []):
         username = user_data['username']

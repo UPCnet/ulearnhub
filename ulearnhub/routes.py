@@ -39,6 +39,8 @@ ROUTES['api_deployment'] = dict(route='/api/deployments/{deployment}', traverse=
 ROUTES['api_deployment_components'] = dict(route='/api/deployments/{deployment}/components', traverse='/deployments/{deployment}')
 ROUTES['api_deployment_component'] = dict(route='/api/deployments/{deployment}/components/{component}', traverse='/deployments/{deployment}')
 
+ROUTES['api_components'] = dict(route='/api/components')
+
 # DOMAIN ENDPOINTS
 ROUTES['api_domains'] = dict(route='/api/domains', traverse='/domains')
 ROUTES['api_domain'] = dict(route='/api/domains/{domain}', traverse='/domains/{domain}')

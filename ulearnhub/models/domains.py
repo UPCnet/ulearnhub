@@ -2,6 +2,7 @@
 from maxclient.rest import MaxClient
 
 from ulearnhub.models.components import MaxServer
+from ulearnhub.models.components import get_component
 from ulearnhub.models.services import ServicesContainer
 from ulearnhub.security import Manager
 from ulearnhub.security import permissions
@@ -98,9 +99,10 @@ class Domain(PersistentMapping):
         di['oauth'] = self.oauth_server
         return di
 
-    def get_component(self, klass):
+    def get_component(self, component_type):
+        ComponentClass = get_component(component_type)
         for component_name, component in self.items():
-            if isinstance(component, klass):
+            if isinstance(component, ComponentClass):
                 return component
 
     def set_token(self, password):

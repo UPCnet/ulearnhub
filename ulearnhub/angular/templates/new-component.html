@@ -1,0 +1,19 @@
+<div class="modal-header">
+    <i class="component-icon mongodbcluster pull-right"></i>
+    <h3 class="modal-title" >Add new <strong>{{newCompCtrl.component_type.desc}}</strong></h3>
+
+</div>
+<div class="modal-body">
+
+
+     <form ng-submit="newCompCtrl.onSubmit()" novalidate>
+        <formly-form model="newCompCtrl.model" fields="newCompCtrl.formFields">
+        </formly-form>
+      </form>
+
+    <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+</div>
+<div class="modal-footer">
+    <button type="submit" class="btn btn-primary" ng-click="newCompCtrl.onSubmit()">Add component</button>
+    <button class="btn btn-warning" ng-click="newCompCtrl.onCancel()" translate="btn_cancel">Cancel</button>
+</div>
