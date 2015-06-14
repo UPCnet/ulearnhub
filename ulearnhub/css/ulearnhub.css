@@ -6,8 +6,23 @@
 .x-ng-cloak {
   display: none !important;
 }
+body {
+  background-color: #F1F2F6;
+}
+h1.page-header {
+  margin-bottom: 30px;
+}
+h1.page-header span {
+  color: #00acac;
+}
+h5 {
+  border-bottom: 2px solid #eaeaea;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
 #search-users-box {
-  background-color: #348fe2;
+  background-color: #00acac;
   position: relative;
   padding: 20px;
   border-radius: 3px;
@@ -225,7 +240,7 @@ span.prop {
   font-weight: bold;
 }
 .sidebar .sub-menu > li.active > a:before {
-  color: #348fe2;
+  color: ##00acac;
 }
 #api-view.panel .form-group#resource-method #methods-list {
   margin-right: 0px;
@@ -275,23 +290,55 @@ span.prop {
 .impersonated .btn.btn-scroll-to-top {
   background: #f59c1a;
 }
-.deployment.panel {
+.dep-panel {
+  background-color: #F6F7F9;
   float: left;
   margin-right: 20px;
   width: 230px;
 }
-.deployment.panel .panel-title {
-  font-size: 14px;
-  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+.dep-panel .panel-heading {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-top: 3px #00acac solid;
+  text-align: center;
 }
-.deployment.panel.active {
-  width: 100%;
+.dep-panel .panel-heading a {
+  color: #2B3848;
+  text-decoration: none;
 }
-.deployment.panel .components ul {
-  padding: 0px;
+.dep-panel .panel-heading a i,
+.dep-panel .panel-heading a h4 {
+  font-size: 16px;
+  line-height: 20px;
 }
-.deployment.panel .components li {
-  list-style: none;
+.dep-panel .panel-heading a h4 {
+  padding-top: 5px;
+  font-weight: 400;
+}
+.dep-panel .panel-heading a:hover {
+  color: #000;
+}
+.dep-panel .panel-body {
+  background-color: white;
+}
+.dep-panel.new {
+  padding: 30px 0;
+}
+.dep-panel.new .panel-heading {
+  border: none;
+}
+.new {
+  padding: 10px;
+  text-align: center;
+  border: 2px #C8CED6 dashed;
+}
+.new i {
+  margin-right: 10px;
+}
+.new a,
+.new h4,
+.new i {
+  color: #C8CED6;
 }
 i.component-icon {
   display: inline-block;
@@ -321,6 +368,25 @@ i.component-icon.hub {
 }
 i.component-icon.maxcluster {
   background-image: url('../static/icons/max30x30.png');
+}
+.panel-with-tabs .panel-heading {
+  height: 40px;
+}
+.panel-with-tabs .panel-heading h4 {
+  float: left;
+}
+.panel-with-tabs .panel-heading .nav-tabs {
+  background: none;
+  float: left;
+  margin-left: 40px;
+}
+.panel-with-tabs .panel-heading .nav-tabs > li > a {
+  line-height: 15px;
+  margin-top: 5px;
+  color: #fff;
+}
+.panel-with-tabs .panel-heading .nav-tabs > li.active a {
+  color: #242a30;
 }
 .display-flex {
   display: flex;

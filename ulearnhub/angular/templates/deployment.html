@@ -1,35 +1,26 @@
-    <div ui-view class="panel panel-inverse deployment active">
-        <div class="panel-heading">
-
-            <div class="panel-heading-btn pull-right">
-                <a class="btn btn-xs btn-icon btn-circle btn-default" ui-sref="deployments" title=""><i class="fa fa-compress"></i></a>
-                <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload" data-original-title="" title=""><i class="fa fa-repeat"></i></a>
-                <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse" data-original-title="" title=""><i class="fa fa-minus"></i></a>
-                <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
-            </div>
-
-
-
-            <h4 class="panel-title">:{{deploymentCtrl.obj.name}}</h4>
-        </div>
-        <div class="panel-body">
-
-            <h5 class="title">{{deploymentCtrl.obj.title}}</h5>
-            <div class="components">
-                <ul>
-                    <li ng-repeat="component in deploymentCtrl.obj.components" class="component">
-                        <i class="component-icon {{component.type}}"></i>{{component.name}}
-                    </li>
-                </ul>
-
-            </div>
-            <div>
-            <form class="form-inline">
-
-                <label for="new_component">New component</label>
-                <select name="new_component" class="form-control" ng-change="deploymentCtrl.forgeURL()" ng-model="deploymentCtrl.selectedComponent" ng-options="comp.desc for comp in deploymentCtrl.components track by comp.name"/>
-                                <button class="btn btn-success btn" ng-click="deploymentCtrl.newComponentModal()">Add</button>
-            </form>
-            </div>
-        </div>
+<h1 class="page-header">Deployments: <span>{{deploymentCtrl.obj.name}}</span> <br/><small>{{deploymentCtrl.obj.title}}</small></h1>
+<h5>Components</h5>
+<div class="panel dep-panel component" ng-repeat="component in deploymentCtrl.obj.components">
+    <div class="panel-heading">
+        <a>
+            <i class="component-icon {{component.type}}"></i>
+            <h4 class="component-type">{{component.type}}</h4>
+        </a>
     </div>
+    <div class="panel-body">
+
+    </div>
+    <div class="new subcomponent">
+        <i class="fa fa-plus"></i>New mongodb instance
+    </div>
+</div>
+<div class="panel dep-panel component new">
+    <div class="panel-heading">
+        <a href="" ng-click="deploymentCtrl.newComponentModal()">
+            <i class="fa fa-plus"></i>
+            <h4>Register new component</h4>
+        </a>
+
+                        <select name="new_component" class="form-control" ng-change="deploymentCtrl.forgeURL()" ng-model="deploymentCtrl.selectedComponent" ng-options="comp.desc for comp in deploymentCtrl.components track by comp.name" />
+    </div>
+</div>

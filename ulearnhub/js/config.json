@@ -88,6 +88,7 @@
             "ulearnhub/angular/hub/domains.controller.js",
             "ulearnhub/angular/hub/deployments.controller.js",
             "ulearnhub/angular/hub/deployment.controller.js",
+            "ulearnhub/angular/hub/deployment-status.controller.js",
             "ulearnhub/angular/hub.client/hub.client.module.js",
             "ulearnhub/angular/hub.client/hub.client.info.js",
             "ulearnhub/angular/hub.client/hub.client.service.js",

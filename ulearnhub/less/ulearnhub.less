@@ -2,10 +2,26 @@
   display: none !important;
 }
 
+body {
+    background-color: #F1F2F6;
+}
 
 
+h1.page-header{
+    span {
+        color: #00acac;
+    }
+    margin-bottom: 30px;
+}
+
+h5 {
+    border-bottom: 2px solid #eaeaea;
+    padding-bottom:10px;
+    margin-bottom:20px;
+    font-size: 16px;
+}
 #search-users-box {
-    background-color: #348fe2;
+    background-color: #00acac;
     position:relative;
     padding:20px;
     border-radius: 3px;
@@ -262,7 +278,7 @@ span.prop {
 }
 
 .sidebar .sub-menu>li.active>a:before {
-    color: #348fe2;
+    color: ##00acac;
 }
 
 #api-view.panel .form-group#resource-method #methods-list {
@@ -323,29 +339,60 @@ span.prop {
 }
 
 
-.deployment.panel {
+.dep-panel {
+    background-color: #F6F7F9;
     float:left;
     margin-right:20px;
     width:230px;
-    .panel-title {
-        font-size: 14px;
-        font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
-    }
-    &.active {
-        width: 100%;
-    }
-    .components {
-        ul {
-            padding:0px;
-        }
-        li {
-            list-style: none;
 
+    .panel-heading {
+
+        padding-top: 20px;
+        padding-bottom:20px;
+        border-top: 3px #00acac solid;
+        text-align: center;
+        a {
+            i, h4 {
+                font-size: 16px;
+                line-height: 20px;
+
+            }
+            h4 {
+                padding-top:5px;
+                font-weight: 400;
+            }
+            color: #2B3848;
+            text-decoration: none;
+            &:hover {
+                color: #000;
+            }
         }
+
+    }
+
+    .panel-body {
+        background-color: white;
+    }
+
+    &.new {
+        .panel-heading {
+            border:none;
+        }
+        padding:30px 0;
     }
 
 }
 
+
+.new {
+        i {
+            margin-right: 10px;
+        }
+        padding: 10px;
+        text-align: center;
+        a, h4, i{color: #C8CED6;}
+        border: 2px #C8CED6 dashed;
+    }
 
 i.component-icon {
             display: inline-block;
@@ -380,6 +427,28 @@ i.component-icon {
             background-image: url('../static/icons/max30x30.png')
         }
     }
+
+// Widget tabs
+
+.panel-with-tabs {
+    .panel-heading {
+        height:40px;
+        h4 {float:left}
+        .nav-tabs {
+            background:none;
+            float:left;
+            margin-left:40px;
+            &>li>a {
+                line-height: 15px;
+                margin-top: 5px;
+                color: #fff;
+            }
+            &>li.active a{
+                color:#242a30;
+            }
+        }
+    }
+}
 
 
 // Formly

@@ -13,7 +13,6 @@
 
   <!-- ================== BEGIN BASE CSS STYLE ================== -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
-
   <link href="${api.application_url}/css/font-awesome.min.css" rel="stylesheet" />
   <link href="${api.application_url}/components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="${api.application_url}/css/animate.min.css" rel="stylesheet">

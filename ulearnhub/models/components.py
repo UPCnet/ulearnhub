@@ -140,13 +140,23 @@ class MongoDBCluster(Component):
         super(MongoDBCluster, self).__init__(id, title, config)
 
 
-class MongoDBInstance(Component):
-    desc = "MongoDB Instance"
+class StandaloneMongoDBInstance(Component):
+    desc = "Standalone MongoDB Instance"
 
     def __init__(self, id, title, config):
         """
         """
-        super(MongoDBInstance, self).__init__(id, title, config)
+        super(StandaloneMongoDBInstance, self).__init__(id, title, config)
+
+
+class MongoDBReplicaMember(Component):
+    desc = "MongoDB Cluster Member"
+    constrain = ''
+
+    def __init__(self, id, title, config):
+        """
+        """
+        super(MongoDBReplicaMember, self).__init__(id, title, config)
 
 
 def get_component(name_or_class):

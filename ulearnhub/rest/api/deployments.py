@@ -35,7 +35,6 @@ def get_deployment(deployment, request):
     """
     deployment = deployment.as_dict()
     response = JSONResourceEntity(request, deployment, status_code=200)
-    deployment
     return response()
 
 

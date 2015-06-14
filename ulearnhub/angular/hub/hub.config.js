@@ -55,10 +55,16 @@
             resolve: {}
         })
 
-        .state('deployments.deployment', {
-            url: '/:name',
+        .state('deployment', {
+            url: '/deployments/:name',
             templateUrl: 'templates/deployment.html',
             controller: 'DeploymentDetailController as deploymentCtrl',
+            resolve: {}
+        })
+        .state('deployments.deployment.status', {
+            url: '/:name/status',
+            templateUrl: 'templates/deployment-status.html',
+            controller: 'DeploymentStatusController as depStatusCtrl',
             resolve: {}
         })
 

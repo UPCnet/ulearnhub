@@ -7,18 +7,18 @@
 .page-sidebar-minified .sidebar .nav > li.has-sub.active > a,
 .label.label-theme,
 .btn.btn-scroll-to-top {
-    background: #348fe2;
+    background: #00acac;
 }
 .navbar.navbar-inverse .navbar-brand {
     color: #fff !important;
 }
 .text-theme,
 .sidebar .sub-menu > li.active > a:before {
-    color: #348fe2;
+    color: #00acac;
 }
 @media (max-width: 767px) {
     .navbar-inverse .navbar-header {
-        background: #348fe2;
+        background: #00acac;
     }
 }
 
@@ -43,23 +43,23 @@
     background: -o-linear-gradient(top,  rgba(0,210,210,1) 0%,rgba(0,172,172,1) 100%); /* Opera 11.10+ */
     background: -ms-linear-gradient(top,  rgba(0,210,210,1) 0%,rgba(0,172,172,1) 100%); /* IE10+ */
     background: linear-gradient(to bottom,  rgba(0,210,210,1) 0%,rgba(0,172,172,1) 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00d2d2', endColorstr='#348fe2',GradientType=0 ); /* IE6-8 */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00d2d2', endColorstr='#00acac',GradientType=0 ); /* IE6-8 */
 }
 .pace-progress {
-    background: #348fe2;
+    background: #00acac;
 }
 .pace .pace-activity {
-    border-top-color: #348fe2;
-    border-left-color: #348fe2;
+    border-top-color: #00acac;
+    border-left-color: #00acac;
 }
 
 
 /* Added in v1.7 */
 
 .page-with-light-sidebar .sidebar .nav > li.active > a > i {
-    color: #348fe2;
+    color: #00acac;
 }
 .page-with-light-sidebar .sidebar .nav > li.active > a .badge,
 .page-with-light-sidebar .sidebar .nav > li.active > a .label.label-theme {
-    background: #348fe2;
+    background: #00acac;
 }
