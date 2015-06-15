@@ -62,17 +62,15 @@ class Deployment(PersistentMapping):
         self.title = title
         super(Deployment, self).__init__(*args, **kwargs)
 
-    def add_component(self, component_type, name, title, params):
+    def add_component(self, component_type, name, title, params, parent_component=None):
         Component = get_component(component_type)
         new_component = Component(name, title, params)
 
-        if Component.constrain:
-            multicomponent = self.get_component(Component.constrain)
-            multicomponent[name] = new_component
-            multicomponent[name].__parent__ = multicomponent
-        else:
-            self[name] = new_component
-            self[name].__parent__ = self
+        # set who's gonna hold this component: another component or the deployment itself
+        parent = parent_component if parent_component is not None else self
+
+        parent[name] = new_component
+        parent[name].__parent__ = parent
         return new_component
 
     def get_component(self, component_type, name=None):

@@ -83,6 +83,7 @@
             "ulearnhub/angular/hub/hub.controller.js",
             "ulearnhub/angular/hub/hub.controller.js",
             "ulearnhub/angular/hub/component.schemas.value.js",
+            "ulearnhub/angular/hub/exceptions.controller.js",
             "ulearnhub/angular/hub/exception.controller.js",
             "ulearnhub/angular/hub/users.controller.js",
             "ulearnhub/angular/hub/domains.controller.js",

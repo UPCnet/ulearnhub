@@ -291,10 +291,23 @@ span.prop {
   background: #f59c1a;
 }
 .dep-panel {
-  background-color: #F6F7F9;
+  position: relative;
+  border: 1px solid #e5e5e5;
+  background-color: #f2f2f2;
   float: left;
-  margin-right: 20px;
-  width: 230px;
+  margin-right: 18px;
+  width: 225px;
+}
+.dep-panel:hover i.delete {
+  display: block;
+}
+.dep-panel i.delete {
+  display: none;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 20px;
+  color: #DBDBDB;
 }
 .dep-panel .panel-heading {
   padding-top: 20px;
@@ -318,6 +331,22 @@ span.prop {
 .dep-panel .panel-heading a:hover {
   color: #000;
 }
+.dep-panel .components {
+  padding: 0px;
+  background-color: white;
+}
+.dep-panel .components .subcomponent {
+  height: 30px;
+  padding: 5px 10px;
+  border-top: 1px solid #e5e5e5;
+  float: left;
+  color: #242a30;
+  width: 100%;
+}
+.dep-panel .components .subcomponent i.status.active {
+  margin-right: 5px;
+  color: #21b384;
+}
 .dep-panel .panel-body {
   background-color: white;
 }
@@ -338,7 +367,7 @@ span.prop {
 .new a,
 .new h4,
 .new i {
-  color: #C8CED6;
+  color: #C1C3C7;
 }
 i.component-icon {
   display: inline-block;
@@ -348,7 +377,8 @@ i.component-icon {
   margin-right: 2px;
   margin-bottom: 2px;
 }
-i.component-icon.mongodbcluster {
+i.component-icon.mongodbcluster,
+i.component-icon.mongodbreplicamember {
   background-image: url('../static/icons/mongodb30x30.png');
 }
 i.component-icon.nginx {

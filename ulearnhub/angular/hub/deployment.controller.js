@@ -10,22 +10,26 @@
      * @desc
      */
     /* @nInject */
-    function DeploymentDetailController($cookies, $modal, $stateParams, DTOptionsBuilder, DTTranslations, DTColumnDefBuilder, HUBClientService) {
+    function DeploymentDetailController($cookies, $filter, $modal, $stateParams, components, DTOptionsBuilder, DTTranslations, DTColumnDefBuilder, HUBClientService) {
         var self = this;
 
         self.obj = HUBClientService.Deployment.get({
             name: $stateParams.name
         });
 
-        self.newComponentModal = newComponentModal;
         self.selectedComponent = {};
-        self.components = HUBClientService.Component.query();
+        self.components = components;
+        self.selectedComponent = self.components[0];
 
-        self.components.$promise.then(function(data) {
-            self.selectedComponent = data[0];
-        });
+        self.newComponentModal = newComponentModal;
+        self.newSubcomponentModal = newSubcomponentModal;
+        self.availableSubcomponents = availableSubcomponents;
 
         /////////////////////////////
+
+        function availableSubcomponents(componentType) {
+            return $filter('filter')(self.components, {type:componentType}, true)[0].components;
+        }
 
         function newComponentModal() {
             var modalInstance = $modal.open({
@@ -37,11 +41,43 @@
                     },
                     deployment_name: function() {
                         return self.obj.name;
+                    },
+                    parent_component: function() {
+                        return undefined;
+                    }
+
+                }
+            });
+            modalInstance.result.then(function() {
+                self.obj = HUBClientService.Deployment.get({
+                    name: $stateParams.name
+                });
+            }, function() {
+
+            });
+
+        }
+
+        function newSubcomponentModal(component, subcomponent) {
+            var modalInstance = $modal.open({
+                templateUrl: 'templates/new-component.html',
+                controller: 'NewComponentCtrl as newCompCtrl',
+                resolve: {
+                    component_type: function() {
+                        return subcomponent;
+                    },
+                    deployment_name: function() {
+                        return self.obj.name;
+                    },
+                    parent_component: function() {
+                        return component;
                     }
                 }
             });
-            modalInstance.result.then(function(newuser) {
-                self.users.push(newuser);
+            modalInstance.result.then(function() {
+                self.obj = HUBClientService.Deployment.get({
+                    name: $stateParams.name
+                });
             }, function() {
 
             });
@@ -53,12 +89,11 @@
      * @desc
      */
     /* @nInject */
-    function NewComponentCtrl($modalInstance, ComponentSchemas, HUBClientService, component_type, deployment_name) {
+    function NewComponentCtrl($modalInstance, ComponentSchemas, HUBClientService, component_type, deployment_name, parent_component) {
         var self = this;
-
         self.model = {};
         self.component_type = component_type;
-        self.formFields = ComponentSchemas[component_type.name];
+        self.formFields = ComponentSchemas[component_type.type];
         self.onSubmit = onSubmit;
         self.onCancel = onCancel;
 
@@ -69,14 +104,20 @@
             var title = self.model.title;
             delete self.model.name;
             delete self.model.title;
-            HUBClientService.DeploymentComponent.save({
-                    name: deployment_name
-                }, {
-                    'component': self.component_type.name,
+
+            var new_component = {
+                    'component': self.component_type.type,
                     'name': name,
                     'title': title,
                     'params': self.model
-                },
+                };
+            if (parent_component) {
+                new_component.parent = parent_component.name;
+            }
+
+            HUBClientService.DeploymentComponent.save({
+                    name: deployment_name
+                }, new_component,
                 function(data) {
                     $modalInstance.close(data);
                 },

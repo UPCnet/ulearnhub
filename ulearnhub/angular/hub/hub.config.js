@@ -59,7 +59,11 @@
             url: '/deployments/:name',
             templateUrl: 'templates/deployment.html',
             controller: 'DeploymentDetailController as deploymentCtrl',
-            resolve: {}
+            resolve: {
+                components: function(HUBClientService) {
+                    return HUBClientService.Component.query();
+                }
+            }
         })
         .state('deployments.deployment.status', {
             url: '/:name/status',

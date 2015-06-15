@@ -7,13 +7,19 @@ from ulearnhub.models.utils import ConfigWrapper
 from ulearnhub.models.utils import RabbitNotifications
 
 
+class classproperty(property):
+    def __get__(self, cls, owner):
+        return self.fget.__get__(None, owner)()
+
+
 class Component(PersistentMapping):
-    constrain = []
+    aggregable = None
     desc = 'Component'
 
-    @property
-    def type(self):
-        return self.__class__.__name__.lower()
+    @classproperty
+    @classmethod
+    def type(cls):
+        return cls.__name__.lower()
 
     def __repr__(self):
         return '<{} at "{}">'.format(self.__class__.__name__, self.__component_identifier__)
@@ -45,6 +51,7 @@ class Component(PersistentMapping):
         obj = {
             'name': self.id,
             'title': self.title,
+            'desc': self.desc,
             'type': self.type,
             'components': [component.as_dict() for component in self.values()]
         }
@@ -59,7 +66,7 @@ class MaxCluster(Component):
 
 
 class MaxServer(Component):
-    constrain = MaxCluster
+    aggregable = MaxCluster
     desc = "MAX server"
 
     def __init__(self, id, title, config):
@@ -132,7 +139,7 @@ class UlearnSite(Component):
 
 
 class MongoDBCluster(Component):
-    desc = "MongoDB Cluster"
+    desc = "MongoDB Replicaset"
 
     def __init__(self, id, title, config):
         """
@@ -140,18 +147,18 @@ class MongoDBCluster(Component):
         super(MongoDBCluster, self).__init__(id, title, config)
 
 
-class StandaloneMongoDBInstance(Component):
+class MongoDBStandalone(Component):
     desc = "Standalone MongoDB Instance"
 
     def __init__(self, id, title, config):
         """
         """
-        super(StandaloneMongoDBInstance, self).__init__(id, title, config)
+        super(MongoDBStandalone, self).__init__(id, title, config)
 
 
 class MongoDBReplicaMember(Component):
     desc = "MongoDB Cluster Member"
-    constrain = ''
+    aggregable = MongoDBCluster
 
     def __init__(self, id, title, config):
         """
@@ -176,4 +183,4 @@ def is_component(klass):
     bases = getattr(klass, '__bases__', [])
     return Component in bases
 
-COMPONENTS = {klass.__name__.lower(): klass for klass in locals().values() if is_component(klass)}
+COMPONENTS = {klass.type: klass for klass in locals().values() if is_component(klass)}
