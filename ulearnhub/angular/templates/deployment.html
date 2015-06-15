@@ -2,33 +2,22 @@
 <h5>Components</h5>
 <div class="panel dep-panel component" ng-repeat="component in deploymentCtrl.obj.components">
     <div class="panel-heading">
-        <i class="fa fa-times-circle delete" ng-click="deploymentCtrl.deleteComponentModal(component)"></i>
-
         <a>
             <i class="component-icon {{component.type}}"></i>
-            <h4 class="component-type">{{component.desc}}</h4>
-            <small class="component-type">{{component.title}}</small>
-
+            <h4 class="component-type">{{component.type}}</h4>
         </a>
     </div>
-    <div class="components">
-        <div class="subcomponent" ng-repeat="subcomponent in component.components" ng-class-odd="'odd'">
-                <i class="fa fa-circle-o status active"></i>{{subcomponent.name}}
-        </div>
+    <div class="panel-body">
     </div>
-    <div class="panel-body"></div>
-    <div class="new subcomponent" ng-repeat="subcomponent in deploymentCtrl.availableSubcomponents(component.type)">
-        <a ng-click="deploymentCtrl.newSubcomponentModal(component, subcomponent)">
-            <i class="fa fa-plus"></i>New {{subcomponent.desc}}
-        </a>
+    <div class="new subcomponent">
+        <i class="fa fa-plus"></i>New mongodb instance
     </div>
 </div>
 <div class="panel dep-panel component new">
     <div class="panel-heading">
-        <a href="" ng-click="deploymentCtrl.newComponentModal()">
-            <i class="fa fa-plus"></i>
-            <h4>Register new component</h4>
-        </a>
-        <select name="new_component" class="form-control" ng-model="deploymentCtrl.selectedComponent" ng-options="comp.desc for comp in deploymentCtrl.components track by comp.type" />
+
+        <h4>Register new component</h4>
+        <select name="new_component" class="form-control" ng-change="deploymentCtrl.forgeURL()" ng-model="deploymentCtrl.selectedComponent" ng-options="comp.desc for comp in deploymentCtrl.components track by comp.type" />
+        <a href="" ng-click="deploymentCtrl.newComponentModal()"><i class="fa fa-plus-circle"></i></a>
     </div>
 </div>

@@ -1,6 +1,14 @@
 (function() {
     'use strict';
 
+    var LDAP_SCOPES = [{
+        name: "SCOPE_SUBTREE",
+        value: "SCOPE_SUBTREE"
+    }, {
+        name: "SCOPE_ONELEVEL",
+        value: "SCOPE_ONLEVEL"
+    }];
+
     function baseInput(type, name, label, placeholder, default_value, classname) {
         return {
             key: name,
@@ -36,6 +44,18 @@
             className: classname,
             templateOptions: {
                 label: label
+            }
+        };
+    }
+
+    function selectInput(name, label, options, classname) {
+        return {
+            key: name,
+            type: "select",
+            className: classname,
+            templateOptions: {
+                label: label,
+                options: options
             }
         };
     }
@@ -83,12 +103,12 @@
                 ]),
                 titleSeparator('Search parameters:'),
                 fieldGroup([
-                    textInput('users_base_dn', 'LDAP bind dn', '', '', 'flex-2'),
-                    textInput('user_scope', 'LDAP bind password', '', '', 'flex-1')
+                    textInput('users_base_dn', 'Base DN where users live', '', '', 'flex-2'),
+                    selectInput('user_scope', 'Scope to search', LDAP_SCOPES, 'flex-1')
                 ]),
                 fieldGroup([
-                    textInput('group_base_dn', 'LDAP bind dn', '', '', 'flex-2'),
-                    textInput('group_scope', 'LDAP bind password', '', '', 'flex-1')
+                    textInput('group_base_dn', 'Base DN where users live', '', '', 'flex-2'),
+                    selectInput('group_scope', 'Scope to search', LDAP_SCOPES, 'flex-1')
                 ])
             ],
 

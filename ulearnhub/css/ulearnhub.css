@@ -351,10 +351,15 @@ span.prop {
   background-color: white;
 }
 .dep-panel.new {
-  padding: 30px 0;
+  padding: 10px 0;
 }
 .dep-panel.new .panel-heading {
   border: none;
+  padding: 10px ;
+}
+.dep-panel.new a > i {
+  margin-top: 10px;
+  font-size: 30px;
 }
 .new {
   padding: 10px;
