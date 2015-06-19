@@ -11,6 +11,8 @@
             'ngSanitize',
             'ngCookies',
             'pascalprecht.translate',
+            'formly',
+            'formlyBootstrap',
 
             'hub.sidebar',
             'hub.client',
@@ -26,7 +28,7 @@
         .module('hub')
         .config(config);
 
-    function config(sidebarSectionsProvider, uiSelectConfig, $urlRouterProvider, $translateProvider, $stateProvider) {
+    function config(sidebarSectionsProvider, uiSelectConfig, $urlRouterProvider, $translateProvider, $stateProvider, formlyConfigProvider) {
         sidebarSectionsProvider.setSections([{
             title: 'Dashboard',
             sref: 'domain',
@@ -48,6 +50,7 @@
             sref: 'exceptions',
             icon: 'exclamation-triangle'
         }]);
+
 
         uiSelectConfig.theme = 'bootstrap';
         $urlRouterProvider.otherwise('/');
@@ -72,6 +75,23 @@
             url: '/deployments',
             templateUrl: 'templates/deployments.html',
             controller: 'DeploymentListController as deploymentsCtrl',
+            resolve: {}
+        })
+
+        .state('deployment', {
+            url: '/deployments/:name',
+            templateUrl: 'templates/deployment.html',
+            controller: 'DeploymentDetailController as deploymentCtrl',
+            resolve: {
+                components: ["HUBClientService", function(HUBClientService) {
+                    return HUBClientService.Component.query();
+                }]
+            }
+        })
+        .state('deployments.deployment.status', {
+            url: '/:name/status',
+            templateUrl: 'templates/deployment-status.html',
+            controller: 'DeploymentStatusController as depStatusCtrl',
             resolve: {}
         })
 
@@ -102,7 +122,7 @@
         });
 
     }
-    config.$inject = ["sidebarSectionsProvider", "uiSelectConfig", "$urlRouterProvider", "$translateProvider", "$stateProvider"];
+    config.$inject = ["sidebarSectionsProvider", "uiSelectConfig", "$urlRouterProvider", "$translateProvider", "$stateProvider", "formlyConfigProvider"];
 })();
 
 (function() {
@@ -136,6 +156,141 @@
         }
     }
     MainAppController.$inject = ["sidebarSections", "$translate"];
+})();
+
+(function() {
+    'use strict';
+
+    var LDAP_SCOPES = [{
+        name: "SCOPE_SUBTREE",
+        value: "SCOPE_SUBTREE"
+    }, {
+        name: "SCOPE_ONELEVEL",
+        value: "SCOPE_ONLEVEL"
+    }];
+
+    function baseInput(type, name, label, placeholder, default_value, classname) {
+        return {
+            key: name,
+            type: 'input',
+            defaultValue: default_value,
+            className: classname,
+            templateOptions: {
+                type: type,
+                label: label,
+                placeholder: placeholder
+            }
+        };
+    }
+
+    function textInput(name, label, placeholder, default_value, classname) {
+        return baseInput('input', name, label, placeholder, default_value, classname);
+    }
+
+    function passwordInput(name, label, placeholder, default_value, classname) {
+        return baseInput('password', name, label, placeholder, default_value, classname);
+    }
+
+    function titleSeparator(title) {
+        return {
+            "template": '<hr /><div class="fieldgroup-title"><strong>' + title + '</strong></div>'
+        };
+    }
+
+    function checkboxInput(name, label, classname) {
+        return {
+            key: name,
+            type: 'checkbox',
+            className: classname,
+            templateOptions: {
+                label: label
+            }
+        };
+    }
+
+    function selectInput(name, label, options, classname) {
+        return {
+            key: name,
+            type: "select",
+            className: classname,
+            templateOptions: {
+                label: label,
+                options: options
+            }
+        };
+    }
+
+    function fieldGroup(fields) {
+        return {
+            className: "display-flex",
+            fieldGroup: fields
+        };
+    }
+
+    angular
+        .module('hub')
+        .value('ComponentSchemas', {
+
+            mongodbreplicamember: [
+                fieldGroup([
+                    textInput('name', 'Component Identifier', '', 'mongocluster', 'flex-1'),
+                    textInput('title', 'Component Description', '', '', 'flex-1')
+                ]),
+                titleSeparator('Setup parameters:'),
+                textInput('path', 'Setup path', '', '/var/mongodb', ''),
+                fieldGroup([
+                    textInput('server', 'Server where is installed', '', '', 'flex-2'),
+                    textInput('host', 'Effective dns of member', '', '', 'flex-2'),
+                    textInput('port', 'port', '', '27001', 'flex-1')
+                ])
+
+            ],
+
+            ldapserver: [
+                fieldGroup([
+                    textInput('name', 'Component Identifier', '', 'mongocluster', 'flex-1'),
+                    textInput('title', 'Component Description', '', '', 'flex-1')
+                ]),
+                titleSeparator('Server parameters:'),
+                fieldGroup([
+                    textInput('server', 'LDAP server uri', 'ldaps://server:port', '', 'flex-1'),
+                    checkboxInput('readonly', 'Do not write to this server', 'flex-1')
+                ]),
+                titleSeparator('Security settings:'),
+                fieldGroup([
+                    textInput('admin_dn', 'LDAP bind dn', '', '', 'flex-1'),
+                    textInput('admin_password', 'LDAP bind password', '', '', 'flex-1')
+                ]),
+                titleSeparator('Search parameters:'),
+                fieldGroup([
+                    textInput('users_base_dn', 'Base DN where users live', '', '', 'flex-2'),
+                    selectInput('user_scope', 'Scope to search', LDAP_SCOPES, 'flex-1')
+                ]),
+                fieldGroup([
+                    textInput('group_base_dn', 'Base DN where users live', '', '', 'flex-2'),
+                    selectInput('group_scope', 'Scope to search', LDAP_SCOPES, 'flex-1')
+                ])
+            ],
+
+            mongodbcluster: [
+                fieldGroup([
+                    textInput('name', 'Component Identifier', '', 'mongocluster', 'flex-1'),
+                    textInput('title', 'Component Description', '', '', 'flex-1')
+                ]),
+                textInput('replicaset', 'Replicaset name for this cluster', '', '', 'input-small'),
+                titleSeparator('Security settings:'),
+                fieldGroup([
+                    textInput('root_username', 'Mongodb "root" user', '', 'root', 'flex-1'),
+                    passwordInput('root_password', 'Mongodb "root" password', 'password', '', 'flex-1')
+                ]),
+                fieldGroup([
+                    textInput('db_username', 'Mongodb databases administrator user', '', 'admin', 'flex-1'),
+                    passwordInput('db_password', 'Mongodb databases administrator password', 'password', '', 'flex-1')
+                ]),
+                textInput('admindb', 'Name of the database used for global authentication,\n leave blank to authenticate directly on working database.', '', '', 'input-small')
+            ]
+        });
+
 })();
 
 (function() {
@@ -359,7 +514,7 @@
      * @desc
      */
     /* @nInject */
-    function DeploymentsListController($cookies, DTOptionsBuilder, DTTranslations, DTColumnDefBuilder, HUBClientService) {
+    function DeploymentsListController($cookies, $modal, DTOptionsBuilder, DTTranslations, DTColumnDefBuilder, HUBClientService) {
         var self = this;
         var lang = $cookies.currentLang;
         // Default datatable options
@@ -374,24 +529,10 @@
             DTColumnDefBuilder.newColumnDef(2)
         ];
 
-        self.domains = HUBClientService.Domain.query();
+        self.deployments = HUBClientService.Deployment.query();
 
-
-        self.open = function(size) {
-
-            var modalInstance = $modal.open({
-                templateUrl: 'new-domain.html',
-                controller: 'ModalInstanceCtrl',
-                size: size
-            });
-
-            modalInstance.result
-                .then(function(newdomain) {
-                    self.domains.push(newdomain);
-                });
-        };
     }
-    DeploymentsListController.$inject = ["$cookies", "DTOptionsBuilder", "DTTranslations", "DTColumnDefBuilder", "HUBClientService"];
+    DeploymentsListController.$inject = ["$cookies", "$modal", "DTOptionsBuilder", "DTTranslations", "DTColumnDefBuilder", "HUBClientService"];
 
     /**
      * @desc
@@ -422,6 +563,162 @@
         };
     }
     NewDeploymentModalController.$inject = ["$scope", "$modalInstance", "$modal", "HUBClientService"];
+
+})();
+
+(function() {
+    'use strict';
+
+    angular
+        .module('hub')
+        .controller('DeploymentDetailController', DeploymentDetailController)
+        .controller('NewComponentCtrl', NewComponentCtrl);
+
+    /**
+     * @desc
+     */
+    /* @nInject */
+    function DeploymentDetailController($cookies, $filter, $modal, $stateParams, components, DTOptionsBuilder, DTTranslations, DTColumnDefBuilder, HUBClientService) {
+        var self = this;
+
+        self.obj = HUBClientService.Deployment.get({
+            name: $stateParams.name
+        });
+
+        self.selectedComponent = {};
+        self.components = components;
+        self.selectedComponent = self.components[0];
+
+        self.newComponentModal = newComponentModal;
+        self.newSubcomponentModal = newSubcomponentModal;
+        self.availableSubcomponents = availableSubcomponents;
+
+        /////////////////////////////
+
+        function availableSubcomponents(componentType) {
+            return $filter('filter')(self.components, {type:componentType}, true)[0].components;
+        }
+
+        function newComponentModal() {
+            var modalInstance = $modal.open({
+                templateUrl: 'templates/new-component.html',
+                controller: 'NewComponentCtrl as newCompCtrl',
+                resolve: {
+                    component_type: function() {
+                        return self.selectedComponent;
+                    },
+                    deployment_name: function() {
+                        return self.obj.name;
+                    },
+                    parent_component: function() {
+                        return undefined;
+                    }
+
+                }
+            });
+            modalInstance.result.then(function() {
+                self.obj = HUBClientService.Deployment.get({
+                    name: $stateParams.name
+                });
+            }, function() {
+
+            });
+
+        }
+
+        function newSubcomponentModal(component, subcomponent) {
+            var modalInstance = $modal.open({
+                templateUrl: 'templates/new-component.html',
+                controller: 'NewComponentCtrl as newCompCtrl',
+                resolve: {
+                    component_type: function() {
+                        return subcomponent;
+                    },
+                    deployment_name: function() {
+                        return self.obj.name;
+                    },
+                    parent_component: function() {
+                        return component;
+                    }
+                }
+            });
+            modalInstance.result.then(function() {
+                self.obj = HUBClientService.Deployment.get({
+                    name: $stateParams.name
+                });
+            }, function() {
+
+            });
+
+        }
+    }
+    DeploymentDetailController.$inject = ["$cookies", "$filter", "$modal", "$stateParams", "components", "DTOptionsBuilder", "DTTranslations", "DTColumnDefBuilder", "HUBClientService"];
+
+    /**
+     * @desc
+     */
+    /* @nInject */
+    function NewComponentCtrl($modalInstance, ComponentSchemas, HUBClientService, component_type, deployment_name, parent_component) {
+        var self = this;
+        self.model = {};
+        self.component_type = component_type;
+        self.formFields = ComponentSchemas[component_type.type];
+        self.onSubmit = onSubmit;
+        self.onCancel = onCancel;
+
+        /////////////////////////
+
+        function onSubmit() {
+            var name = self.model.name;
+            var title = self.model.title;
+            delete self.model.name;
+            delete self.model.title;
+
+            var new_component = {
+                    'component': self.component_type.type,
+                    'name': name,
+                    'title': title,
+                    'params': self.model
+                };
+            if (parent_component) {
+                new_component.parent = parent_component.name;
+            }
+
+            HUBClientService.DeploymentComponent.save({
+                    name: deployment_name
+                }, new_component,
+                function(data) {
+                    $modalInstance.close(data);
+                },
+                function() {
+                    //fail
+                });
+        }
+
+        function onCancel() {
+            $modalInstance.dismiss('cancel');
+        }
+
+    }
+    NewComponentCtrl.$inject = ["$modalInstance", "ComponentSchemas", "HUBClientService", "component_type", "deployment_name", "parent_component"];
+
+})();
+
+(function() {
+    'use strict';
+
+    angular
+        .module('hub')
+        .controller('DeploymentStatusController', DeploymentStatusController);
+
+    /**
+     * @desc
+     */
+    /* @nInject */
+    function DeploymentStatusController(HUBClientService) {
+        var self = this;
+    }
+    DeploymentStatusController.$inject = ["HUBClientService"];
 
 })();
 
@@ -505,6 +802,32 @@
                 get: {method:'GET', headers:hubInfo.headers}
             }
         );
+        this.Component = $resource(
+            hubInfo.server + '/api/components/:name',
+            null,
+            {
+                query: {method:'GET', isArray: true, headers:hubInfo.headers},
+            }
+        );
+
+        this.Deployment = $resource(
+            hubInfo.server + '/api/deployments/:name',
+            null,
+            {
+                query: {method:'GET', isArray: true, headers:hubInfo.headers},
+                save: {method:'POST', headers:hubInfo.headers},
+                get: {method:'GET', headers:hubInfo.headers}
+            }
+        );
+
+        this.DeploymentComponent = $resource(
+            hubInfo.server + '/api/deployments/:name/components',
+            null,
+            {
+                save: {method:'POST', headers:hubInfo.headers}
+            }
+        );
+
         this.User = $resource(
             hubInfo.server + '/api/users/:username',
             null,
