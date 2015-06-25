@@ -146,7 +146,7 @@ class SyncACL(Service):
 
             ldapserver.server.connect()
             for group in acl_groups:
-                users = ldapserver.server.get_group_users(None, group['id'])
+                users = ldapserver.server.get_group_users(group['id'])
                 for username in users:
                     yield {'id': username, 'role': group['role'], 'group': group['id']}
 
