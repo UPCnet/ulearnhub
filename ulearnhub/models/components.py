@@ -123,7 +123,8 @@ class LdapServer(Component):
         """
         self.config = config
         self.readonly = self.config.pop('readonly', False)
-        self.server = GumLdapServer(ConfigWrapper(self.config))
+
+        self.server = GumLdapServer(ConfigWrapper.from_dict(self.config))
 
         super(LdapServer, self).__init__(id, title, config)
 

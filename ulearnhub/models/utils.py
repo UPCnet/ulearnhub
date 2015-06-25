@@ -36,7 +36,7 @@ class ConfigWrapper(PersistentMapping):
         return wrapper
 
     def __getattr__(self, key):
-        if self.get(key):
+        if key in self:
             return self[key]
 
         else:
