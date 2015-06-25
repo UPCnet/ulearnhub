@@ -1,11 +1,10 @@
 CHANGELOG
 =========
 
-1.2.2 (unreleased)
+1.2.2 (2015-06-25)
 ------------------
 
-- Nothing changed yet.
-
+* Update to match last gummanager libs changes [Carles Bruguera]
 
 1.2.1 (2015-06-22)
 ------------------
