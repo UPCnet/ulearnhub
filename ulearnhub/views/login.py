@@ -16,10 +16,12 @@ from maxclient.client import BadUsernameOrPasswordError
 
 def get_max_user_data(client, username):
     """
-        Get userdata from max or fallback to defaults
+        Get userdata from max or fallback to defaults.
+
+        Creates user if not exists yet
     """
     try:
-        user_data = client.people[username].get()
+        user_data = client.people[username].post(qs=dict(notifications=True))
         display_name = user_data.get('displayName', username)
     except RequestError:
         display_name = username
