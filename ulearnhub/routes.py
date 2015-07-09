@@ -38,6 +38,7 @@ ROUTES['api_deployments'] = dict(route='/api/deployments', traverse='/deployment
 ROUTES['api_deployment'] = dict(route='/api/deployments/{deployment}', traverse='/deployments/{deployment}')
 ROUTES['api_deployment_components'] = dict(route='/api/deployments/{deployment}/components', traverse='/deployments/{deployment}')
 ROUTES['api_deployment_component'] = dict(route='/api/deployments/{deployment}/components/{component}', traverse='/deployments/{deployment}')
+ROUTES['api_deployment_component_service'] = dict(route='/api/deployments/{deployment}/components/{component}/services/{service}', traverse='/deployments/{deployment}/{component}')
 
 ROUTES['api_components'] = dict(route='/api/components')
 
@@ -52,7 +53,7 @@ ROUTES['api_user_role'] = dict(route='/api/users/{domain}/{username}/roles/{role
 
 # SERVICES ENDPOINTS
 ROUTES['api_domain_services'] = dict(route='/api/domains/{domain}/services', traverse='/domains/{domain}')
-ROUTES['api_domain_service'] = dict(route='/api/domains/{domain}/services/{service}', traverse='/domains/{domain}/services/{service}')
+ROUTES['api_domain_service'] = dict(route='/api/domains/{domain}/services/{service}', traverse='/domains/{domain}')
 
 # NON-API ROUTES
 ROUTES['root'] = dict(route='/')

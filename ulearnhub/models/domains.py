@@ -3,11 +3,10 @@ from maxclient.rest import MaxClient
 
 from ulearnhub.models.components import MaxServer
 from ulearnhub.models.components import get_component
-from ulearnhub.models.services import ServicesContainer
 from ulearnhub.security import Manager
 from ulearnhub.security import permissions
 
-from pyramid.security import Allow
+from pyramid.security import Allow, Authenticated
 
 from persistent.mapping import PersistentMapping
 
@@ -59,7 +58,8 @@ class Domain(PersistentMapping):
         return [
             (Allow, Manager, permissions.view_domain),
             (Allow, Manager, permissions.assign_component),
-            (Allow, Manager, permissions.impersonate)
+            (Allow, Manager, permissions.impersonate),
+            (Allow, Authenticated, permissions.execute_service)
         ]
 
     @property
@@ -88,7 +88,10 @@ class Domain(PersistentMapping):
         super(Domain, self).__init__()
         self.name = name
         self.title = title
-        self['services'] = ServicesContainer(self)
+
+        # Import here to avoid import dependencies loop
+        from ulearnhub.models.services import ServicesContainer
+        self.services = ServicesContainer(self)
 
     def as_dict(self):
         di = self.__dict__.copy()

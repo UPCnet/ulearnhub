@@ -24,9 +24,9 @@ import time
 
 
 def ldap_patch_group_search(response):
-    def patched(ldapserver, branch, group, *args, **kwargs):
+    def patched(ldapserver, group, *args, **kwargs):
         return response[group]
-    return patch('gummanager.libs._ldap.LdapServer.get_branch_group_users', new=patched)
+    return patch('gummanager.libs._ldap.LdapServer.get_group_users', new=patched)
 
 
 def ldap_patch_connect():
@@ -115,7 +115,7 @@ class UlearnhubSyncaclFunctionalTests(UlearnHUBBaseTestCase):
         http_mock_get_context(aclless_context)
         http_mock_get_context_subscriptions(subscriptions)
 
-        self.testapp.post('/api/domains/test/services/syncacl'.format(), json.dumps(batch_subscribe_request), oauth2Header(test_user), status=403)
+        self.testapp.post('/api/domains/test/services/syncacl'.format(), json.dumps(batch_subscribe_request), headers=oauth2Header(test_user), status=403)
 
     def test_domain_syncacl_bad_context_permissions(self):
         """
@@ -130,7 +130,7 @@ class UlearnhubSyncaclFunctionalTests(UlearnHUBBaseTestCase):
         http_mock_get_context(context, status=403)
         http_mock_get_context_subscriptions(subscriptions)
 
-        self.testapp.post('/api/domains/test/services/syncacl'.format(), json.dumps(batch_subscribe_request), oauth2Header(test_user), status=403)
+        self.testapp.post('/api/domains/test/services/syncacl'.format(), json.dumps(batch_subscribe_request), headers=oauth2Header(test_user), status=403)
 
     def test_domain_syncacl_initial_subscriptions(self):
         """
@@ -154,7 +154,7 @@ class UlearnhubSyncaclFunctionalTests(UlearnHUBBaseTestCase):
             'TestGroup3': ldap_test_group3
         }))
 
-        self.testapp.post('/api/domains/test/services/syncacl'.format(), json.dumps(batch_subscribe_request), oauth2Header(test_user), status=200)
+        self.testapp.post('/api/domains/test/services/syncacl'.format(), json.dumps(batch_subscribe_request), headers=oauth2Header(test_user), status=200)
 
         # Index by username to be able to make asserts
         # This is mandatory, as we cannot assume the order of the queue
@@ -223,7 +223,7 @@ class UlearnhubSyncaclFunctionalTests(UlearnHUBBaseTestCase):
             'TestGroup3': ldap_test_group3
         }))
 
-        self.testapp.post('/api/domains/test/services/syncacl'.format(), json.dumps(batch_subscribe_request2), oauth2Header(test_user), status=200)
+        self.testapp.post('/api/domains/test/services/syncacl'.format(), json.dumps(batch_subscribe_request2), headers=oauth2Header(test_user), status=200)
 
         # Index by username to be able to make asserts
         # This is mandatory, as we cannot assume the order of the queue
@@ -284,7 +284,7 @@ class UlearnhubSyncaclFunctionalTests(UlearnHUBBaseTestCase):
             'TestGroup4': ldap_test_group4
         }))
 
-        self.testapp.post('/api/domains/test/services/syncacl'.format(), json.dumps(batch_subscribe_request3), oauth2Header(test_user), status=200)
+        self.testapp.post('/api/domains/test/services/syncacl'.format(), json.dumps(batch_subscribe_request3), headers=oauth2Header(test_user), status=200)
 
         # Index by username to be able to make asserts
         # This is mandatory, as we cannot assume the order of the queue
@@ -315,7 +315,7 @@ class UlearnhubSyncaclFunctionalTests(UlearnHUBBaseTestCase):
         http_mock_get_context(context)
         http_mock_get_context_subscriptions(subscriptions)
 
-        self.testapp.post('/api/domains/test/services/syncacl'.format(), json.dumps(batch_subscribe_request4), oauth2Header(test_user), status=200)
+        self.testapp.post('/api/domains/test/services/syncacl'.format(), json.dumps(batch_subscribe_request4), headers=oauth2Header(test_user), status=200)
 
         # Index by username to be able to make asserts
         # This is mandatory, as we cannot assume the order of the queue

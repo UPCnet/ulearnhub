@@ -7,6 +7,8 @@ from ulearnhub.tests import MOCK_TOKEN
 TEST_MAXSERVER = 'http://localhost:8081'
 
 
+# Oauth requests mocks
+
 def http_mock_gettoken():
     httpretty.register_uri(
         httpretty.POST, re.compile(".*?/token"),
@@ -24,6 +26,8 @@ def http_mock_checktoken():
         content_type="application/json"
     )
 
+
+# MAX requests mocks
 
 def http_mock_user_info():
     info = {
@@ -65,6 +69,19 @@ def http_mock_get_context_subscriptions(subscriptions, uri=TEST_MAXSERVER, statu
     httpretty.register_uri(
         httpretty.GET, re.compile("{}/contexts/\w+/subscriptions".format(uri)),
         body=json.dumps(subscriptions),
+        status=status,
+        content_type="application/json"
+    )
+
+# Ulearn communities mocks
+
+TEST_COMMUNITIES_SITE = 'http://test.communities'
+
+
+def http_mock_group_communities(response, uri=TEST_COMMUNITIES_SITE, status=200):
+    httpretty.register_uri(
+        httpretty.GET, re.compile('{}/api/groups/\w+/communities'.format(uri)),
+        body=json.dumps(response),
         status=status,
         content_type="application/json"
     )

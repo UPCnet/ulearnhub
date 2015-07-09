@@ -9,18 +9,30 @@ test_ldap_component = {
     'title': 'Test LDAP',
     'params': {
         "server": "testldap",
+        "readonly": True,
         "name": "Test LDAP",
-        "port": 636,
-        "base_dn": "dc=test,dc=com",
-        "admin_cn": "admin",
+        "admin_dn": "admin",
         "admin_password": "dummy",
-        "branch_admin_cn": "branch_admin",
-        "branch_admin_password": "dummy",
-        "branch_users_dn": "ou=Users",
-        "branch_groups_dn": "ou=Groups"
+        "users_base_dn": "ou=Users",
+        "user_scope": "SCOPE_SUBTREE",
+        "group_base_dn": "ou=Groups",
+        "group_scope": "SCOPE_SUBTREE",
+        "branches": {
+            "enabled": False
+        }
     }
 }
 
+test_communities_component = {
+    'component': 'ulearncommunities',
+    'name': 'testcommunities',
+    'title': 'Test ULearn Communities',
+    'params': {
+        "url": "http://test.communities",
+        "api_username": "admin",
+        "api_password": "dummy",
+    }
+}
 test_maxcluster_component = {
     'component': 'maxcluster',
     'name': 'testmaxcluster',

@@ -5,6 +5,10 @@ from gummanager.libs import LdapServer as GumLdapServer
 from persistent.mapping import PersistentMapping
 from ulearnhub.models.utils import ConfigWrapper
 from ulearnhub.models.utils import RabbitNotifications
+from pyramid.security import Allow, Authenticated
+from ulearnhub.security import permissions
+
+import requests
 
 
 class classproperty(property):
@@ -28,6 +32,11 @@ class Component(PersistentMapping):
     def __component_identifier__(self):
         return id(self)
 
+    def __acl__(self):
+        return [
+            (Allow, Authenticated, permissions.execute_service)
+        ]
+
     def set_config(self, config):
         self.config = ConfigWrapper.from_dict(config)
 
@@ -36,6 +45,10 @@ class Component(PersistentMapping):
         self.title = title
         self.id = id
         self.set_config(config)
+
+        # Import here to avoid import dependencies loop
+        from ulearnhub.models.services import ServicesContainer
+        self.services = ServicesContainer(self)
 
     def get_component(self, component_type, name=None):
         ComponentClass = get_component(component_type)
@@ -53,7 +66,7 @@ class Component(PersistentMapping):
             'title': self.title,
             'desc': self.desc,
             'type': self.type,
-            'components': [component.as_dict() for component in self.values()]
+            'components': [component.as_dict() for component in self.values() if isinstance(component, Component)]
         }
         return obj
 
@@ -129,14 +142,24 @@ class LdapServer(Component):
         super(LdapServer, self).__init__(id, title, config)
 
 
-class UlearnSite(Component):
-    desc = "ULearn instance"
+class ULearnCommunities(Component):
+    desc = "ULearn Communities instance"
 
     def __init__(self, id, title, config):
         """
             Create a domain
         """
-        super(UlearnSite, self).__init__(id, title, config)
+        super(ULearnCommunities, self).__init__(id, title, config)
+
+    def get_communities_with_group(self, group):
+        endpoint_url = '{}/api/groups/{}/communities'.format(self.config.url, group)
+        headers = {
+            'X-Oauth-Scope': 'widgetcli',
+            'X-Oauth-Username': self.config.api_username,
+            'X-Oauth-Token': self.config.api_password,
+        }
+        result = requests.get(endpoint_url, headers=headers)
+        return result.json()
 
 
 class MongoDBCluster(Component):

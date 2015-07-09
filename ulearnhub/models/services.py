@@ -2,14 +2,13 @@
 from ulearnhub.models.components import LdapServer
 from ulearnhub.models.components import MaxServer
 from ulearnhub.models.components import RabbitServer
+from ulearnhub.models.components import ULearnCommunities
+from ulearnhub.models.domains import Domain
 from ulearnhub.models.utils import generate_actions
-from ulearnhub.models.utils import merge_actions
-from ulearnhub.security import permissions
-from max.security import permissions as max_permissions
-from max.exceptions import Forbidden
-from maxclient.client import RequestError
-from pyramid.security import Allow
-from pyramid.security import Authenticated
+from ulearnhub.models.utils import merge_actions, get_context_data
+from ulearnhub.models.utils import GroupUsersRetriever
+from ulearnhub.models.utils import intersect_users
+from ulearnhub.resources import root_factory
 from itertools import chain
 import gevent
 
@@ -21,19 +20,21 @@ class ServicesContainer(object):
 
     def __getitem__(self, key):
         Service = SERVICES[key]
-        return Service(self.__parent__)
+        if isinstance(self.__parent__, Service.allowed_caller):
+            return Service(self.__parent__)
 
 
 class Service(object):
 
     @property
     def __acl__(self):
-        return [
-            (Allow, Authenticated, permissions.execute_service),
-        ]
+        return []
 
-    def __init__(self, domain):
-        self.__parent = self.domain = domain
+    def __init__(self, parent):
+        """
+            Store the object that the service is called on.
+        """
+        self.__parent__ = parent
 
     def run(self, request):
         for component_name in self.target_components:
@@ -48,27 +49,128 @@ class Service(object):
         pass
 
 
-class SyncACL(Service):
-    name = 'syncacl'
+class SyncLDAPGroup(Service):
+    name = 'syncldapgroup'
     target_components = ['rabbitmq']
+    allowed_caller = LdapServer
 
     def handle_rabbitmq(self, request, *args, **kwargs):
         """
-            Queues subscription tasks to the domain's rabbitmq broker.
+            Update a groups user subscription on directory changes.
 
-            Format of request as follows:
+            For any community found using the group contained in the
+            request, the full list of users is extracted and a minimum
+            set of taskjs (SUB or UNSUB) is generated per-context. At the
+            end, any added or removed user in the group will be synced so
+            the subscriptions of that context match the users on the group.
+
+            Format of request to this service is as follows:
+
+            {
+                "component": {
+                    "type": "ldap",
+                    "id": ""
+                }
+                "group": "cn=groupname,dc.....",
+                "ignore_grants_and_vetos": true,
+            }
+
+        """
+        data = request.json
+        target_group = data['group']
+        ldapserver = self.__parent__
+
+        group_users = GroupUsersRetriever(ldapserver)
+
+        # Expand users
+        ldapserver.server.connect()
+        ldap_group_current_users = group_users.load(target_group)
+
+        # Disconnect ldap server, we won't need it outside here
+        ldapserver.server.disconnect()
+
+        # Search all domains that are using this **exact**
+        # component instance
+        domains = root_factory(request)['domains']
+        target_domains = []
+        for domain in domains.values():
+            candidate = domain.get_component(ldapserver.__class__)
+            if candidate is not None and candidate is ldapserver:
+                target_domains.append(domain)
+
+        processed_communities = []
+        for domain in target_domains:
+            # Get required components to process this domain
+            rabbitserver = domain.get_component(RabbitServer)
+            communities_site = domain.get_component(ULearnCommunities)
+            maxserver = domain.get_component(MaxServer)
+            maxclient = maxserver.maxclient
+            authenticated_username, authenticated_token, scope = request.auth_headers
+            maxclient.setActor(authenticated_username)
+            maxclient.setToken(authenticated_token)
+
+            if communities_site in processed_communities:
+                continue
+
+            # Get all communities that have the target group assigned
+            # on any created_community
+            target_communities = communities_site.get_communities_with_group(target_group)
+            for context_data in target_communities:
+                context_url = context_data['url']
+                policy_granted_permissions, max_subscriptions = get_context_data(maxclient, context_url)
+
+                community_assigned_users = context_data['users']
+                community_assigned_groups = context_data['groups']
+                community_assigned_groups_users = group_users.load(*community_assigned_groups)
+                context_subscribed_users = max_subscriptions.keys()
+
+                subscriptions, unsubscriptions = intersect_users(
+                    ldap_group_current_users,
+                    community_assigned_groups_users,
+                    community_assigned_users,
+                    context_subscribed_users
+                )
+
+                # Generate and queue subcribe/unsubscribe actions
+                client = rabbitserver.notifications
+
+                for username in subscriptions:
+                    client.sync_acl(domain.name, context_url, username, {"subscribe": True})
+                    gevent.sleep()
+
+                for username in unsubscriptions:
+                    client.sync_acl(domain.name, context_url, username, {"unsubscribe": True})
+                    gevent.sleep()
+
+                gevent.sleep(0.1)
+
+        processed_communities.append(communities_site)
+        return {}
+
+
+class SyncACL(Service):
+    name = 'syncacl'
+    target_components = ['rabbitmq']
+    allowed_caller = Domain
+
+    def handle_rabbitmq(self, request, *args, **kwargs):
+        """
+            Update a context's users ACLS
+
+            Decomposes given groups into a list of users. With that list of
+            users generates the minimum set of tasks (SUB, UNSUB, REVOKE, GRANT)
+            to sync the community status to max context and subscriptions.
+
+            Each of the final tasks generated is feeded to rabbitmq
+            to be processed asynchronously.
+
+            Format of request to this service is as follows:
 
             {
                 "component": {
                     "type": "communities",
                     "id": "url"
                 }
-                "permission_mapping": {
-                    "reader": ['read'],
-                    "writer": ['read', 'write'],
-                    "owner": ['read', 'write']
-                },
-                "ignore_grants_and_vetos": true,
                 "context": "http://(...)",
                 "acl": {
                     "groups": [
@@ -78,16 +180,36 @@ class SyncACL(Service):
                     "users": [
                         {"id": , "role": ""},
                     ]
-                }
+                },
+                "permission_mapping": {
+                    "reader": ['read'],
+                    "writer": ['read', 'write'],
+                    "owner": ['read', 'write']
+                },
+                "ignore_grants_and_vetos": true,
+
             }
+
+            component: type and id of the component that's triggering this call
+            context: The context on which the syncacl tasks will be performed
+            acl.groups: list of group acls to process.
+            acl.users: list of user acls to process.
+            acl.*:  Each acl entry has an id identifing the group/user (cn) and a role
+            permission_mapping: For each role in acls, there must be a list of permissions that
+                a user with that role must have in its max subscription
+            ignore_grants_and_vetos: if true, peristent grants and vetoes on context subscriptions
+            will be overriden so that the final subscription state matches the requested state. This is
+            the default behaviour.
         """
 
         data = request.json
+        domain = self.__parent__
+        context_url = data['context']
 
         # Get required components for this service
-        maxserver = self.domain.get_component(MaxServer)
-        ldapserver = self.domain.get_component(LdapServer)
-        rabbitserver = self.domain.get_component(RabbitServer)
+        maxserver = domain.get_component(MaxServer)
+        ldapserver = domain.get_component(LdapServer)
+        rabbitserver = domain.get_component(RabbitServer)
 
         # Get target context and all of its subscriptions
         maxclient = maxserver.maxclient
@@ -95,43 +217,11 @@ class SyncACL(Service):
         maxclient.setActor(authenticated_username)
         maxclient.setToken(authenticated_token)
 
-        # Collect data and variables needed
-        try:
-            context = maxclient.contexts[data['context']].get(qs=dict(show_acls=True))
-        except RequestError as exc:
-            if exc.code == 403:
-                raise Forbidden('User {} has not enough permissions on max to use this service'.format(
-                    authenticated_username)
-                )
-            else:
-                raise exc
+        policy_granted_permissions, subscriptions = get_context_data(maxclient, context_url)
 
-        # Check if authenticated user meets the permissions on max to execute the service
-        can_execute_service = max_permissions.remove_subscription in context['acls'] \
-            and max_permissions.add_subscription in context['acls'] \
-            and max_permissions.manage_subcription_permissions in context['acls']
-
-        if not can_execute_service:
-            raise Forbidden('User {} has not enough permissions on max to use this service'.format(
-                authenticated_username)
-            )
-
-        subscriptions = maxclient.contexts[data['context']].subscriptions.get(qs={'limit': 0})
         acl_groups = data['acl'].get('groups', [])
         acl_users = data['acl'].get('users', [])
         permission_mapping = data['permission_mapping']
-
-        policy_granted_permissions = set([permission for permission, value in context.get('permissions', {}).items() if value in ['subscribed', 'public']])
-
-        # Prepare a user mapped copy of context subscriptions
-        subscriptions_by_user = {}
-        for subscription in subscriptions:
-            subscriptions_by_user[subscription['username']] = subscription
-
-        # To keep track of overwrites caused by user duplication
-        # At the end of the process, subscribed user NOT IN target users
-        # will be unsubscribed
-        actions_by_user = {}
 
         def expanded_users():
             """
@@ -153,6 +243,11 @@ class SyncACL(Service):
             # Disconnect ldap server, we won't need it outside here
             ldapserver.server.disconnect()
 
+        # To keep track of overwrites caused by user duplication
+        # At the end of the process, subscribed user NOT IN target users
+        # will be unsubscribed
+        actions_by_user = {}
+
         # Iterate over group users and single users acl's at once
         for user in chain(expanded_users(), acl_users):
             username = user['id']
@@ -165,7 +260,7 @@ class SyncACL(Service):
 
             # Generate actions based on current permissions, policy, and wanted permissions
             new_actions = generate_actions(
-                subscriptions_by_user.get(username, {}),
+                subscriptions.get(username, {}),
                 policy_granted_permissions,
                 wanted_permissions
             )
@@ -179,14 +274,14 @@ class SyncACL(Service):
         client = rabbitserver.notifications
 
         # All the users present in subscription and not in the ACL's will be unsubscribed
-        missing_users = set(subscriptions_by_user.keys()) - set(actions_by_user.keys())
+        missing_users = set(subscriptions.keys()) - set(actions_by_user.keys())
         for username in missing_users:
-            client.sync_acl(self.domain.name, context['url'], username, {"unsubscribe": True})
+            client.sync_acl(domain.name, context_url, username, {"unsubscribe": True})
             gevent.sleep()
 
         for username, actions in actions_by_user.items():
             if actions:
-                client.sync_acl(self.domain.name, context['url'], username, actions)
+                client.sync_acl(domain.name, context_url, username, actions)
                 gevent.sleep()
 
         gevent.sleep(0.1)

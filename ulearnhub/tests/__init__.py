@@ -83,12 +83,14 @@ class UlearnHUBBaseTestCase(unittest.TestCase):
         from ulearnhub.tests.mockers.deployments import test_maxcluster_component
         from ulearnhub.tests.mockers.deployments import test_maxserver_component
         from ulearnhub.tests.mockers.deployments import test_rabbitserver_component
+        from ulearnhub.tests.mockers.deployments import test_communities_component
 
         self.create_deployment(test_deployment)
         self.add_component(test_deployment, test_rabbitserver_component)
         self.add_component(test_deployment, test_ldap_component)
         self.add_component(test_deployment, test_maxcluster_component)
         self.add_component(test_deployment, test_maxserver_component)
+        self.add_component(test_deployment, test_communities_component)
 
     def initialize_test_domain(self):
         from ulearnhub.tests.mockers.domains import test_domain
@@ -96,6 +98,7 @@ class UlearnHUBBaseTestCase(unittest.TestCase):
         self.assign_component(test_domain['name'], 'test/maxserver:testmaxserver1')
         self.assign_component(test_domain['name'], 'test/ldapserver:testldap')
         self.assign_component(test_domain['name'], 'test/rabbitserver:testrabbit')
+        self.assign_component(test_domain['name'], 'test/ulearncommunities:testcommunities')
 
 
 import warnings

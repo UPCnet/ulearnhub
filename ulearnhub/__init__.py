@@ -69,6 +69,11 @@ def main(global_config, **settings):
         if not os.path.exists(storage_folder):
             os.makedirs(storage_folder)
 
+    # set safe defaults
+    settings.update({
+        'exceptions_folder': '/tmp/ulearnhub_exceptions/'
+    })
+
     # App initializaton
     config = Configurator(
         settings=settings,
@@ -106,7 +111,7 @@ def main(global_config, **settings):
         defaults = json.loads(open(defaults_file).read())
         create_defaults(config.registry, defaults)
 
-    # Create exceptions log folfer if it doesnt exists
+    # Create exceptions log folder if it doesnt exists
     exceptions_folder = config.registry.settings.get('exceptions_folder')
     if not os.path.exists(exceptions_folder):
         os.makedirs(exceptions_folder)

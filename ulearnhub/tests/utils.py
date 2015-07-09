@@ -26,9 +26,8 @@ class UlearnhubTestApp(object):
         return self.call_testapp('head', *args, **kwargs)
 
     def call_testapp(self, method, *args, **kwargs):
-
         status = kwargs.get('status', None)
-        headers = kwargs.setdefault('headers', {})
+        kwargs.setdefault('headers', {})
         testapp_method = getattr(self.testapp, method)
         kwargs['expect_errors'] = True
         res = testapp_method(*args, **kwargs)
