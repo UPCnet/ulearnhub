@@ -70,9 +70,7 @@ def main(global_config, **settings):
             os.makedirs(storage_folder)
 
     # set safe defaults
-    settings.update({
-        'exceptions_folder': '/tmp/ulearnhub_exceptions/'
-    })
+    settings.setdefault('exceptions_folder', '/tmp/ulearnhub_exceptions/')
 
     # App initializaton
     config = Configurator(
