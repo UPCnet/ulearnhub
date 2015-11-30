@@ -202,6 +202,8 @@ def logout(context, request):
     """
         Logs out from root and from every logged in domain
     """
+    api = TemplateAPI(context, request, "uLearn HUB Logout")
+
     for domain_name in request.session.keys():
         if not domain_name.startswith('_'):
             request.session.pop(domain_name, None)
@@ -209,7 +211,7 @@ def logout(context, request):
     request.session.pop('root_auth_domain', None)
     request.session.pop('root', None)
     headers = forget(request)
-    return HTTPFound(location='/', headers=headers)
+    return HTTPFound(location=api.application_url, headers=headers)
 
 
 @view_config(route_name='domain_logout')
