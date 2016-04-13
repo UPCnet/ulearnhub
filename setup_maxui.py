@@ -97,7 +97,7 @@ def main():
     # Store downloaded js
     open(config['js_location'], 'w').write(js)
 
-    js = downloadFile(config, 'builds/{}/maxui.min.map'.format(version))
+    js = downloadFile(config, 'builds/{}/maxui.min.js.map'.format(version))
     if not js:
         print ' MAX UI jsmap Version {} build not found'.format(version)
         sys.exit(1)
