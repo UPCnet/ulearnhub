@@ -73,6 +73,13 @@ def create_defaults(registry, defaults, quiet=False):
 
     root = initialize_zodb(registry)
 
+    # esborrem els domains,deployments i users de la zodb 
+    # per tal de recarregar-los des del JSON - canvi temporal mentre
+    # es decideix com es relacionaran els dos mètodes json i zodb
+    root['deployments'].clear()
+    root['domains'].clear()
+    root['users'].clear()
+
     deployments = root['deployments']
     domains = root['domains']
     users = root['users']
