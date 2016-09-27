@@ -1,0 +1,8 @@
+{
+    "branch": "develop", 
+    "css_location": "ulearnhub/maxui/maxui.css", 
+    "fonts_location": "ulearnhub/maxui", 
+    "fonts_url": "ulearnhub/maxui", 
+    "github_url": "https://github.com/UPCnet/max.ui.js", 
+    "js_location": "ulearnhub/maxui/maxui.min.js"
+}
