@@ -7480,13 +7480,13 @@ var max = max || {};
          *
          */
         function MaxConversationMessages(maxconversations, options) {
-                var self = this;
-                self.messages = {};
-                self.mainview = maxconversations;
-                self.maxui = self.mainview.maxui;
-                self.remaining = true;
-            }
-            // Loads the last 10 messages of a conversation
+            var self = this;
+            self.messages = {};
+            self.mainview = maxconversations;
+            self.maxui = self.mainview.maxui;
+            self.remaining = true;
+        }
+        // Loads the last 10 messages of a conversation
         MaxConversationMessages.prototype.load = function() {
             var self = this;
             var conversation_id = self.mainview.active;
@@ -9828,7 +9828,7 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
     jq.fn.maxUI = function(options) {
         // Keep a reference of the context object
         var maxui = this;
-        maxui.version = '4.1.14';
+        maxui.version = '4.1.15';
         maxui.templates = max.templates();
         maxui.utils = max.utils();
         var defaults = {
