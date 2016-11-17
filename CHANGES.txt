@@ -1,11 +1,17 @@
 CHANGELOG
 =========
 
-1.6 (unreleased)
+1.6 (2016-11-17)
 ----------------
 
-- Nothing changed yet.
-
+* Merge remote-tracking branch 'origin/develop' [Pilar Marinas]
+* MAX UI 4.1.15 setup finished [Pilar Marinas]
+* MAX UI 4.1.14 setup finished [Pilar Marinas]
+* encode utf-8 expanded groups in users syncacl [Pilar Marinas]
+* Update resources.py - reset zodb in every start [Vicente Iranzo Maestre]
+*  [Vicente Iranzo Maestre]
+* Esborra els continguts de deployments,domains i users  per tal que es recarreguin de la zodb. [Vicente Iranzo Maestre]
+* Necessari per tal que es guardin els canvis fets en el json en l'aplicació (p.e. canvi url del max) [Vicente Iranzo Maestre]
 
 1.5 (2016-04-18)
 ----------------
