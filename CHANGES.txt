@@ -1,11 +1,13 @@
 CHANGELOG
 =========
 
-1.6 (unreleased)
+1.6 (2017-01-27)
 ----------------
 
-- Nothing changed yet.
-
+* new version autoreload activities [Paco Gregori]
+* MAX UI 4.1.15 setup finished [Pilar Marinas]
+* MAX UI 4.1.14 setup finished [Pilar Marinas]
+* encode utf-8 expanded groups in users syncacl [Pilar Marinas]
 
 1.5 (2016-04-18)
 ----------------
