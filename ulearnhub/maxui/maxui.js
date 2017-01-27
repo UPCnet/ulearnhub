@@ -8196,7 +8196,6 @@ max.templates = function() {
 <div id="maxui-container">\
         {{#username}}\
          <div id="maxui-mainpanel">\
-        \
            <div id="maxui-conversations" style="height:0px; {{showConversations}}">\
                <div id="maxui-common-header">\
                   <div id="maxui-conversations-header" class="maxui-togglebar">\
@@ -8263,6 +8262,9 @@ max.templates = function() {
                 <a class="maxui-sort-action maxui-most-valued {{orderViewLikes}}" href="#">{{literals.valued_activity}}</a>\
                 /\
                 <a class="maxui-sort-action maxui-flagged {{orderViewFlagged}}" href="#">{{literals.flagged_activity}}</a>\
+              </div>\
+              <div id="maxui-news-activities" hidden>\
+                  <input type="button" class="maxui-button" value="Carrega noves entrades">\
               </div>\
            <div id="maxui-timeline" style="{{showTimeline}}">\
               <div class="maxui-wrapper">\
@@ -9828,7 +9830,7 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
     jq.fn.maxUI = function(options) {
         // Keep a reference of the context object
         var maxui = this;
-        maxui.version = '4.1.15';
+        maxui.version = '4.1.16';
         maxui.templates = max.templates();
         maxui.utils = max.utils();
         var defaults = {
@@ -10070,6 +10072,10 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
                 var last_result_id = jq('.maxui-activity:last').attr('id');
                 maxui.reloadFilters(last_result_id);
             }
+        });
+        //PG Assign click to load news activities
+        jq('#maxui-news-activities .maxui-button').click(function(event) {
+            maxui.loadNewsActivities();
         });
         //Assign click to toggle search filters if any search filter defined
         jq('#maxui-search-toggle').click(function(event) {
@@ -11146,6 +11152,17 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
         var maxui = this;
         var filter = {
             before: jq('.maxui-activity:last').attr('id')
+        };
+        maxui.printActivities(filter);
+    };
+    /** PG
+     *    Loads news activities from max posted earlier than
+     *    the oldest loaded activity
+     **/
+    jq.fn.loadNewsActivities = function() {
+        var maxui = this;
+        var filter = {
+            after: jq('.maxui-activity:first').attr('id')
         };
         maxui.printActivities(filter);
     };
