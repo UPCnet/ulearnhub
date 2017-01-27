@@ -1,11 +1,10 @@
 CHANGELOG
 =========
 
-1.7 (unreleased)
+1.7 (2017-01-27)
 ----------------
 
-- Nothing changed yet.
-
+* new version autoreload activities [Pilar Marinas]
 
 1.6 (2016-11-17)
 ----------------
