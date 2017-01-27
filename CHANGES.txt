@@ -10,6 +10,7 @@ CHANGELOG
 1.6 (2016-11-17)
 ----------------
 
+* new version autoreload activities [Paco Gregori]
 * Merge remote-tracking branch 'origin/develop' [Pilar Marinas]
 * MAX UI 4.1.15 setup finished [Pilar Marinas]
 * MAX UI 4.1.14 setup finished [Pilar Marinas]
@@ -18,6 +19,7 @@ CHANGELOG
 *  [Vicente Iranzo Maestre]
 * Esborra els continguts de deployments,domains i users  per tal que es recarreguin de la zodb. [Vicente Iranzo Maestre]
 * Necessari per tal que es guardin els canvis fets en el json en l'aplicació (p.e. canvi url del max) [Vicente Iranzo Maestre]
+
 
 1.5 (2016-04-18)
 ----------------
