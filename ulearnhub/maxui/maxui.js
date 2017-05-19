@@ -9830,7 +9830,7 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
     jq.fn.maxUI = function(options) {
         // Keep a reference of the context object
         var maxui = this;
-        maxui.version = '4.1.16';
+        maxui.version = '4.1.17';
         maxui.templates = max.templates();
         maxui.utils = max.utils();
         var defaults = {
@@ -11161,10 +11161,7 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
      **/
     jq.fn.loadNewsActivities = function() {
         var maxui = this;
-        var filter = {
-            after: jq('.maxui-activity:first').attr('id')
-        };
-        maxui.printActivities(filter);
+        maxui.printActivities();
     };
     /**
      *    Renders the conversations list of the current user, defined in settings.username
