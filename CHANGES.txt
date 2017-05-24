@@ -1,11 +1,10 @@
 CHANGELOG
 =========
 
-1.7 (unreleased)
+1.7 (2017-05-24)
 ----------------
 
-- Nothing changed yet.
-
+* MAX UI 4.1.17 setup finished [Pilar Marinas]
 
 1.6 (2017-01-27)
 ----------------
