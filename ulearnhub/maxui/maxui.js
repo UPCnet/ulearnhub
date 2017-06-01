@@ -5523,6 +5523,8 @@ if (typeof define === 'function' && define.amd) {
 //     Copyright (c) 2010-2012 Robert Kieffer
 //     MIT License - http://opensource.org/licenses/mit-license.php
 
+var uuid;
+
 (function() {
   var _global = this;
 
@@ -5737,7 +5739,7 @@ if (typeof define === 'function' && define.amd) {
   }
 
   // Export public API
-  var uuid = v4;
+  uuid = v4;
   uuid.v1 = v1;
   uuid.v4 = v4;
   uuid.parse = parse;
@@ -5746,7 +5748,7 @@ if (typeof define === 'function' && define.amd) {
 
   if (typeof define === 'function' && define.amd) {
     // Publish as AMD module
-    define(function() {return uuid;});
+    define('uuid', [], function(){return uuid;});
   } else if (typeof(module) != 'undefined' && module.exports) {
     // Publish as node.js module
     module.exports = uuid;
@@ -6481,7 +6483,7 @@ if (typeof define === 'function' && define.amd) {
         window.UAParser = UAParser;
         // requirejs env (optional)
         if (typeof(define) === FUNC_TYPE && define.amd) {
-            define(function () {
+            define('UAParser', [], function () {
                 return UAParser;
             });
         }
@@ -9830,7 +9832,7 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
     jq.fn.maxUI = function(options) {
         // Keep a reference of the context object
         var maxui = this;
-        maxui.version = '4.1.17';
+        maxui.version = '4.1.18';
         maxui.templates = max.templates();
         maxui.utils = max.utils();
         var defaults = {
