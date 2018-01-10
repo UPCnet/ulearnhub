@@ -9832,7 +9832,7 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
     jq.fn.maxUI = function(options) {
         // Keep a reference of the context object
         var maxui = this;
-        maxui.version = '4.1.19';
+        maxui.version = '4.1.21';
         maxui.templates = max.templates();
         maxui.utils = max.utils();
         var defaults = {
@@ -9847,7 +9847,7 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
             'disableConversations': false,
             'conversationsSection': 'conversations',
             'currentConversationSection': 'conversations',
-            'activitySortOrder': 'activities',
+            'activitySortOrder': 'comments',
             'activitySortView': 'recent',
             'maximumConversations': 20,
             'contextTagsFilter': [],
@@ -11129,6 +11129,9 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
             if (maxui.settings.hidePostboxOnTimeline) {
                 $postbox.hide();
             }
+            if (maxui.hidePostbox()) {
+                $postbox.hide();
+            }
         }
     };
     /**
@@ -11177,8 +11180,14 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
      **/
     jq.fn.loadMoreActivities = function() {
         var maxui = this;
+        var lastActivity = jq('.maxui-activity:last').attr('id');
+        if (jq('#maxui-activity-sort .maxui-sort-action.maxui-most-recent').hasClass('active')) {
+            if (jq("#" + lastActivity + " .maxui-comment").length > 0) {
+                lastActivity = jq("#" + lastActivity + " .maxui-comment:last").attr('id');
+            }
+        }
         var filter = {
-            before: jq('.maxui-activity:last').attr('id')
+            before: lastActivity
         };
         maxui.printActivities(filter);
     };
