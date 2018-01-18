@@ -1,11 +1,13 @@
 CHANGELOG
 =========
 
-1.8 (unreleased)
+1.8 (2018-01-18)
 ----------------
 
-- Nothing changed yet.
-
+* Merge [Pilar Marinas]
+* MAX UI 4.1.21 setup finished [Pilar Marinas]
+* MAX UI 4.1.19 setup finished [Pilar Marinas]
+* MAX UI 4.1.18 setup finished [Pilar Marinas]
 
 1.7 (2017-05-24)
 ----------------
