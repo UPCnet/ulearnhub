@@ -7,12 +7,12 @@ CHANGELOG
 - Nothing changed yet.
 
 
-1.7 (2017-01-27)
+1.7 (2017-05-24)
 ----------------
 
-* new version autoreload activities [Pilar Marinas]
+* MAX UI 4.1.17 setup finished [Pilar Marinas]
 
-1.6 (2016-11-17)
+1.6 (2017-01-27)
 ----------------
 
 * new version autoreload activities [Paco Gregori]
