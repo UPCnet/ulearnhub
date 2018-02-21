@@ -1,11 +1,11 @@
 CHANGELOG
 =========
 
-1.9 (unreleased)
+1.9 (2018-02-21)
 ----------------
 
-- Nothing changed yet.
-
+* Merge remote-tracking branch 'origin/develop' [Pilar Marinas]
+* MAX UI 4.1.23 setup finished [Pilar Marinas]
 
 1.8 (2018-01-18)
 ----------------
