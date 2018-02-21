@@ -7190,7 +7190,7 @@ var max = max || {};
                     // drag only if target content is taller than scrollbar
                     if (self.enabled()) {
                         // Calculate dragger position, constrained to actual limits
-                        var margintop = event.clientY - self.$bar.offset().top;
+                        var margintop = event.clientY + jq(window).scrollTop() - self.$bar.offset().top;
                         if (margintop < 0) {
                             margintop = 0;
                         }
@@ -7915,13 +7915,18 @@ var max = max || {};
                 self.listview.insert(conversation);
                 self.messagesview.remaining = 0;
                 message.ack = true;
+                self.loadWrappers();
                 self.messagesview.append(message);
                 self.messagesview.render();
                 self.messagesview.show(chash);
-                self.loadWrappers();
+                self.hideNameChat();
                 self.$newparticipants[0].people = [];
                 self.maxui.reloadPersons();
             });
+        };
+        MaxConversations.prototype.hideNameChat = function(data) {
+            jq('#maxui-new-displayName input').val('');
+            jq('#maxui-new-displayName').hide();
         };
         MaxConversations.prototype.updateUnreadConversations = function(data) {
             var self = this;
@@ -9832,7 +9837,7 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
     jq.fn.maxUI = function(options) {
         // Keep a reference of the context object
         var maxui = this;
-        maxui.version = '4.1.21';
+        maxui.version = '4.1.23';
         maxui.templates = max.templates();
         maxui.utils = max.utils();
         var defaults = {
@@ -10069,6 +10074,9 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
             if (maxui.settings.UISection === 'conversations') {
                 maxui.bindEvents();
                 maxui.toggleSection('conversations');
+                maxui.renderPostbox();
+                var textarea_literal = maxui.settings.literals.new_conversation_text;
+                jq('#maxui-newactivity-box textarea').val(textarea_literal).attr('data-literal', textarea_literal);
             } else if (maxui.settings.UISection === 'timeline') {
                 var sort_orders_by_view = {
                     recent: maxui.settings.activitySortOrder,
@@ -11173,6 +11181,7 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
         }
         var activityAdder = maxui.maxClient.addActivity;
         activityAdder.apply(maxui.maxClient, func_params);
+        jq('#maxui-subscriptions option:first-child').attr("selected", "selected");
     };
     /**
      *    Loads more activities from max posted earlier than
