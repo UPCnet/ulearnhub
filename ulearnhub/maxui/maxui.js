@@ -9837,7 +9837,7 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
     jq.fn.maxUI = function(options) {
         // Keep a reference of the context object
         var maxui = this;
-        maxui.version = '4.1.23';
+        maxui.version = '4.1.24';
         maxui.templates = max.templates();
         maxui.utils = max.utils();
         var defaults = {
@@ -9854,7 +9854,7 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
             'currentConversationSection': 'conversations',
             'activitySortOrder': 'comments',
             'activitySortView': 'recent',
-            'maximumConversations': 20,
+            'maximumConversations': 50,
             'contextTagsFilter': [],
             'scrollbarWidth': 10,
             'widgetWidth': '0',
