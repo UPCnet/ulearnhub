@@ -8074,17 +8074,21 @@ max.templates = function() {
                 </div>\
             </div>\
         \
-            {{#canViewComments}}<div class="maxui-comments" style="display: none">\
+            {{#canViewComments}}\
+            <div class="maxui-comments" style="display: none">\
                 <div class="maxui-commentsbox">\
                     {{#replies}}\
                         {{> comment}}\
                     {{/replies}}\
                 </div>\
-                {{#canWriteComment}}<div class="maxui-newcommentbox">\
+                {{#canWriteComment}}\
+                <div class="maxui-newcommentbox">\
                         <textarea class="maxui-empty maxui-text-input" id="maxui-commentBox" data-literal="{{literals.new_comment_text}}">{{literals.new_comment_text}}</textarea>\
                         <input disabled="disabled" type="button" class="maxui-button maxui-disabled" value="{{literals.new_comment_post}}"/>\
-                </div>{{/canWriteComment}}\
-            </div>{{/canViewComments}}\
+                </div>\
+                {{/canWriteComment}}\
+            </div>\
+            {{/canViewComments}}\
         \
             <div class="maxui-clear"></div>\
         </div>\
@@ -8239,7 +8243,7 @@ max.templates = function() {
             <div id="maxui-conversation-predictive" class="maxui-predictive" style="display:none;"><ul></ul></div>\
             <div id="maxui-add-people-box" style="display:none;">\
                 <div>\
-                  <label class="maxui-label">{{literals.participants}}: <span class="maxui-count">(1/20)</span></label>\
+                  <label class="maxui-label">{{literals.participants}}: <span class="maxui-count">(1/50)</span></label>\
                   <input tabindex="20" type="text" data-literal="{{literals.conversations_info_add}}" value="{{literals.conversations_info_add}}" class="maxui-text-input" id="add-user-input">\
                 </div>\
                 <div id="maxui-new-participants" style="display:none;"></div>\
@@ -9837,7 +9841,7 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
     jq.fn.maxUI = function(options) {
         // Keep a reference of the context object
         var maxui = this;
-        maxui.version = '4.1.24';
+        maxui.version = '4.1.25';
         maxui.templates = max.templates();
         maxui.utils = max.utils();
         var defaults = {
