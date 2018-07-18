@@ -26,7 +26,7 @@ requires = [
 ]
 
 setup(name='ulearnhub',
-      version='1.12',
+      version='1.13.dev0',
       description='ulearnhub',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
