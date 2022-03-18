@@ -1,11 +1,10 @@
 CHANGELOG
 =========
 
-1.14 (unreleased)
+1.14 (2022-03-18)
 -----------------
 
-- Nothing changed yet.
-
+* Cambios para que funcione la nueva version de rabbit [Pilar Marinas]
 
 1.13 (2018-12-10)
 -----------------
