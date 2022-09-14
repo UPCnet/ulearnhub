@@ -5201,6 +5201,9 @@ var max = max || {};
             var self = this;
             self.mainview.loadWrappers();
             self.mainview.$newparticipants.show();
+            jq('#maxui-newactivity-box > .upload-file').hide();
+            jq('#maxui-newactivity-box > .upload-img').hide();
+            jq('#maxui-newactivity-box > #preview').hide();
             // Load conversations from max if never loaded
             if (self.conversations.length === 0) {
                 self.load();
@@ -5258,6 +5261,8 @@ var max = max || {};
             var params = {
                 avatar: self.maxui.settings.avatarURLpattern.format(self.maxui.settings.username),
                 allowPosting: true,
+                imgLiteral: self.maxui.settings.literals.new_img_post,
+                fileLiteral: self.maxui.settings.literals.new_file_post,
                 buttonLiteral: self.maxui.settings.literals.new_message_post,
                 textLiteral: self.maxui.settings.literals.new_conversation_text,
                 literals: self.maxui.settings.literals,
@@ -5434,6 +5439,7 @@ var max = max || {};
                 if (_.contains(['image', 'file'], message.object.objectType)) {
                     _message.data.fullURL = message.object.fullURL;
                     _message.data.thumbURL = message.object.thumbURL;
+                    _message.data.filename = message.object.filename;
                 }
                 // If it's a message from max, update last message on listview
                 self.mainview.listview.updateLastMessage(_message.destination, {
@@ -5477,6 +5483,7 @@ var max = max || {};
                 if (_.contains(['image', 'file'], message.object.objectType)) {
                     _message.data.fullURL = message.object.fullURL;
                     _message.data.thumbURL = message.object.thumbURL;
+                    _message.data.filename = message.object.filename;
                 }
             }
             self.messages[self.mainview.active] = self.messages[self.mainview.active] || [];
@@ -5513,6 +5520,7 @@ var max = max || {};
                         othersMessage: others_message,
                         literals: self.maxui.settings.literals,
                         avatarURL: avatar_url,
+                        maxServerURL: self.maxui.settings.maxServerURL,
                         displayName: message.user.displayname,
                         showDisplayName: others_message && is_group_conversation,
                         ack: message.ack ? origin === 'maxui-user-me' : false,
@@ -5558,7 +5566,16 @@ var max = max || {};
             self.mainview.loadWrappers();
             // PLEASE CLEAN THIS SHIT
             var $button = jq('#maxui-newactivity').find('input.maxui-button');
-            $button.removeAttr('disabled');
+            jq("#preview").empty();
+            jq("#maxui-img").val("");
+            jq("#maxui-file").val("");
+            jq("#maxui-newactivity-box > .upload-img").removeClass("label-disabled");
+            jq("#maxui-img").prop("disabled", false);
+            jq("#maxui-newactivity-box > .upload-file").removeClass("label-disabled");
+            jq("#maxui-file").prop("disabled", false);
+            jq('#maxui-newactivity-box > .upload-file').show();
+            jq('#maxui-newactivity-box > .upload-img').show();
+            jq('#maxui-newactivity-box > #preview').show();
             $button.attr('class', 'maxui-button');
             self.mainview.$newmessagebox.find('textarea').attr('class', 'maxui-text-input');
             self.mainview.$newmessagebox.find('.maxui-error-box').animate({
@@ -5681,6 +5698,9 @@ var max = max || {};
                 event.stopPropagation();
                 window.status = '';
                 self.listview.show();
+                jq('#maxui-newactivity-box > .upload-file').hide();
+                jq('#maxui-newactivity-box > .upload-img').hide();
+                jq('#maxui-newactivity-box > #preview').hide();
             });
             //Assign activation of messages section by delegating the clicl of a conversation arrow to the conversations container
             jq('#maxui-conversations').on('click', '.maxui-conversation', function(event) {
@@ -5702,8 +5722,9 @@ var max = max || {};
          *    Sends a post when user clicks `post activity` button with
          *    the current contents of the `maxui-newactivity` textarea
          **/
-        MaxConversations.prototype.send = function(text) {
+        MaxConversations.prototype.send = function(text, media) {
             var self = this;
+            var query = {};
             var message = {
                 data: {
                     "text": text
@@ -5711,21 +5732,69 @@ var max = max || {};
                 action: 'add',
                 object: 'message'
             };
-            var sent = self.maxui.messaging.send(message, '{0}.messages'.format(self.active));
-            jq('#maxui-newactivity textarea').val('');
-            jq('#maxui-newactivity .maxui-button').attr('disabled', 'disabled');
-            sent.ack = false;
-            sent.destination = self.active;
-            self.messagesview.append(sent);
+            if (media === undefined) {
+                query = {
+                    "object": {
+                        "objectType": "message",
+                        "content": ""
+                    }
+                };
+                var sent = self.maxui.messaging.send(message, '{0}.messages'.format(self.active));
+                sent.ack = false;
+                sent.destination = self.active;
+                self.messagesview.append(sent);
+                self.listview.updateLastMessage(self.active, {
+                    'content': sent.data.text,
+                    'published': sent.published,
+                    'user': sent.user.username
+                });
+                jq('#maxui-newactivity textarea').val('');
+                jq('#maxui-newactivity .maxui-button').attr('disabled', 'disabled');
+            } else {
+                if (media.type.split('/')[0] === 'image') {
+                    query = {
+                        "object": {
+                            "objectType": "image",
+                            "content": "",
+                            "mimetype": media.type
+                        }
+                    };
+                } else {
+                    query = {
+                        "object": {
+                            "objectType": "file",
+                            "content": "",
+                            "mimetype": media.type
+                        }
+                    };
+                }
+                var route = self.maxui.maxClient.ROUTES.messages.format(self.active);
+                let formData = new FormData();
+                query.object.content = text;
+                formData.append("json_data", JSON.stringify(query));
+                formData.append("file", new Blob([media], {
+                    type: media.type
+                }), media.name);
+                var callback = (function() {
+                    jq('#maxui-newactivity textarea').val('');
+                    jq('#maxui-newactivity .maxui-button').attr('disabled', 'disabled');
+                    jq("#preview").empty();
+                    jq("#maxui-img").val("");
+                    jq("#maxui-file").val("");
+                    jq("#maxui-newactivity-box > .upload-img").removeClass("label-disabled");
+                    jq("#maxui-img").prop("disabled", false);
+                    jq("#maxui-newactivity-box > .upload-file").removeClass("label-disabled");
+                    jq("#maxui-file").prop("disabled", false);
+                });
+                self.maxui.maxClient.POSTFILE(route, formData, callback);
+                setTimeout(function() {
+                    self.messagesview.load();
+                }, 500);
+            }
             self.messagesview.show(self.active);
             // When images finish loading, setContentPosition is called again
             // from inside render method, to adjust to new height set by the image
             self.scrollbar.setContentPosition(100);
-            self.listview.updateLastMessage(self.active, {
-                'content': sent.data.text,
-                'published': sent.published,
-                'user': sent.user.username
-            });
         };
         /**
          *    Creates a new conversation and shows it
@@ -5875,7 +5944,7 @@ max.templates = function() {
                 </div>\
                 <div class="maxui-activity-message">\
                     {{#fileDownload}}\
-                    <form action="/activities/{{id}}/file/download" method="POST">\
+                    <form action="{{maxServerURL}}/activities/{{id}}/file/download" method="POST">\
                         <input type="hidden" name="X-Oauth-Token" value="{{auth.token}}">\
                         <input type="hidden" name="X-Oauth-Username" value="{{auth.username}}">\
                         <input type="hidden" name="X-Oauth-Scope" value="widgetcli">\
@@ -6169,12 +6238,12 @@ max.templates = function() {
                 <span class="maxui-avatar maxui-little"><img src="{{avatarURL}}"></span>\
                 <div class="maxui-balloon">\
                     {{#fileDownload}}\
-                    <form action="/messages/{{id}}/file/download" method="POST">\
+                    <form action="{{maxServerURL}}/messages/{{id}}/file/download" method="POST">\
                         <input type="hidden" name="X-Oauth-Token" value="{{auth.token}}">\
                         <input type="hidden" name="X-Oauth-Username" value="{{auth.username}}">\
                         <input type="hidden" name="X-Oauth-Scope" value="widgetcli">\
                         <input type="hidden" name="X-HTTP-Method-Override" value="GET">\
-                        <span class="maxui-icon-download"></span><input type="submit" class="maxui-download" name="submit" value="File download">\
+                        <span class="maxui-icon-download"></span><input type="submit" class="maxui-download" name="submit" value="{{filename}}">\
                     </form>\
                     {{/fileDownload}}\
                     {{#showDisplayName}}<span class="maxui-displayname">{{displayName}}</span>{{/showDisplayName}}\
@@ -6230,6 +6299,11 @@ max.templates = function() {
                       {{/subscriptionList}}\
                     </select>\
                     {{/showSubscriptionList}}\
+                    <div id="preview"></div>\
+                    <label for="maxui-file" class="upload-file">{{fileLiteral}}</label>\
+                    <input type="file" id="maxui-file" class="maxui-file-image" accept="file/*" style="display:none">\
+                    <label for="maxui-img" class="upload-img" style="">{{imgLiteral}}</label>\
+                    <input type="file" id="maxui-img" class="maxui-file-image" accept="image/*" style="display:none">\
                    <input disabled="disabled" type="button" class="maxui-button maxui-disabled" value="{{buttonLiteral}}">\
               </div>\
             '),
@@ -6518,7 +6592,7 @@ var max = max || {};
             self.maxui.logger.info('Succesfully connected to {0}'.format(self.stompServer), self.logtag);
         };
         var errorCallback = function(error) {
-            self.maxui.logger.error(error.body);
+            self.maxui.logger.error(error);
         };
         self.stomp.connect(headers, connectCallback, errorCallback);
     };
@@ -6735,6 +6809,8 @@ max.literals = function(language) {
         'no_chats': 'No chats already',
         'no_match_found': 'No match found',
         'new_conversation_text': 'Add participants and send a message to start a chat',
+        'new_img_post': "Add image",
+        'new_file_post': "Add file",
         'new_activity_post': "Post activity",
         'toggle_comments': "comments",
         'new_comment_text': "Comment something...",
@@ -6796,6 +6872,8 @@ max.literals = function(language) {
         'no_chats': 'No hay chats',
         'no_match_found': 'No hay coincidencias',
         'new_conversation_text': 'Añade participantes y envia el mensaje para iniciar un chat',
+        'new_img_post': "Añadir imagen",
+        'new_file_post': "Añadir archivo",
         'new_activity_post': "Publica",
         'toggle_comments': "comentarios",
         'new_comment_text': "Comenta algo...",
@@ -6857,6 +6935,8 @@ max.literals = function(language) {
         'no_chats': 'No hi ha xats',
         'no_match_found': "No s'han trobat coincidències",
         'new_conversation_text': 'Afegeix participants i envia el missatge per iniciar un xat',
+        'new_img_post': "Afegir imatge",
+        'new_file_post': "Afegir arxiu",
         'new_activity_post': "Publica",
         'toggle_comments': "comentaris",
         'new_comment_text': "Comenta alguna cosa...",
@@ -7337,6 +7417,40 @@ MaxClient.prototype.POST = function(route, query, callback) {
     });
     return true;
 };
+MaxClient.prototype.POSTFILE = function(route, query, callback) {
+    var self = this;
+    var resource_uri = '{0}{1}'.format(this.url, route);
+    // Get method-defined triggers
+    var triggers = {};
+    if (arguments.length > 3) {
+        triggers = arguments[3];
+    }
+    jQuery.ajax({
+        url: resource_uri,
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader("X-Oauth-Token", self.token);
+            xhr.setRequestHeader("X-Oauth-Username", self.actor.username);
+            xhr.setRequestHeader("X-Oauth-Scope", 'widgetcli');
+        },
+        type: 'POST',
+        processData: false,
+        contentType: false,
+        data: query,
+        async: true,
+        dataType: 'json'
+    }).done(function(result) {
+        callback.call(result);
+        if (triggers.done) {
+            jQuery(window).trigger(triggers.done, result);
+        }
+    }).fail(function(xhr) {
+        jQuery(window).trigger('maxclienterror', xhr);
+        if (triggers.fail) {
+            jQuery(window).trigger(triggers.fail, xhr);
+        }
+    });
+    return true;
+};
 MaxClient.prototype.PUT = function(route, query, callback) {
     var self = this;
     var resource_uri = '{0}{1}'.format(this.url, route);
@@ -7508,13 +7622,34 @@ MaxClient.prototype.addComment = function(comment, activity, callback) {
     var route = this.ROUTES.comments.format(activity);
     this.POST(route, query, callback);
 };
-MaxClient.prototype.addActivity = function(text, contexts, callback) {
-    var query = {
-        "object": {
-            "objectType": "note",
-            "content": ""
+MaxClient.prototype.addActivity = function(text, contexts, callback, media) {
+    var query = {};
+    if (media === undefined) {
+        query = {
+            "object": {
+                "objectType": "note",
+                "content": ""
+            }
+        };
+    } else {
+        if (media.type.split('/')[0] === 'image') {
+            query = {
+                "object": {
+                    "objectType": "image",
+                    "content": "",
+                    "mimetype": media.type
+                }
+            };
+        } else {
+            query = {
+                "object": {
+                    "objectType": "file",
+                    "content": "",
+                    "mimetype": media.type
+                }
+            };
         }
-    };
+    }
     if (contexts.length > 0) {
         query.contexts = [];
         for (var ct = 0; ct < contexts.length; ct++) {
@@ -7534,7 +7669,16 @@ MaxClient.prototype.addActivity = function(text, contexts, callback) {
         'done': 'maxui-posted-activity',
         'fail': 'maxui-failed-activity'
     };
-    this.POST(route, query, callback, trigger);
+    if (media === undefined) {
+        this.POST(route, query, callback, trigger);
+    } else {
+        let formData = new FormData();
+        formData.append("json_data", JSON.stringify(query));
+        formData.append("file", new Blob([media], {
+            type: media.type
+        }), media.name);
+        this.POSTFILE(route, formData, callback, trigger);
+    }
 };
 MaxClient.prototype.removeActivity = function(activity_id, callback) {
     var route = this.ROUTES.activity.format(activity_id);
@@ -7630,7 +7774,8 @@ MaxClient.prototype.addMessageAndConversation = function(params, callback) {
     this.POST(route, query, callback);
 };
 MaxClient.prototype.addMessage = function(text, chash, callback) {
-    var query = {
+    var query = {};
+    query = {
         "object": {
             "objectType": "note",
             "content": ""
@@ -7700,7 +7845,7 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
     jq.fn.maxUI = function(options) {
         // Keep a reference of the context object
         var maxui = this;
-        maxui.version = '5.0.29.7';
+        maxui.version = '5.1.1';
         maxui.templates = max.templates();
         maxui.utils = max.utils();
         var defaults = {
@@ -8040,23 +8185,6 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
             });
             jq('#maxui-search').toggleClass('folded', false);
         });
-        //Add to writeContexts selected subscription to post in it.
-        jq('#maxui-subscriptions').on('change', function() {
-            var $urlContext = jq('#maxui-subscriptions :selected').val();
-            if ($urlContext !== 'timeline') {
-                maxui.settings.writeContexts = [];
-                maxui.settings.writeContextsHashes = [];
-                // Add read context to write contexts
-                maxui.settings.writeContexts.push($urlContext);
-                // Store the hashes of the write contexts
-                for (var wc = 0; wc < maxui.settings.writeContexts.length; wc++) {
-                    maxui.settings.writeContextsHashes.push(maxui.utils.sha1(maxui.settings.writeContexts[wc]));
-                }
-            } else {
-                maxui.settings.writeContexts = [];
-                maxui.settings.writeContextsHashes = undefined;
-            }
-        });
         //Assign filter closing via delegating the click to the filters container
         jq('#maxui-search-filters').on('click', '.maxui-close', function(event) {
             event.preventDefault();
@@ -8117,6 +8245,9 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
             event.preventDefault();
             window.status = '';
             maxui.toggleSection('conversations');
+            jq('#maxui-newactivity-box > .upload-file').hide();
+            jq('#maxui-newactivity-box > .upload-img').hide();
+            jq('#maxui-newactivity-box > #preview').hide();
         });
         //Assign activation of timeline section by its button
         jq('#maxui-show-timeline').on('click', function(event) {
@@ -8434,9 +8565,9 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
         });
         // **************************************************************************************
         //Assign Activity post action And textarea behaviour
-        maxui.bindActionBehaviour('#maxui-newactivity', '#maxui-newactivity-box', {}, function(text) {
+        maxui.bindActionBehaviour('#maxui-newactivity', '#maxui-newactivity-box', {}, function(text, media) {
             if (maxui.settings.UISection === 'timeline') {
-                maxui.sendActivity(text);
+                maxui.sendActivity(text, media);
                 jq('#maxui-search').toggleClass('folded', true);
             } else if (maxui.settings.UISection === 'conversations') {
                 if (maxui.settings.conversationsSection === 'conversations') {
@@ -8456,7 +8587,7 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
                     }
                     maxui.conversations.create(options);
                 } else {
-                    maxui.conversations.send(text);
+                    maxui.conversations.send(text, media);
                 }
             }
         }, function(text, area, button, ev) {
@@ -8642,12 +8773,29 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
                         }*/
         }).on('click', target + ' .maxui-button', function(event) {
             event.preventDefault();
+            var media;
+            media = undefined;
+            var file = document.getElementById('maxui-file').files[0];
+            if (file !== undefined) {
+                media = file;
+            } else {
+                var image = document.getElementById('maxui-img').files[0];
+                if (image !== undefined) {
+                    media = image;
+                }
+            }
             var $area = jq(this).parent().find('.maxui-text-input');
             var literal = $area.attr('data-literal');
             var text = $area.val();
             var normalized = maxui.utils.normalizeWhiteSpace(text, false);
             if ((normalized !== literal & normalized !== '') || options.empty_click) {
-                clickFunction.apply(this, [text]);
+                clickFunction.apply(this, [text, media]);
+                jq('#maxui-file').value = "";
+                jq('#maxui-img').value = "";
+                jq("#maxui-newactivity-box > .upload-img").removeClass('label-disabled');
+                jq("#maxui-img").prop("disabled", false);
+                jq("#maxui-newactivity-box > .upload-file").removeClass('label-disabled');
+                jq("#maxui-file").prop("disabled", false);
             }
         });
     };
@@ -9030,9 +9178,9 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
      *    Sends a post when user clicks `post activity` button with
      *    the current contents of the `maxui-newactivity` textarea
      **/
-    jq.fn.sendActivity = function() {
+    jq.fn.sendActivity = function(text, media) {
         var maxui = this;
-        var text = jq('#maxui-newactivity textarea').val();
+        text = jq('#maxui-newactivity textarea').val();
         var func_params = [];
         // change to recent view before posting
         jq('#maxui-activity-sort .maxui-sort-action.active').toggleClass('active', false);
@@ -9056,8 +9204,14 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
         if (maxui.settings.generatorName) {
             func_params.push(maxui.settings.generatorName);
         }
+        if (media) {
+            func_params.push(media);
+        }
         var activityAdder = maxui.maxClient.addActivity;
         activityAdder.apply(maxui.maxClient, func_params);
+        jq("#preview").empty();
+        jq("#maxui-img").val("");
+        jq("#maxui-file").val("");
         jq('#maxui-subscriptions option:first-child').attr("selected", "selected");
     };
     /**
@@ -9238,6 +9392,7 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
                 likesUsernames: likesUsernames.join('\n'),
                 flagged: activity.flagged,
                 avatarURL: avatar_url,
+                maxServerURL: maxui.settings.maxServerURL,
                 publishedIn: contexts,
                 canDeleteActivity: activity.deletable,
                 canFlagActivity: maxui.settings.canflag,
@@ -9280,6 +9435,22 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
                 // When the animation ends, move the new activites to its native container
                 jq('#maxui-preload .maxui-wrapper').html("");
                 jq('#maxui-activities').prepend(activities);
+                if (items.length === 1) {
+                    if (activity.object.objectType === 'image') {
+                        maxui.maxClient.getMessageImage('/activities/{0}/image/thumb'.format(activity.id), function(encoded_image_data) {
+                            var imagetag = '<img class="maxui-embedded fullImage" alt="" src="data:image/png;base64,{0}" />'.format(encoded_image_data);
+                            jq('.maxui-activity#{0} .maxui-activity-message .maxui-body'.format(activity.id)).after(imagetag);
+                            jq('.maxui-activity#{0} .maxui-activity-message img.fullImage'.format(activity.id)).on('click', function() {
+                                maxui.maxClient.getMessageImage(activity.object.fullURL, function(encoded_image_data) {
+                                    var image = new Image();
+                                    image.src = "data:image/png;base64," + encoded_image_data;
+                                    var w = window.open("");
+                                    w.document.write(image.outerHTML);
+                                });
+                            });
+                        });
+                    }
+                }
                 jq('#maxui-preload').height(0);
             });
         }
@@ -9362,6 +9533,8 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
             allowPosting: maxui.settings.canwrite,
             buttonLiteral: maxui.settings.literals.new_activity_post,
             textLiteral: maxui.settings.literals.new_activity_text,
+            imgLiteral: maxui.settings.literals.new_img_post,
+            fileLiteral: maxui.settings.literals.new_file_post,
             literals: maxui.settings.literals,
             showConversationsToggle: toggleCT ? 'display:block;' : 'display:none;',
             showSubscriptionList: maxui.settings.showSubscriptionList && maxui.settings.subscriptionsWrite.length > 0,
@@ -9370,6 +9543,60 @@ MaxClient.prototype.unflagActivity = function(activityid, callback) {
         var postbox = maxui.templates.postBox.render(params);
         var $postbox = jq('#maxui-newactivity');
         $postbox.html(postbox);
+        jq('#maxui-newactivity-box .maxui-file-image').on('change', function(event) {
+            event.preventDefault();
+            if (event.target.files.length > 0) {
+                if (event.target.files[0].size > 50000000) {
+                    alert("El archivo no debe superar los 50MB");
+                    jq("#maxui-img").val("");
+                    jq("#maxui-file").val("");
+                } else {
+                    var name = event.target.files[0].name;
+                    var size = (event.target.files[0].size / 1000).toFixed(1);
+                    var html;
+                    if (event.target.id === "maxui-img") {
+                        html = "<div class=\"preview-box\"><div class=\"preview-icon-img\"><span class=\"preview-title\">{0}</span><p>{1} KB</p><i class=\"fa fa-times\"></i></div></div>".format(name, size);
+                    } else {
+                        html = "<div class=\"preview-box\"><div class=\"preview-icon-file\"><span class=\"preview-title\">{0}</span><p>{1} KB</p><i class=\"fa fa-times\"></i></div></div>".format(name, size);
+                    }
+                    jq("#maxui-newactivity-box > .upload-file").addClass("label-disabled");
+                    jq("#maxui-file").prop("disabled", true);
+                    jq("#maxui-newactivity-box > .upload-img").addClass("label-disabled");
+                    jq("#maxui-img").prop("disabled", true);
+                    jq("#preview").prepend(html);
+                    jq('#maxui-newactivity-box .fa-times').on('click', function(event) {
+                        jq("#preview").empty();
+                        jq("#maxui-img").val("");
+                        jq("#maxui-file").val("");
+                        jq("#maxui-newactivity-box > .upload-img").removeClass("label-disabled");
+                        jq("#maxui-img").prop("disabled", false);
+                        jq("#maxui-newactivity-box > .upload-file").removeClass("label-disabled");
+                        jq("#maxui-file").prop("disabled", false);
+                        var input = jq('#maxui-newactivity .maxui-text-input');
+                        if (input.val() === "" || input.val() === input.data('literal')) {
+                            jq('#maxui-newactivity .maxui-button').attr('disabled', 'disabled');
+                        }
+                    });
+                }
+            }
+        });
+        //Add to writeContexts selected subscription to post in it.
+        jq('#maxui-subscriptions').on('change', function() {
+            var $urlContext = jq('#maxui-subscriptions :selected').val();
+            if ($urlContext !== 'timeline') {
+                maxui.settings.writeContexts = [];
+                maxui.settings.writeContextsHashes = [];
+                // Add read context to write contexts
+                maxui.settings.writeContexts.push($urlContext);
+                // Store the hashes of the write contexts
+                for (var wc = 0; wc < maxui.settings.writeContexts.length; wc++) {
+                    maxui.settings.writeContextsHashes.push(maxui.utils.sha1(maxui.settings.writeContexts[wc]));
+                }
+            } else {
+                maxui.settings.writeContexts = [];
+                maxui.settings.writeContextsHashes = undefined;
+            }
+        });
     };
     /**
      *    Renders the timeline of the current user, defined in settings.username
