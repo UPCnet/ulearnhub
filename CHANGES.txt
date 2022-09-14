@@ -1,11 +1,10 @@
 CHANGELOG
 =========
 
-1.16 (unreleased)
------------------
+2.0 (2022-09-14)
+----------------
 
-- Nothing changed yet.
-
+* MAX UI 5.1.1 setup finished Nueva version entorno MAX con rabbit y mongo de docker [Pilar Marinas]
 
 1.15 (2022-04-29)
 -----------------
