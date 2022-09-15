@@ -24,6 +24,8 @@
             }
         );
         self.sidebar_status = '';
+        var url = MAXSession.max_server;
+        var maxTalkURL = url.replace("http", "ws") + '/ws';
         self.maxuisettings = {
             generatorName: "uLearn HUB",
             language: "ca",
@@ -34,7 +36,7 @@
             oAuthToken: MAXSession.oauth_token,
             maxServerURL: MAXSession.max_server,
             maxServerURLAlias: MAXSession.max_server,
-            maxTalkURL: MAXSession.max_server + "/stomp"
+            maxTalkURL: maxTalkURL
         };
 
         self.toggleSidebar = toggleSidebar;
