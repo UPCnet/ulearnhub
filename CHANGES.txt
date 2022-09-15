@@ -1,11 +1,11 @@
 CHANGELOG
 =========
 
-2.1 (unreleased)
+2.1 (2022-09-15)
 ----------------
 
-- Nothing changed yet.
-
+* MAX UI 5.1.4 setup finished [Pilar Marinas]
+* Modificar stomp por ws [Pilar Marinas]
 
 2.0 (2022-09-14)
 ----------------
